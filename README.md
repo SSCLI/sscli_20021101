@@ -9,8 +9,9 @@ The Shared Source CLI is a compressed archive of the source code to a working im
 
 * Version:	1.0	Date Published:	11/5/2002
 * Language:	English
-* Files in this download
-* Url: [http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=14124](http://web.archive.org/web/20111103055104/http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=14124)
+* Original URL: [http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=14124](http://web.archive.org/web/20111103055104/http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=14124)
+
+## Files in this download
 
 The links in this section correspond to files available for this download. Download the files appropriate for you.
 
