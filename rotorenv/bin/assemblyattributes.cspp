@@ -1,0 +1,96 @@
+// ==++==
+//
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+//
+// ==--==
+// ===========================================================================
+// File: AssemblyAttributes
+//
+// ===========================================================================
+
+/*
+ * Assembly attributes. This file is preprocessed to generate a .cs file
+ * with the correct information.
+ */
+
+#include <assemblyver.h>
+
+using System;
+using System.Reflection;
+using System.Resources;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using System.Security;
+
+[assembly:CLSCompliant(ASSEMBLY_ATTRIBUTE_CLS_COMPLIANT)]
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+
+                                                        // Corresponding version resource field
+[assembly:AssemblyTitle(VER_INTERNALNAME_STR)]          // InternalName
+[assembly:AssemblyDescription(VER_FILEDESCRIPTION_STR)] // FileDescription
+[assembly:AssemblyDefaultAlias(VER_INTERNALNAME_STR)]   // InternalName
+[assembly:AssemblyConfiguration(VER_COMMENTS_STR)]      // Comments
+[assembly:AssemblyCompany(VER_COMPANYNAME_STR)]         // CompanyName
+[assembly:AssemblyProduct(VER_PRODUCTNAME_STR)]         // ProductName
+[assembly:AssemblyCopyright(VER_LEGALCOPYRIGHT_STR)]    // LegalCopyright
+[assembly:AssemblyTrademark(VER_LEGALTRADEMARKS_STR)]   // LegalTrademark
+
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Revision
+//      Build Number
+//
+// You can specify all the value or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
+
+[assembly:AssemblyVersion(VER_ASSEMBLYVERSION_STR)]
+[assembly:AssemblyInformationalVersion(VER_PRODUCTVERSION_STR)]
+[assembly:SatelliteContractVersion(VER_ASSEMBLYVERSION_STR)]
+[assembly:NeutralResourcesLanguageAttribute("en-US")]
+
+//
+// In order to sign your assembly you must specify a key to use. Refer to the 
+// CLR documentation for more information on assembly signing.
+//
+// Use the attributes below to control which key is used for signing. 
+//
+// Notes: 
+//   (*) If no key is specified - the assembly cannot be signed.
+//   (*) KeyName refers to a key that has been installed in the Crypto Service
+//       Provider (CSP) on your machine. 
+//   (*) If the key file and a key name attributes are both specified, the 
+//       following processing occurs:
+//       (1) If the KeyName can be found in the CSP - that key is used.
+//       (2) If the KeyName does not exist and the KeyFile does exist, the key 
+//           in the file is installed into the CSP and used.
+//   (*) Delay Signing is an advanced option - see the COM+ 2.0 documentation for 
+//       more information on this.
+//
+
+#if SIGN_ASSEMBLY
+[assembly:AssemblyDelaySign(true)]
+[assembly:AssemblyKeyFile(QUOTE_MACRO(ASSEMBLY_KEY_FILE))]
+#endif
+
+#if ALLOW_PARTIALTRUSTCALLS
+[assembly:AllowPartiallyTrustedCallers()]
+#endif
+

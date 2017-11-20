@@ -1,0 +1,41 @@
+;==++==
+;
+;   
+;    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+;   
+;    The use and distribution terms for this software are contained in the file
+;    named license.txt, which can be found in the root of this distribution.
+;    By using this software in any fashion, you are agreeing to be bound by the
+;    terms of this license.
+;   
+;    You must not remove this notice, or any other, from this software.
+;   
+; 
+;==--==
+DuplicateResourceKey=Duplicate resource key!  Name was: {0}
+ErrorOutput=error: {0}
+WarningOutput=warning: {0}
+UnknownFileExtension=Unknown file extension '{0}'
+FileNotFound=Couldn't find input file '{0}'
+;*       
+         ;*
+WriteError=Couldn't write output file '{0}'
+CorruptOutput=.resources file is possibly corrupt.  Deleting '{0}'
+DeleteOutputFileFailed=Could not delete possibly corrupted output file '{0}'.
+SpecificError=Specific error was: {0}
+GenericWriteError=Error while writing the output file '{0}'
+ErrorCount={0} error(s).
+INFFileBracket=Unexpected INF file bracket syntax - ResGen does not support text in square brackets.  Bad text: '[{0}'.
+NoEqualsWithNewLine=Found a resource that had a new line in it, but couldn't find the equal sign in it!  Length: {0}  name: '{1}'.
+NoEquals=Found an equals sign at beginning of a line!  Expected a pair like 'name = value'
+BadEscape=Unsupported escape character in value!  Name was: {0}
+NoName=Invalid file format - need name = value  couldn't find value  name was '{0}'
+ReadIn=Read in {0} resources from '{1}'
+BeginWriting=Writing resource file...  
+DoneDot=Done.
+MalformedCompileString=You must specify an input & outfile file name like this:\ninFile.txt,outFile.resources.\nYou passed in "{0}".
+StringsTagObsolete=The "[strings]" tag is no longer necessary nor desired in your text files.
+OnlyString=Only strings can be written to a .txt file; the value of '{0}' is a '{1}'
+;*       
+         ;*
+Usage_Rotor=Microsoft (R) Shared Source CLI Resource Generator \n[Microsoft Shared Source CLI, Version {0}]\n{1}\n\nUsage:\n    ResGen inputFile.ext [outputFile.ext]\n    ResGen /compile inputFile1.ext[,outputFile1.resources] [...]\n\nWhere .ext is .txt or .resources\n\nConverts files from one resource format to another.  If the output \nfilename is not specified, inputFile.resources will be used.\nThe /compile option takes a list of .txt files to convert to \n.resources files in one bulk operation, replacing .ext with .resources for\nthe output file name.\n\n.txt files have this format:\n\n    # Use # at the beginning of a line for a comment character.\n    name=value\n    more elaborate name=value\n

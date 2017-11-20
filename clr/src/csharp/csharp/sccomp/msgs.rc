@@ -1,0 +1,1085 @@
+// ==++==
+// 
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+// 
+// ==--==
+//Microsoft Developer Studio generated resource script.
+//
+#include "../inc/msgsids.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_InternalError       "Internal compiler error (0x%1!8.8x!)"
+    IDS_NoMemory            "Out of memory"
+    IDS_WarningAsError      "Warning treated as error"
+    IDS_MissingOptionArg    "Compiler option '%1!ls!' must be followed by an argument"
+    IDS_NoMetadataFile      "Metadata file '%1!ls!' could not be found"
+    IDS_ComPlusInit         "Unexpected common language runtime initialization error -- '%1!ls!'"
+    IDS_MetadataImportFailure 
+                            "Unexpected error reading metadata from file '%2!ls!' -- '%1!ls!'"
+    IDS_MetadataCantOpenFile 
+                            "Metadata file '%2!ls!' could not be opened -- '%1!ls!'"
+    IDS_NamespaceTypeConflict 
+                            "Cannot declare a namespace and a type both named '%1!ls!'"
+    IDS_CantImportBase      "Referenced class '%1!ls!' has base class or interface '%2!ls!' defined in an assembly that is not referenced.  You must add a reference to assembly '%3!ls!'."
+    IDS_NoTypeDef           "The type '%1!ls!' is defined in an assembly that is not referenced. You must add a reference to assembly '%2!ls!'."
+    IDS_MetadataEmitFailure "Unexpected error writing metadata to file '%2!ls!' -- '%1!ls!'"
+    IDS_RequiredFileNotFound "Required file '%1!ls!' could not be found"
+    IDS_ClassNameTooLong    "The name of type '%1!ls!' is too long"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_AbstractHasBody     "'%1!ls!' cannot declare a body because it is marked abstract"
+    IDS_ConcreteMissingBody "'%1!ls!' must declare a body because it is not marked abstract or extern"
+    IDS_AbstractAndSealed   "'%1!ls!' cannot be both abstract and sealed"
+    IDS_AbstractNotVirtual  "The abstract method '%1!ls!' cannot be marked virtual"
+    IDS_StaticConstant      "The constant '%1!ls!' cannot be marked static"
+    IDS_CantOverrideNonFunction 
+                            "'%1!ls!' : cannot override; '%2!ls!' is not a function"
+    IDS_CantOverrideNonVirtual 
+                            "'%1!ls!' : cannot override inherited member '%2!ls!' because it is not marked virtual, abstract, or override"
+    IDS_CantChangeAccessOnOverride 
+                            "'%1!ls!': cannot change access modifiers when overriding '%2!ls!' inherited member '%3!ls!'"
+    IDS_CantChangeReturnTypeOnOverride 
+                            "'%1!ls!': cannot change return type when overriding inherited member '%2!ls!'"
+    IDS_CantDeriveFromSealedClass 
+                            "'%1!ls!' : cannot inherit from sealed class '%2!ls!'"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_AbstractInConcreteClass 
+                            "'%1!ls!' is abstract but it is contained in nonabstract class '%2!ls!'"
+    IDS_StaticConstructorWithExplicitConstructorCall 
+                            "'%1!ls!': static constructor cannot have an explicit this or base constructor call"
+    IDS_StaticConstructorWithAccessModifiers 
+                            "'%1!ls!': access modifiers are not allowed on static constructors"
+    IDS_RecursiveConstructorCall "Constructor '%1!ls!' cannot call itself"
+    IDS_ObjectCallingBaseConstructor 
+                            "'%1!ls!' has no base class and cannot call a base constructor"
+    IDS_PredefinedTypeNotFound 
+                            "The predefined type '%1!ls!' is not defined or imported"
+    IDS_PredefinedTypeBadNamespace 
+                            "'%1!ls!' conflicts with a predefined namespace"
+    IDS_PredefinedTypeBadType "'%1!ls!' conflicts with a predefined type"
+    IDS_StructWithBaseConstructorCall 
+                            "'%1!ls!': structs cannot call base class constructors"
+    IDS_StructLayoutCycle   "Struct member '%1!ls!' of type '%2!ls!' causes a cycle in the structure layout"
+    IDS_InterfacesCannotContainTypes 
+                            "'%1!ls!': interfaces cannot declare types"
+    IDS_InterfacesCantContainFields "Interfaces cannot contain fields"
+    IDS_InterfacesCantContainConstructors 
+                            "Interfaces cannot contain constructors"
+    IDS_NonInterfaceInInterfaceList 
+                            "'%1!ls!' : type in interface list is not an interface"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DuplicateInterfaceInBaseList 
+                            "'%1!ls!' is already listed in interface list"
+    IDS_CycleInInterfaceInheritance 
+                            "Inherited interface '%2!ls!' causes a cycle in the interface hierarchy of '%1!ls!'"
+    IDS_InterfaceMemberHasBody 
+                            "'%1!ls!': interface members cannot have a definition"
+    IDS_HidingAbstractMethod 
+                            "'%1!ls!' hides inherited abstract member '%2!ls!'"
+    IDS_UnimplementedAbstractMethod 
+                            "'%1!ls!' does not implement inherited abstract member '%2!ls!'"
+    IDS_UnimplementedInterfaceMember 
+                            "'%1!ls!' does not implement interface member '%2!ls!'"
+    IDS_CloseUnimplementedInterfaceMember 
+                            "'%1!ls!' does not implement interface member '%2!ls!'. '%3!ls!' is either static, not public, or has the wrong return type."
+    IDS_ObjectCantHaveBases "The class System.Object cannot have a base class or implement an interface"
+    IDS_ExplicitInterfaceImplementationNotInterface 
+                            "'%1!ls!' in explicit interface declaration is not an interface"
+    IDS_InterfaceMemberNotFound 
+                            "'%1!ls!' in explicit interface declaration is not a member of interface"
+    IDS_ClassDoesntImplementInterface 
+                            "'%1!ls!': containing class does not implement interface '%2!ls!'"
+    IDS_ExplicitInterfaceImplementationInNonClassOrStruct 
+                            "'%1!ls!': explicit interface declaration can only be declared in a class or struct"
+    IDS_MemberNameSameAsType 
+                            "'%1!ls!': member names cannot be the same as their enclosing type"
+    IDS_EnumeratorOverflow  "'%1!ls!': the enumerator value is too large to fit in its type"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CantOverrideNonProperty 
+                            "'%1!ls!' : cannot override; '%2!ls!' is not a property"
+    IDS_NoGetToOverride     "'%1!ls!': cannot override because '%2!ls!' does not have an overridable get accessor"
+    IDS_NoSetToOverride     "'%1!ls!': cannot override because '%2!ls!' does not have an overridable set accessor"
+    IDS_PropertyCantHaveVoidType 
+                            "'%1!ls!' : property or indexer cannot have void type"
+    IDS_PropertyWithNoAccessors 
+                            "'%1!ls!' : property or indexer must have at least one accessor"
+    IDS_NewVirtualInSealed  "'%1!ls!' is a new virtual member in a sealed class '%2!ls!'"
+    IDS_ExplicitPropertyAddingAccessor 
+                            "'%1!ls!' adds an accessor not found in interface member '%2!ls!'"
+    IDS_ExplicitPropertyMissingAccessor 
+                            "Explicit interface implementation '%1!ls!' is missing accessor '%2!ls!'"
+    IDS_ConversionWithInterface 
+                            "'%1!ls!': user-defined conversion to/from interface"
+    IDS_ConversionWithBase  "'%1!ls!': user-defined conversion to/from base class"
+    IDS_ConversionWithDerived 
+                            "'%1!ls!': user-defined conversion to/from derived class"
+    IDS_IdentityConversion  "User-defined operator cannot take an object of the enclosing type and convert to an object of the enclosing type"
+    IDS_ConversionNotInvolvingContainedType 
+                            "User-defined conversion must convert to or from the enclosing type"
+    IDS_DuplicateConversionInClass 
+                            "Duplicate user-defined conversion in class '%1!ls!'"
+    IDS_OperatorsMustBeStatic 
+                            "User-defined operators '%1!ls!' must be declared static and public"
+    IDS_BadIncDecSignature  "The parameter and return type for ++ or -- operator must be the containing type"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MissingPredefinedMember 
+                            "Missing compiler required member '%1!ls!.%2!ls!'"
+    IDS_AttributeLocationOnBadDeclaration 
+                            "'%1!ls!' is not a valid attribute location for this declaration. Valid attribute locations for this declaration are '%2!ls!'"
+    IDS_InvalidAttributeLocation "'%1!ls!' is not a valid attribute location"
+    IDS_EqualsWithoutGetHashCode 
+                            "'%1!ls!' overrides Object.Equals(object o) but does not override Object.GetHashCode()"
+    IDS_EqualityOpWithoutEquals 
+                            "'%1!ls!' defines operator == or operator != but does not override Object.Equals(object o)"
+    IDS_EqualityOpWithoutGetHashCode 
+                            "'%1!ls!' defines operator == or operator != but does not override Object.GetHashCode()"
+    IDS_OutAttrOnRefParam   "'%1!ls!' cannot specify only Out attribute on a ref parameter. Use both In and Out attributes, or neither."
+    IDS_OverloadRefOut      "'%1!ls!' cannot define overloaded methods which differ only on ref and out"
+    IDS_LiteralDoubleCast   "Literal of type double cannot be implicitly converted to type '%2!ls!'; use an '%1!ls!' suffix to create a literal of this type"
+    IDS_IncorrectBooleanAssg 
+                            "Assignment in conditional expression is always constant; did you mean to use == instead of = ?"
+    IDS_ProtectedInStruct   "'%1!ls!' : new protected member declared in struct"
+    IDS_InconsistantIndexerNames 
+                            "Two indexers have different names; the IndexerName attribute must be used with the same name on every indexer within a type"
+    IDS_ComImportWithUserCtor 
+                            "A class with the ComImport attribute cannot have a user-defined constructor"
+    IDS_FieldCantHaveVoidType "Field cannot have void type"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CantOverrideAccessor 
+                            "Accessor '%1!ls!' : cannot override '%2!ls!' because it is hidden by '%3!ls!'"
+    IDS_CantOverrideSpecialMethod 
+                            "'%1!ls!' : cannot override '%2!ls!' because it is a special compiler-generated method"
+    IDS_BadUnaryOperatorSignature 
+                            "The parameter of a unary operator must be the containing type"
+    IDS_BadBinaryOperatorSignature 
+                            "One of the parameters of a binary operator must be the containing type"
+    IDS_InterfacesCantContainOperators "Interfaces cannot contain operators"
+    IDS_StructsCantContainDefaultContructor 
+                            "Structs cannot contain explicit parameterless constructors"
+    IDS_CantOverrideBogusMethod 
+                            "'%1!ls!' : cannot override '%2!ls!' because it is not a method"
+    IDS_BindToBogus         "'%1!ls!' references a type not supported by the language"
+    IDS_CantCallSpecialMethod 
+                            "'%1!ls!': cannot explicitly call operator or accessor"
+    IDS_BadTypeReference    "'%1!ls!': cannot reference a type through an expression; try '%2!ls!' instead"
+    IDS_FieldInitializerInStruct 
+                            "'%1!ls!': cannot have instance field initializers in structs"
+    IDS_BadDestructorName   "Name of destructor must match name of class"
+    IDS_OnlyClassesCanContainDestructors 
+                            "Only class types can contain destructors"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NoVoidParameter     "Invalid parameter type 'void'"
+    IDS_DuplicateAlias      "The using alias '%1!ls!' appeared previously in this namespace"
+    IDS_BadProtectedAccess  "Cannot access protected member '%1!ls!' via a qualifier of type '%2!ls!'; the qualifier must be of type '%3!ls!' (or derived from it)"
+    IDS_CantIncludeDirectory 
+                            "Invalid include option: '%1!ls!' -- cannot include directories"
+    IDS_AddModuleAssembly   "'%1!ls!' cannot be added to this assembly because it already is an assembly; use '/R' option instead"
+    IDS_ModuleNotScoped     "Added module '%1!ls!' has unresolved reference to type '%2!ls!'"
+    IDS_ModuleNotAdded      "Added module '%2!ls!' references module '%1!ls!' which was not added"
+    IDS_BindToBogusProp2    "Property, indexer, or event '%1!ls!' is not supported by the language; try directly calling accessor methods '%2!ls!' or '%3!ls!'"
+    IDS_BindToBogusProp1    "Property, indexer, or event '%1!ls!' is not supported by the language; try directly calling accessor method '%2!ls!'"
+    IDS_NoVoidHere          "Keyword 'void' cannot be used in this context"
+    IDS_CryptoFailed        "Cryptographic failure while signing assembly '%2!ls!' -- '%1!ls!'"
+    IDS_CryptoNotFound      "Appropriate cryptographic service not found"
+    IDS_IndexerNeedsParam   "Indexers must have at least one parameter"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BadWarningLevel     "Warning level must be in the range 0-4"
+    IDS_NoWarningsAsErrors  "Conflicting options specified:  Warning level 0; Treat warnings as errors"
+    IDS_BadDebugType        "Invalid option '%1!ls!' for /debug; must be full or pdbonly"
+    IDS_UnknownTestSwitch   "Unrecognized value '%1!ls!' provided for '/test' switch"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DocFileGen          "Error generating XML documentation file '%1!ls!' ('%2!ls!')"
+    IDS_XMLParseError       "XML comment on '%2!ls!' has badly formed XML -- '%1!ls!'"
+    IDS_DuplicateParamTag   "XML comment on '%2!ls!' has a duplicate param tag for '%1!ls!'"
+    IDS_UnmatchedParamTag   "XML comment on '%2!ls!' has a param tag for '%1!ls!', but there is no parameter by that name"
+    IDS_MissingParamTag     "Parameter '%1!ls!' has no matching param tag in XML comment (but other parameters do)"
+    IDS_BadXMLRef           "XML comment on '%2!ls!' has cref attribute '%1!ls!' that could not be found"
+    IDS_BadStackAllocExpr   "A stackalloc expression requires [] after type"
+    IDS_InvalidLineNumber   "The line number specified for #line directive is missing or invalid"
+    IDS_ALinkFailed         "Assembly generation failed -- %1!ls!"
+    IDS_MissingPPFile       "Filename, single-line comment or end-of-line expected"
+    IDS_ForEachMissingMember 
+                            "foreach statement cannot operate on variables of type '%1!ls!' because '%2!ls!' does not contain a definition for '%3!ls!', or it is inaccessible"
+    IDS_BadXMLRefParamType  "Invalid type for parameter '%1!d!' in XML comment cref attribute"
+    IDS_BadXMLRefReturnType "Invalid return type in XML comment cref attribute"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CompileCancelled    "Compilation cancelled by user"
+    IDS_MethodArgCantBeRefAny 
+                            "Method or delegate parameter cannot be of type '%1!ls!'"
+    IDS_MultipleLocalTypeDefs "'%1!ls!' is already defined in this assembly"
+    IDS_UnnamedOutputAndIncr 
+                            "Incremental build requires a target name specified with /out"
+    IDS_AssgReadonlyLocal   "Cannot assign to '%1!ls!' because it is read-only"
+    IDS_RefReadonlyLocal    "Cannot pass '%1!ls!' as a ref or out argument because it is read-only"
+    IDS_ALinkCloseFailed    "Assembly signing failed; output may not be signed -- %1!ls!"
+    IDS_ALinkWarn           "Assembly generation -- %1!ls!"
+    IDS_CantUseRequiredAttribute 
+                            "The RequiredAttribute attribute is not permitted on C# types"
+    IDS_NoModifiersOnAccessor 
+                            "Modifiers cannot be placed on property or event accessor declarations"
+    IDS_DeleteAutoResFailed "Unable to delete temporary file '%1!ls!' used for default Win32 resource -- %2!ls!"
+    IDS_ParamsCantBeRefOut  "The params parameter cannot be declared as ref or out"
+    IDS_ReturnNotLValue     "Cannot modify the return value of '%1!ls!' because it is not a variable"
+    IDS_MissingCoClass      "The managed coclass wrapper class '%1!ls!' for interface '%2!ls!' is invalid or cannot be found (are you missing an assembly reference?)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BadXMLRefSyntax     "XML comment on '%2!ls!' has syntactically incorrect cref attribute '%1!ls!'"
+    IDS_BadModifierLocation "Member modifier '%1!ls!' must precede the member type and name"
+    IDS_MissingArraySize    "Array creation must have array size or array initializer"
+    IDS_UnprocessedXMLComment 
+                            "XML comment is not placed on a valid language element"
+    IDS_CantGetCORSystemDir "Cannot determine common language runtime directory -- '%1!ls!'"
+    IDS_FailedInclude       "Unable to include XML fragment '%2!ls!' of file '%1!ls!' -- %3!ls!"
+    IDS_InvalidInclude      "Invalid XML include element -- %1!ls!"
+    IDS_MissingXMLComment   "Missing XML comment for publicly visible type or member '%1!ls!'"
+    IDS_XMLParseIncludeError 
+                            "Badly formed XML in included comments file -- '%1!ls!'"
+    IDS_BadDelArgCount      "Delegate '%1!ls!' does not take '%2!d!' arguments"
+    IDS_BadDelArgTypes      "Delegate '%1!ls!' has some invalid arguments"
+    IDS_MultipleTypeDefs    "'%1!ls!' is defined in multiple places; using definition from '%2!ls!'"
+    IDS_DocFileGenAndIncr   "XML documentation not updated during this incremental rebuild; use /incremental- to update XML documentation"
+    IDS_XMLParserNotFound   "XML parser could not be loaded for the following reason: '%2!ls!'. The XML documentation file '%1!ls!' will not be generated."
+    IDS_UnexpectedSemicolon "Semicolon after method or accessor block is not valid"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERRORSYM            "<error>"
+    IDS_NULL                "<null>"
+    IDS_RELATEDERROR        "(Location of symbol related to previous error)"
+    IDS_RELATEDWARNING      "(Location of symbol related to previous warning)"
+    IDS_XMLIGNORED          "<!-- Badly formed XML comment ignored for member ""%1!ls!"" -->"
+    IDS_XMLIGNORED2         "<error><!-- Badly formed XML file ""%1!ls!"" cannot be included --></error>"
+    IDS_XMLFAILEDINCLUDE    " Failed to insert some or all of included XML "
+    IDS_XMLBADINCLUDE       " Include tag is invalid "
+    IDS_XMLNOINCLUDE        " No matching elements were found for the following include tag "
+    IDS_XMLMISSINGINCLUDEFILE "Missing file attribute"
+    IDS_XMLMISSINGINCLUDEPATH "Missing path attribute"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CLS_BadIdentifier   "Identifier '%1!ls!' is not CLS-compliant"
+    IDS_CLS_BadBase         "'%1!ls!': base type '%2!ls!' is not CLS-compliant"
+    IDS_CLS_BadInterfacemember 
+                            "'%1!ls!': CLS-compliant interfaces must have CLS-compliant members"
+    IDS_CLS_NoAbstractMembers 
+                            "'%1!ls!': only CLS-compliant members can be abstract"
+    IDS_CLS_NotOnModules    "You must specify the CLSCompliant attribute on the assembly, not the module, to enable CLS compliance checking"
+    IDS_CLS_ModuleMissingCLS 
+                            "Added module is not CLS-compliant, or is missing CLSCompliant attribute"
+    IDS_CLS_AssemblyNotCLS  "'%1!ls!' cannot be marked as CLS compliant because the assembly is not marked as compliant"
+    IDS_CLS_BadAttributeType 
+                            "'%1!ls!' has no accessible constructors which use only CLS compliant types"
+    IDS_CLS_ArrayArgumentToAttribute 
+                            "Arrays as attribute arguments is not CLS-compliant"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CLS_NoVarArgs       "Methods with variable arguments are not CLS-compliant"
+    IDS_CLS_BadArgType      "Argument type '%1!ls!' is not CLS-compliant"
+    IDS_CLS_BadReturnType   "Return type of '%1!ls!' is not CLS-compliant"
+    IDS_CLS_BadFieldPropType "Type of '%1!ls!' is not CLS-compliant"
+    IDS_CLS_BadUnicode      "Mixed and decomposed Unicode characters are not CLS-compliant"
+    IDS_CLS_BadIdentifierCase 
+                            "Identifier '%1!ls!' differing only in case is not CLS-compliant"
+    IDS_CLS_OverloadRefOut  "Overloaded method '%1!ls!' differing only in ref or out is not CLS-compliant"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BadArraySyntax      "Array type specifier, [], must appear before parameter name"
+    IDS_BadOperatorSyntax   "Declaration is not valid; use '%1!ls! operator <dest-type> (...' instead"
+    IDS_BadOperatorSyntax2  "Declaration is not valid; use '<type> operator %1!ls! (...' instead"
+    IDS_MainClassNotFound   "Could not find '%1!ls!' specified for Main method"
+    IDS_MainClassNotClass   "'%1!ls!' specified for Main method must be a valid class or struct"
+    IDS_MainClassWrongFile  "Cannot use '%1!ls!' for Main method because it is in a different output file"
+    IDS_NoMainInClass       "'%1!ls!' does not have a suitable Main method"
+    IDS_MainClassIsImport   "Cannot use '%1!ls!' for Main method because it is imported"
+    IDS_FileNameTooLong     "Filename specified for #line is too long"
+    IDS_OutputNeedsName     "Outputs without source must have the /out option specified"
+    IDS_OutputNeedsInput    "Output '%1!ls!' does not have any source files"
+    IDS_MethodReturnCantBeRefAny 
+                            "Method or delegate cannot return type '%1!ls!'"
+    IDS_CantReadResource    "Error reading resource file '%1!ls!' -- '%2!ls!'"
+    IDS_AutoResGen          "Error generating Win32 resource: %1!ls!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ConflictAliasAndMember 
+                            "Namespace '%2!ls!' already contains an alias definition for '%1!ls!'"
+    IDS_ConditionalOnSpecialMethod 
+                            "Conditional not valid on '%1!ls!' because it is a constructor, destructor, operator, or explicit interface implementation"
+    IDS_ConditionalMustReturnVoid 
+                            "Conditional not valid on '%1!ls!' because its return type is not void"
+    IDS_DuplicateAttribute  "Duplicate '%1!ls!' attribute"
+    IDS_TooManyArgumentsToAttribute 
+                            "Too many unnamed arguments to attribute '%1!ls!'"
+    IDS_NamedArgumentToAttribute 
+                            "Named arguments not allowed on attribute '%1!ls!'"
+    IDS_ConditionalOnInterfaceMethod 
+                            "Conditional not valid on interface members"
+    IDS_ICE_Culprit         "Internal Compiler Error (0x%1!8.8x! at address %3!p!): likely culprit is '%2!ls!'.\n\nAn internal error has occurred in the compiler. To work around this problem, try simplifying or changing the program near the locations listed below. Locations at the top of the list are closer to the point at which the internal error occurred.\n "
+    IDS_ICE_Symbol          "Internal Compiler Error: stage '%2!ls!' symbol '%1!ls!'"
+    IDS_ICE_Node            "Internal Compiler Error: stage '%1!ls!'"
+    IDS_ICE_File            "Internal Compiler Error: stage '%1!ls!'"
+    IDS_ICE_Stage           "Internal Compiler Error: stage '%1!ls!'"
+    IDS_ICE_Lexer           "Internal Compiler Error: stage 'LEX'"
+    IDS_ICE_Parser          "Internal Compiler Error: stage 'PARSE'"
+    IDS_OperatorCantReturnVoid "User-defined operators cannot return void"
+    IDS_InvalidAttributeArgument 
+                            "Invalid value for argument to '%1!ls!' attribute"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_AttributeOnBadSymbolType 
+                            "Attribute '%1!ls!' is not valid on this declaration type. It is valid on '%2!ls!' declarations only."
+    IDS_FloatOverflow       "Floating-point constant is outside the range of type '%1!ls!'"
+    IDS_ComImportWithoutUuidAttribute 
+                            "The Guid attribute must be specified with the ComImport attribute"
+    IDS_TooFewArgumentsToAttribute 
+                            "Too few unnamed arguments for attribute '%1!ls!'"
+    IDS_InvalidNamedArgument 
+                            "Invalid value for named attribute argument '%1!ls!'"
+    IDS_DllImportOnInvalidMethod 
+                            "The DllImport attribute must be specified on a method marked 'static' and 'extern'."
+    IDS_FeatureDeprecated   "The feature '%1!ls!' is deprecated. Please use '%2!ls!' instead'"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NameAttributeOnOverride 
+                            "Cannot set the IndexerName attribute on an indexer marked override"
+    IDS_FieldCantBeRefAny   "Field or property cannot be of type '%1!ls!'"
+    IDS_ArrayElementCantBeRefAny "Array elements cannot be of type '%1!ls!'"
+    IDS_DeprecatedSymbol    "'%1!ls!' is obsolete"
+    IDS_NotAnAttributeClass "'%1!ls!': is not an attribute class"
+    IDS_BadNamedAttributeArgument 
+                            "'%1!ls!' is not a valid named attribute argument. Named attribute arguments must be fields which are not readonly, static or const, or properties with a set accessor which are not static."
+    IDS_DeprecatedSymbolStr "'%1!ls!' is obsolete: '%2!ls!'"
+    IDS_IndexerCantHaveVoidType "Indexers cannot have void type"
+    IDS_VirtualPrivate      "'%1!ls!' : virtual or abstract members cannot be private"
+    IDS_ArrayInitToNonArrayType 
+                            "Can only use array initializer expressions to assign to array types. Try using a new expression instead."
+    IDS_ArrayInitInBadPlace "Array initializers can only be used in a variable or field initializer. Try using a new expression instead."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_AttributeUsageOnNonAttributeClass 
+                            "'%1!ls!' : attribute is only valid on classes derived from System.Attribute"
+    IDS_PossibleMistakenNullStatement "Possible mistaken null statement"
+    IDS_DuplicateNamedAttributeArgument 
+                            "'%1!ls!' duplicate named attribute argument"
+    IDS_DeriveFromEnumOrValueType 
+                            "'%1!ls!' cannot inherit from special class '%2!ls!'"
+    IDS_IdentifierTooLong   "Identifier too long"
+    IDS_DefaultMemberOnIndexedType 
+                            "Cannot specify the DefaultMember attribute on type containing an indexer"
+    IDS_CustomAttributeError "Error emitting '%2!ls!' attribute -- '%1!ls!'"
+    IDS_BogusType           "'%1!ls!' is a type not supported by the language"
+    IDS_UnassignedInternalField 
+                            "Field '%1!ls!' is never assigned to, and will always have its default value %2!ls!"
+    IDS_CStyleArray         "Syntax error, bad array declarator. To declare a managed array the rank specifier precedes the variable's identifier"
+    IDS_VacuousIntegralComp "Comparison to integral constant is useless; the constant is outside the range of type '%1!ls!'"
+    IDS_AbstractAttributeClass 
+                            "Cannot apply attribute class '%1!ls!' because it is abstract"
+    IDS_BadUseOfMethod      "Method '%1!ls!' referenced without parentheses"
+    IDS_BadNamedAttributeArgumentType 
+                            "'%1!ls!' is not a valid named attribute argument because it is not a valid attribute parameter type."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MissingStructOffset "'%1!ls!' : Instance field types marked with StructLayout(LayoutKind.Explicit) must have a FieldOffset attribute."
+    IDS_ExternMethodNoImplementation 
+                            "Method, operator, or accessor '%1!ls!' is marked external and has no attributes on it. Consider adding a DllImport attribute to specify the external implementation"
+    IDS_ProtectedInSealed   "'%1!ls!' : new protected member declared in sealed class"
+    IDS_InterfaceImplementedByConditional 
+                            "Conditional member '%1!ls!' cannot implement interface member '%2!ls!'"
+    IDS_IndexerWithRefParam "Indexers can't have ref or out parameters"
+    IDS_NamedAttrArgIsReadOnlyProperty 
+                            "'%1!ls!' : Named attribute argument can't be a read only property"
+    IDS_BadArgumentToNameAttribute 
+                            "The argument to the IndexerName attribute must be a valid identifier"
+    IDS_OnlyValidOnCustomMarshaller 
+                            "'%1!ls!' : argument only valid for marshal of type System.Interop.UnmanagedType.CustomMarshaller"
+    IDS_MissingComTypeOrMarshaller 
+                            "'%1!ls!' : System.Interop.UnmanagedType.CustomMarshaller requires named arguments ComType and Marshal"
+    IDS_StructOffsetOnBadStruct 
+                            "The FieldOffset attribute can only be placed on members of types marked with the StructLayout(LayoutKind.Explicit)"
+    IDS_StructOffsetOnBadField 
+                            "The FieldOffset attribute not allowed on static or const fields"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_IdentifierExpected  "Identifier expected"
+    IDS_SemicolonExpected   "; expected"
+    IDS_SyntaxError         "Syntax error, '%1!ls!' expected"
+    IDS_DuplicateModifier   "Duplicate '%1!ls!' modifier"
+    IDS_IllegalPointerType  "Indirection to managed type is not valid"
+    IDS_DuplicateAccessor   "Property accessor already defined"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MemberNeedsType     "Class, struct, or interface method must have a return type"
+    IDS_BadBaseType         "Invalid base type"
+    IDS_EmptySwitch         "Empty switch block"
+    IDS_StmtNotInCase       "The keyword case or default must precede code in switch block"
+    IDS_ExpectedEndTry      "Expected catch or finally"
+    IDS_InvalidExprTerm     "Invalid expression term '%1!ls!'"
+    IDS_BadNewExpr          "A new expression requires () or [] after type"
+    IDS_NoNamespacePrivate  "Namespace elements cannot be explicitly declared as private or protected"
+    IDS_BadVarDecl          "Expected ; or = (cannot specify constructor arguments in declaration)"
+    IDS_UsingAfterElements  "A using clause must precede all other namespace elements"
+    IDS_NoNewOnNamespaceElement 
+                            "Keyword new not allowed on namespace elements"
+    IDS_DontUseInvoke       "Invoke cannot be called directly on a delegate"
+    IDS_BadBinOpArgs        "Overloaded binary operator '%1!ls!' only takes two parameters"
+    IDS_BadUnOpArgs         "Overloaded unary operator '%1!ls!' only takes one parameter"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NoSourceFile        "Source file '%1!ls!' could not be opened ('%2!ls!')"
+    IDS_CantRefResource     "Cannot link resource file '%1!ls!' when building a module"
+    IDS_ResourceNotUnique   "Resource identifier '%1!ls!' has already been used in this assembly"
+    IDS_ImportNonAssembly   "Referenced file '%1!ls!' is not an assembly; use '/addmodule' option instead"
+    IDS_RefLvalueExpected   "A ref or out argument must be an lvalue"
+    IDS_BaseInStaticMeth    "Keyword base is not available in a static method"
+    IDS_BaseInBadContext    "Keyword base is not available in the current context"
+    IDS_RbraceExpected      "} expected"
+    IDS_LbraceExpected      "{ expected"
+    IDS_InExpected          "'in' expected"
+    IDS_InvalidPreprocExpr  "Invalid preprocessor expression"
+    IDS_BadTokenInType      "Expected class, delegate, enum, interface, or struct"
+    IDS_InvalidMemberDecl   "Invalid token '%1!ls!' in class, struct, or interface member declaration"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DuplicateParamName  "The parameter name '%1!ls!' is a duplicate"
+    IDS_DuplicateNameInNS   "The namespace '%2!ls!' already contains a definition for '%1!ls!'"
+    IDS_DuplicateNameInClass 
+                            "The class '%2!ls!' already contains a definition for '%1!ls!'"
+    IDS_NameNotInContext    "The name '%1!ls!' does not exist in the class or namespace '%2!ls!'"
+    IDS_AmbigContext        "'%1!ls!' is an ambiguous reference"
+    IDS_DuplicateUsing      "The using directive for '%1!ls!' appeared previously in this namespace"
+    IDS_BadMemberFlag       "The modifier '%2!ls!' is not valid for this item"
+    IDS_BadMemberProtection "More than one protection modifier"
+    IDS_NewRequired         "The keyword new is required on '%1!ls!' because it hides inherited member '%2!ls!'"
+    IDS_NewNotRequired      "The member '%1!ls!' does not hide an inherited member. The new keyword is not required."
+    IDS_CircConstValue      "The evaluation of the constant value for '%1!ls!' involves a circular definition"
+    IDS_MemberAlreadyExists "Class '%2!ls!' already defines a member called '%1!ls!' with the same parameter types"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_IntegralTypeExpected 
+                            "Type byte, sbyte, short, ushort, int, uint, long, or ulong expected"
+    IDS_IllegalEscape       "Unrecognized escape sequence"
+    IDS_NewlineInConst      "Newline in constant"
+    IDS_EmptyCharConst      "Empty character literal"
+    IDS_TooManyCharsInConst "Too many characters in character literal"
+    IDS_InvalidNumber       "Invalid number"
+    IDS_GetOrSetExpected    "A get or set accessor expected"
+    IDS_ClassTypeExpected   "An object, string, or class type expected"
+    IDS_NamedArgumentExpected "Named attribute argument expected"
+    IDS_TooManyCatches      "Try statement already has an empty catch block"
+    IDS_ThisOrBaseExpected  "Keyword this or base expected"
+    IDS_OvlUnaryOperatorExpected "Overloadable unary operator expected"
+    IDS_OvlBinaryOperatorExpected "Overloadable binary operator expected"
+    IDS_IntOverflow         "Integral constant is too large"
+    IDS_EOFExpected         "Type or namespace definition, or end-of-file expected"
+    IDS_BadEmbeddedStmt     "Embedded statement cannot be a declaration or labeled statement"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_PPDirectiveExpected "Preprocessor directive expected"
+    IDS_EndOfPPLineExpected "Single-line comment or end-of-line expected"
+    IDS_CloseParenExpected  ") expected"
+    IDS_EndifDirectiveExpected "#endif directive expected"
+    IDS_UnexpectedDirective "Unexpected preprocessor directive"
+    IDS_ErrorDirective      "#error: '%1!ls!'"
+    IDS_WarningDirective    "#warning: '%1!ls!'"
+    IDS_TypeExpected        "Type expected"
+    IDS_PPDefFollowsToken   "Cannot define/undefine preprocessor symbols after first token in file"
+    IDS_TooManyLines        "Compiler limit exceeded: File cannot exceed %1!d! lines"
+    IDS_LineTooLong         "Compiler limit exceeded: Line cannot exceed %1!d! characters"
+    IDS_OpenEndedComment    "End-of-file found, '*/' expected"
+    IDS_ExpectedDotOrParen  "( or . expected"
+    IDS_OvlOperatorExpected "Overloadable operator expected"
+    IDS_EndRegionDirectiveExpected "#endregion directive expected"
+    IDS_UnterminatedStringLit "Unterminated string literal"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BadDirectivePlacement 
+                            "Preprocessor directives must appear as the first non-whitespace character on a line"
+    IDS_IdentifierExpectedKW "Identifier expected, '%2!ls!' is a keyword"
+    IDS_SemiOrLBraceExpected "{ or ; expected"
+    IDS_MultiTypeInDeclaration 
+                            "Cannot use more than one type in a for, using, fixed, or declaration statement"
+    IDS_AddOrRemoveExpected "An add or remove accessor expected"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_UnknownOption       "Unknown compiler option '%1!ls!'"
+    IDS_NoEntryPoint        "Program '%1!ls!' does not have an entry point defined"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OD_WARNINGLEVEL     "Set warning level (0-4)"
+    IDS_OD_WARNINGSAREERRORS "Treat warnings as errors"
+    IDS_OD_CCSYMBOLS        "Define conditional compilation symbol(s)"
+    IDS_OD_NOSTDLIB         "Do not reference standard library (mscorlib.dll)"
+    IDS_OD_EMITDEBUGINFO    "Emit debugging information"
+    IDS_OD_OPTIMIZATIONS    "Enable optimizations"
+    IDS_OD_IMPORTS          "Reference metadata from the specified assembly files"
+    IDS_OD_NOCODEGEN        "Only check code for errors; do not emit executable"
+    IDS_OD_TIMING           "Output mini-profile (timings of important code sections)"
+    IDS_OD_INCBUILD         "Enable incremental compilation"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OD_MODULES          "Link the specified modules into this assembly"
+    IDS_OD_NOWARNLIST       "Disable specific warning messages"
+    IDS_OD_CHECKED          "Generate overflow checks"
+    IDS_OD_UNSAFE           "Allow 'unsafe' code"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OD_NOLOGO           "Suppress compiler copyright message"
+    IDS_OD_BUG              "Create a 'Bug Report' file"
+    IDS_OD_CODEPAGE         "Specifies the codepage to use when opening source files"
+    IDS_OD_MAIN             "Specifies the type that contains the entry point (ignore all other possible entry points)"
+    IDS_OD_BASE             "Base address for the library to be built"
+    IDS_OD_FULLPATH         "Compiler generates fully qualified paths"
+    IDS_OD_DEBUGTYPE        "Specify debugging type ('full' is default, and enables attaching a debugger to a running program)"
+    IDS_OD_NOCONFIG         "Do not auto include csc.rsp file"
+    IDS_OD_LIBPATH          "Specify additional directories to search in for references"
+    IDS_OD_ALIGN            "Specify the alignment used for output file sections"
+    IDS_OD_UTF8OUT          "Output compiler messages in UTF-8 encoding"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OutputWriteFailed   "Could not write to output file '%2!ls!' -- '%1!ls!'"
+    IDS_MultipleEntryPoints "Program '%2!ls!' has more than one entry point defined: '%1!ls!'"
+    IDS_UnimplementedOp     "Operator '%1!ls!' is not yet implemented"
+    IDS_BadBinaryOps        "Operator '%1!ls!' cannot be applied to operands of type '%2!ls!' and '%3!ls!'"
+    IDS_IntDivByZero        "Division by constant zero"
+    IDS_BadIndexLHS         "Cannot apply indexing with [] to an expression of type '%1!ls!'"
+    IDS_BadIndexCount       "Wrong number of indices inside [], expected '%1!d!'"
+    IDS_BadUnaryOp          "Operator '%1!ls!' cannot be applied to operand of type '%2!ls!'"
+    IDS_NoStdLib            "Standard library file '%1!ls!' could not be found"
+    IDS_ThisInStaticMeth    "Keyword this is not valid in a static property, static method, or static field initializer"
+    IDS_ThisInBadContext    "Keyword this is not available in the current context"
+    IDS_InvalidMainSig      "'%1!ls!' has the wrong signature to be an entry point"
+    IDS_NoImplicitConv      "Cannot implicitly convert type '%1!ls!' to '%2!ls!'"
+    IDS_NoExplicitConv      "Cannot convert type '%1!ls!' to '%2!ls!'"
+    IDS_ConstOutOfRange     "Constant value '%1!ls!' cannot be converted to a '%2!ls!'"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_StaticNotVirtual    "A static member '%1!ls!' cannot be marked as override, virtual, or abstract"
+    IDS_OverrideNotNew      "A member '%1!ls!' marked as override cannot be marked as new or virtual"
+    IDS_NewOrOverrideExpected 
+                            "'%1!ls!' hides inherited member '%2!ls!'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
+    IDS_OverrideNotExpected "'%1!ls!': no suitable method found to override"
+    IDS_NamespaceUnexpected "A namespace does not directly contain members such as fields or methods"
+    IDS_NoSuchMember        "'%1!ls!' does not contain a definition for '%2!ls!'"
+    IDS_BadSKknown          "'%1!ls!' denotes a '%2!ls!' where a '%3!ls!' was expected"
+    IDS_BadSKunknown        "'%1!ls!' denotes a '%2!ls!' which is not valid in the given context"
+    IDS_ObjectRequired      "An object reference is required for the nonstatic field, method, or property '%1!ls!'"
+    IDS_AmbigCall           "The call is ambiguous between the following methods or properties: '%1!ls!' and '%2!ls!'"
+    IDS_BadAccess           "'%1!ls!' is inaccessible due to its protection level"
+    IDS_InvalidCall         "Method '%2!ls!' does not match delegate '%1!ls!'"
+    IDS_RetObjectRequired   "An object of a type convertible to '%1!ls!' is required"
+    IDS_RetNoObjectRequired "Since '%1!ls!' returns void, a return keyword must not be followed by an object expression"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_SK_METHOD           "method"
+    IDS_SK_CLASS            "class"
+    IDS_SK_NAMESPACE        "namespace"
+    IDS_SK_FIELD            "field"
+    IDS_SK_PROPERTY         "property"
+    IDS_SK_VAIRABLE         "variable"
+    IDS_SK_EVENT            "event"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CHILD               "child"
+    IDS_PARENT              "parent or current"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_LocalDuplicate      "A local variable named '%1!ls!' is already defined in this scope"
+    IDS_AssgLvalueExpected  "The left-hand side of an assignment must be a variable, property or indexer"
+    IDS_StaticConstParam    "'%1!ls!': a static constructor must be parameterless"
+    IDS_NotConstantExpression 
+                            "The expression being assigned to '%1!ls!' must be constant"
+    IDS_IllegalQualifiedNamespace 
+                            "Cannot use qualified namespace names in nested namespace declarations"
+    IDS_NameIllegallyOverrides 
+                            "'%2!ls!' conflicts with the declaration '%1!ls!'"
+    IDS_LocalIllegallyOverrides 
+                            "A local variable named '%1!ls!' cannot be declared in this scope because it would give a different meaning to '%1!ls!', which is already used in a '%2!ls!' scope to denote something else"
+    IDS_BadUsingNamespace   "A using namespace directive can only be applied to namespaces; '%1!ls!' is a class not a namespace"
+    IDS_NoBreakOrCont       "No enclosing loop out of which to break or continue"
+    IDS_DuplicateLabel      "The label '%1!ls!' is a duplicate"
+    IDS_NoConstructors      "The type '%1!ls!' has no constructors defined"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NoNewAbstract       "Cannot create an instance of the abstract class or interface '%1!ls!'"
+    IDS_ConstValueRequired  "A const field requires a value to be provided"
+    IDS_CircularBase        "Circular base class definition between '%1!ls!' and '%2!ls!'"
+    IDS_BadDelegateConstructor 
+                            "The delegate '%1!ls!' does not have a valid constructor"
+    IDS_MethodNameExpected  "Method name expected"
+    IDS_ConstantExpected    "A constant value is expected"
+    IDS_IntegralTypeValueExpected "A value of an integral type expected"
+    IDS_DuplicateCaseLabel  "The label '%1!ls!' already occurs in this switch statement"
+    IDS_InvalidGotoCase     "A goto case is only valid inside a switch statement"
+    IDS_PropertyLacksGet    "The property or indexer '%1!ls!' cannot be used in this context because it lacks the get accessor"
+    IDS_BadExceptionType    "The type caught or thrown must be derived from System.Exception"
+    IDS_BadEmptyThrow       "A throw statement with no arguments is not allowed outside of a catch clause"
+    IDS_BadFinallyLeave     "Control cannot leave the body of a finally clause"
+    IDS_LabelShadow         "The label '%1!ls!' shadows another label by the same name in a contained scope"
+    IDS_LabelNotFound       "No such label '%1!ls!' within the scope of the goto statement"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_UnreachableCatch    "A previous catch clause already catches all exceptions of this or a super type ('%1!ls!')"
+    IDS_ReturnExpected      "'%1!ls!': not all code paths return a value"
+    IDS_UnreachableCode     "Unreachable code detected"
+    IDS_SwitchFallThrough   "Control cannot fall through from one case label ('%1!ls!') to another"
+    IDS_UnreferencedLabel   "This label has not been referenced"
+    IDS_UseDefViolation     "Use of unassigned local variable '%1!ls!'"
+    IDS_SwitchFallInto      "Control cannot fall through from one case label to another ('%1!ls!')"
+    IDS_NoInvoke            "The delegate '%1!ls!' is missing the Invoke method"
+    IDS_UnreferencedVar     "The variable '%1!ls!' is declared but never used"
+    IDS_UnreferencedField   "The private field '%1!ls!' is never used"
+    IDS_UseDefViolationField "Use of possibly unassigned field '%1!ls!'"
+    IDS_UnassignedThis      "Field '%1!ls!' must be fully assigned before control leaves the constructor"
+    IDS_AmbigQM             "Type of conditional expression can't be determined because '%1!ls!' and '%2!ls!' both implicitly convert to each other"
+    IDS_InvalidQM           "Type of conditional expression can't be determined because there is no implicit conversion between '%1!ls!' and '%2!ls!'"
+    IDS_NoBaseClass         "A base class is required for a base reference"
+    IDS_BaseIllegal         "Use of keyword base is not valid in this context"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ObjectProhibited    "Static member '%1!ls!' cannot be accessed with an instance reference; qualify it with a type name instead"
+    IDS_ParamUnassigned     "The out parameter '%1!ls!' must be assigned to before control leaves the current method"
+    IDS_InvalidArray        "Incorrectly structured array initializer"
+    IDS_ExternHasBody       "'%1!ls!' cannot be extern and declare a body"
+    IDS_AbstractAndExtern   "'%1!ls!' cannot be both extern and abstract"
+    IDS_BadAttributeParam   "An attribute argument must be a constant expression, typeof expression or array creation expression"
+    IDS_IsAlwaysTrue        "The given expression is always of the provided ('%1!ls!') type"
+    IDS_IsAlwaysFalse       "The given expression is never of the provided ('%1!ls!') type"
+    IDS_LockNeedsReference  "'%1!ls!' is not a reference type as required by the lock statement"
+    IDS_NullNotValid        "Use of null is not valid in this context"
+    IDS_NoSuchOperator      "No such operator '%1!ls!' defined for type '%2!ls!'"
+    IDS_UseDefViolationThis "The this object cannot be used before all of its fields are assigned to"
+    IDS_FeatureNYI2         "The feature you are attempting to use, '%1!ls!', has not been implemented. Please refrain from using it until a later time."
+    IDS_ArgsInvalid         "The __arglist construct is valid only within a variable argument method"
+    IDS_AssgReadonly        "A readonly field cannot be assigned to (except in a constructor or a variable initializer)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_RefReadonly         "A readonly field cannot be passed ref or out (except in a constructor)"
+    IDS_PtrExpected         "The * or -> operator must be applied to a pointer"
+    IDS_PtrIndexSingle      "A pointer must be indexed by only one value"
+    IDS_ByRefNonAgileField  "Cannot pass '%1!ls!' as ref or out, because '%1!ls!' is a marshal-by-reference class"
+    IDS_AssgReadonlyStatic  "A static readonly field cannot be assigned to (except in a static constructor or a variable initializer)"
+    IDS_RefReadonlyStatic   "A static readonly field cannot be passed ref or out (except in a static constructor)"
+    IDS_AssgReadonlyProp    "Property or indexer '%1!ls!' cannot be assigned to -- it is read only"
+    IDS_IllegalStatement    "Only assignment, call, increment, decrement, and new object expressions can be used as a statement"
+    IDS_BadGetEnumerator    "The call to GetEnumerator must return a class or a struct, not '%1!ls!'"
+    IDS_TooManyLocals       "Only 65535 locals are allowed"
+    IDS_AbstractBaseCall    "Cannot call an abstract base member: '%1!ls!'"
+    IDS_RefProperty         "A property or indexer may not be passed as an out or ref parameter"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_IncBuildWrite       "Could not open incremental build file '%1!ls!' for writing"
+    IDS_IncBuildWriteIO     "Out of disk space or I/O error writing incremental build file '%1!ls!'"
+    IDS_AmbigBinaryOps      "Operator '%1!ls!' is ambiguous on operands of type '%2!ls!' and '%3!ls!'"
+    IDS_AmbigUnaryOp        "Operator '%1!ls!' is ambiguous on an operand of type '%2!ls!'"
+    IDS_InAttrOnOutParam    "An out parameter cannot have the in attribute"
+    IDS_ValueCantBeNull     "Cannot convert null to '%1!ls!' because it is a value type"
+    IDS_WrongNestedThis     "Cannot access a nonstatic member of outer type '%1!ls!' via nested type '%2!ls!'"
+    IDS_NoExplicitBuiltinConv 
+                            "Cannot convert type '%1!ls!' to '%2!ls!' via a built-in conversion"
+    IDS_DebugInit           "Unexpected debug information initialization error -- '%1!ls!'"
+    IDS_DebugEmitFailure    "Unexpected error writing debug information to file '%2!ls!' -- '%1!ls!'"
+    IDS_DebugInitFile       "Unexpected error creating debug information file '%1!ls!' -- '%2!ls!'"
+    IDS_BadPDBFormat        "PDB file '%1!ls!' has an incorrect or out-of-date format. Delete it and rebuild."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BadArgCount         "No overload for method '%1!ls!' takes '%2!d!' arguments"
+    IDS_BadArgTypes         "The best overloaded method match for '%1!ls!' has some invalid arguments"
+    IDS_BadArgType          "Argument '%1!d!': cannot convert from '%2!ls!' to '%3!ls!'"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BadVisReturnType    "Inconsistent accessibility: return type '%2!ls!' is less accessible than method '%1!ls!'"
+    IDS_BadVisParamType     "Inconsistent accessibility: parameter type '%2!ls!' is less accessible than method '%1!ls!'"
+    IDS_BadVisFieldType     "Inconsistent accessibility: field type '%2!ls!' is less accessible than field '%1!ls!'"
+    IDS_BadVisPropertyType  "Inconsistent accessibility: property type '%2!ls!' is less accessible than property '%1!ls!'"
+    IDS_BadVisIndexerReturn "Inconsistent accessibility: indexer return type '%2!ls!' is less accessible than indexer '%1!ls!'"
+    IDS_BadVisIndexerParam  "Inconsistent accessibility: parameter type '%2!ls!' is less accessible than indexer '%1!ls!'"
+    IDS_BadVisOpReturn      "Inconsistent accessibility: return type '%2!ls!' is less accessible than operator '%1!ls!'"
+    IDS_BadVisOpParam       "Inconsistent accessibility: parameter type '%2!ls!' is less accessible than operator '%1!ls!'"
+    IDS_BadVisDelegateReturn 
+                            "Inconsistent accessibility: return type '%2!ls!' is less accessible than delegate '%1!ls!'"
+    IDS_BadVisDelegateParam "Inconsistent accessibility: parameter type '%2!ls!' is less accessible than delegate '%1!ls!'"
+    IDS_BadVisBaseClass     "Inconsistent accessibility: base class '%2!ls!' is less accessible than class '%1!ls!'"
+    IDS_BadVisBaseInterface "Inconsistent accessibility: base interface '%2!ls!' is less accessible than interface '%1!ls!'"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ManagedAddr         "Cannot take the address or size of a variable of a managed type ('%1!ls!')"
+    IDS_BadFixedInitType    "The type of locals declared in a fixed statement must be a pointer type."
+    IDS_FixedMustInit       "You must provide an initializer in a fixed or using statement declaration"
+    IDS_InvalidAddrOp       "Cannot take the address of the given expression"
+    IDS_FixedNeeded         "You can only take the address of unfixed expression inside of a fixed statement initializer"
+    IDS_FixedNotNeeded      "You do not need to use the fixed statement to take the address of an already fixed expression"
+    IDS_UnsafeNeeded        "Pointers may only be used in an unsafe context"
+    IDS_OpTFRetType         "The return type of operator True or False must be bool"
+    IDS_OperatorNeedsMatch  "The operator '%1!ls!' requires a matching operator '%2!ls!' to also be defined"
+    IDS_BadBoolOp           "In order to be applicable as a short circuit operator a user-defined logical operator ('%1!ls!') must have the same return type as the type of its 2 parameters."
+    IDS_MustHaveOpTF        "The type ('%1!ls!') must contain declarations of operator true and operator false"
+    IDS_UnreferencedVarAssg "The variable '%1!ls!' is assigned but its value is never used"
+    IDS_CheckedOverflow     "The operation overflows at compile time in checked mode"
+    IDS_ConstOutOfRangeChecked 
+                            "Constant value '%1!ls!' cannot be converted to a '%2!ls!' (use 'unchecked' syntax to override)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_EventNeedsBothAccessors 
+                            "'%1!ls!' : event property must have both add and remove accessors"
+    IDS_EventNotDelegate    "'%1!ls!': event must be of a delegate type"
+    IDS_UnreferencedEvent   "The event '%1!ls!' is never used"
+    IDS_InterfaceEventInitializer 
+                            "'%1!ls!': event in interface cannot have initializer"
+    IDS_EventPropertyInInterface 
+                            "'%1!ls!': event in interface cannot have add or remove accessors"
+    IDS_BadEventUsage       "The event '%1!ls!' can only appear on the left hand side of += or -= (except when used from within the type '%2!ls!')"
+    IDS_ExplicitEventFieldImpl 
+                            "An explicit interface implementation of an event must use property syntax"
+    IDS_CantOverrideNonEvent 
+                            "'%1!ls!' : cannot override; '%2!ls!' is not an event"
+    IDS_AddRemoveMustHaveBody "An add or remove accessor must have a body"
+    IDS_AbstractEventInitializer 
+                            "'%1!ls!': abstract event cannot have initializer"
+    IDS_PossibleBadNegCast  "To cast a negative value, you must enclose the value in parentheses"
+    IDS_ReservedEnumerator  "The enumerator name '%1!ls!' is reserved and cannot be used"
+    IDS_AsMustHaveReferenceType 
+                            "The as operator must be used with a reference type ('%1!ls!' is a value type)"
+    IDS_LowercaseEllSuffix  "The 'l' suffix is easily confused with the digit '1' -- use 'L' for clarity"
+    IDS_BadEventUsageNoField 
+                            "The event '%1!ls!' can only appear on the left hand side of += or -="
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BadWarningNumber    "'%1!ls!' is not a valid warning number"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BANNER1             "Microsoft (R) Visual C# Shared Source CLI Compiler version "
+    IDS_BANNER1PART2        "for Microsoft (R) Shared Source CLI version "
+    IDS_BANNER2             "Copyright (C) Microsoft Corporation 2002. All rights reserved."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VERSION_CONFLICT    "VERSION CONFLICT:\r\n\t%2!ls!\t%1!ls!\r\n\t%4!ls!\t%3!ls!\r\n\r\nThe compiler cannot be used in this configuration."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_INITERROR           "Compiler initialization failed unexpectedly"
+    IDS_FILENOTFOUND        "Source file '%1!ls!' could not be found"
+    IDS_NORESPONSEFILE      "Unable to open response file '%1!ls!'"
+    IDS_NOFILESPEC          "Missing file specification for '%1!ls!' command-line option"
+    IDS_BADSWITCH           "Unrecognized command-line option: '%1!ls!'"
+    IDS_NOSOURCES           "No inputs specified"
+    IDS_SWITCHNEEDSSTRING   "Command-line syntax error:  Missing ':<text>' for '%1!ls!' switch"
+    IDS_DUPLICATERESPONSEFILE "Response file '%1!ls!' included multiple times"
+    IDS_FILEALREADYINCLUDED "Source file '%1!ls!' specified multiple times"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CANTOPENFILEWRITE   "Can't open '%1!ls!' for writing"
+    IDS_BADBASENUMBER       "Invalid image base number '%1!ls!'"
+    IDS_USENEWSWITCH        "Compiler option '%1!ls!' is obsolete, please use '%2!ls!' instead"
+    IDS_BINARYFILE          "'%1!ls!' is a binary file instead of a source code file"
+    IDS_BADCODEPAGE         "Code page '%1!ls!' is invalid or not installed"
+    IDS_NOMAINONDLL         "Cannot specify /main if building a module or library"
+    IDS_INVALIDTARGET       "Invalid target type for /target: must specify 'exe', 'winexe', 'library', or 'module'"
+    IDS_BADSECONDTARGET     "Only the first set of input files can build a target other than 'module'"
+    IDS_InputFileNameTooLong "File name '%1!ls!' is too long or invalid"
+    IDS_NoSourcesInLastInputSet 
+                            "Options '/out' and '/target' must appear before source file names"
+    IDS_NoConfigNotOnCommandLine 
+                            "Ignoring /noconfig option because it was specified in a response file"
+    IDS_BadFileAlignment    "Invalid file section alignment number '%1!ls!'"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_HELP10              "Visual C# .NET Compiler Options"
+    IDS_SHORTFORM           "Short form"
+    IDS_OD_TMOD             "Build a module that can be added to another assembly"
+    IDS_OD_TEXE             "Build a console executable (default)"
+    IDS_OD_TWIN             "Build a Windows executable"
+    IDS_OD_TDLL             "Build a library"
+    IDS_OD_OUT              "Output file name (default: base name of file with main class or first file)"
+    IDS_OD_WINRES           "Specifies Win32 resource file (.res)"
+    IDS_OD_WINICON          "Use this icon for the output"
+    IDS_OD_EMBED            "Embeds the specified resource"
+    IDS_OD_LINK             "Links the specified resource to this assembly"
+    IDS_OD_RESPONSE         "Read response file for more options"
+    IDS_OD_RECURSE          "Include all files in the current directory and subdirectories according to the wildcard specifications"
+    IDS_OD_HELP             "Display this usage message"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_REPROTITLE          "### Visual C# .NET Compiler Defect Report, created %s"
+    IDS_REPROVER            "### Compiler version: %s"
+    IDS_REPROOS             "### Operating System: %s %d.%d.%d   %s"
+    IDS_REPROUSER           "### User Name: %s"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_REPROCOMMANDLINE    "### Compiler command line"
+    IDS_REPROSOURCEFILE     "### Source file: '%s'"
+    IDS_REPRODIAGS          "### Compiler output"
+    IDS_REPROISSUETYPE      "### Issue type: %s"
+    IDS_REPRODESCRIPTION    "### User description"
+    IDS_REPROCORRECTBEHAVIOR "### User suggested correct behavior"
+    IDS_REPROURTVER         "### .NET common language runtime version: %s"
+    IDS_REPROBINFILE        "### Binary file: '%ws'"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_BUGREPORT1          "A file is being created with information needed to"
+    IDS_BUGREPORT2          "reproduce your compiler problem, including the"
+    IDS_BUGREPORT3          "contents of all source code files."
+    IDS_ENTERDESC           "Please describe the compiler problem (press Enter twice to finish):"
+    IDS_ENTERCORRECT        "Describe what you think should have happened (press Enter twice to finish):"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_VarargsAndParams    "A method cannot both have a params parameter and varargs"
+    IDS_ParamsMustBeArray   "The params parameter must be a single dimensional array"
+    IDS_IllegalArglist      "An __arglist expression may only appear inside of a call or new expression"
+    IDS_IllegalUnsafe       "Unsafe code may only appear if compiling with /unsafe"
+    IDS_NoAccessibleMember  "'%1!ls!' does not contain a definition for '%2!ls!', or it is not accessible"
+    IDS_AmbigMethProp       "Ambiguity between '%1!ls!' and '%2!ls!'"
+    IDS_BadForeachDecl      "Type and identifier are both required in a foreach statement"
+    IDS_ParamsVarargsLast   "A params or __arglist parameter must be the last parameter in a formal parameter list"
+    IDS_SizeofUnsafe        "sizeof can only be used in an unsafe context (consider using System.Runtime.InteropServices.Marshal.SizeOf)"
+    IDS_TypeNameNotFound    "The type or namespace name '%1!ls!' does not exist in the class or namespace '%2!ls!' (are you missing an assembly reference?)"
+    IDS_VarargDelegate      "__arglist is not allowed in delegates"
+    IDS_FieldInitRefNonstatic 
+                            "A field initializer cannot reference the nonstatic field, method, or property '%1!ls!'"
+    IDS_VarargIndexer       "__arglist is not allowed in indexers"
+    IDS_SealedNonOverride   "'%1!ls!' cannot be sealed because it is not an override"
+    IDS_CantOverrideSealed  "'%1!ls!' : cannot override inherited member '%2!ls!' because it is sealed"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OD_GRP_OUTPUT       "- OUTPUT FILES -"
+    IDS_OD_GRP_INPUT        "- INPUT FILES -"
+    IDS_OD_GRP_RES          "- RESOURCES -"
+    IDS_OD_GRP_CODE         "- CODE GENERATION -"
+    IDS_OD_GRP_ERRORS       "- ERRORS AND WARNINGS -"
+    IDS_OD_GRP_LANGUAGE     "- LANGUAGE -"
+    IDS_OD_GRP_MISC         "- MISCELLANEOUS -"
+    IDS_OD_GRP_ADVANCED     "- ADVANCED -"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OD_ARG_FILELIST     "<file list>"
+    IDS_OD_ARG_FILE         "<file>"
+    IDS_OD_ARG_SYMLIST      "<symbol list>"
+    IDS_OD_ARG_WILDCARD     "<wildcard>"
+    IDS_OD_ARG_TYPE         "<type>"
+    IDS_OD_ARG_RESINFO      "<resinfo>"
+    IDS_OD_ARG_WARNLSIT     "<warning list>"
+    IDS_OD_ARG_ADDR         "<address>"
+    IDS_OD_ARG_NUMBER       "<n>"
+    IDS_OD_ARG_DEBUGTYPE    "{full|pdbonly}"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CLB_ERROR_FIRST     "Error occurred during a read"
+    IDS_STRING4001          "Error occurred during a write"
+    IDS_STRING4002          "File is read only"
+    IDS_STRING4003          "An ill-formed name was given"
+    IDS_STRING4004          "Data value was truncated"
+    IDS_STRING4005          "Old version error"
+    IDS_STRING4006          "A shared memory open failed to open at the originally assigned memory address"
+    IDS_STRING4007          "Create of shared memory failed.  A memory mapping of the same name already exists."
+    IDS_STRING4011          "There isn't metadata in the memory or stream"
+    IDS_STRING4012          "Database is read only"
+    IDS_STRING4013          "The importing scope is not compatible with the emitting scope"
+    IDS_STRING4014          "File is corrupt"
+    IDS_STRING4015          "Version of schema not found"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_STRING4016          "Cannot open a incrementally built scope for full update"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_MemberAbstractSealed "'%1!ls!' cannot be both abstract and sealed"
+    IDS_NoDefaultArgs       "Default parameter specifiers are not permitted"
+    IDS_VoidError           "The operation in question is undefined on void pointers"
+    IDS_ConditionalOnOverride 
+                            "Conditional not valid on '%1!ls!' because it is an override method"
+    IDS_PointerInAsOrIs     """is"" or ""as"" are not valid on pointer types"
+    IDS_CallingFinalizeDepracated 
+                            "Destructors and object.Finalize cannot be called directly.  Consider calling IDisposable.Dispose if available."
+    IDS_SingleTypeNameNotFound 
+                            "The type or namespace name '%1!ls!' could not be found (are you missing a using directive or an assembly reference?)"
+    IDS_NegativeStackAllocSize "Cannot use a negative size with stackalloc"
+    IDS_NegativeArraySize   "Cannot create an array with a negative size"
+    IDS_OverrideFinalizeDepracated 
+                            "Do not override object.Finalize.  Instead, provide a destructor."
+    IDS_CallingBaseFinalizeDeprecated 
+                            "Do not directly call your base class Finalize method. It is called automatically from your destructor."
+    IDS_NegativeArrayIndex  "Indexing an array with a negative index (array indices always start at zero)"
+    IDS_BadRefCompareLeft   "Possible unintended reference comparison; to get a value comparison, cast the left hand side to type '%1!ls!'"
+    IDS_BadRefCompareRight  "Possible unintended reference comparison; to get a value comparison, cast the right hand side to type '%1!ls!'"
+    IDS_BadCastInFixed      "The right hand side of a fixed statement assignment may not be a cast expression"
+    IDS_StackallocInCatchFinally 
+                            "stackalloc may not be used in a catch or finally block"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_NonObsoleteOverridingObsolete 
+                            "Member '%1!ls!' overrides obsolete member '%2!ls!'. Add the Obsolete attribute to '%1!ls!'"
+    IDS_SystemVoid          "System.Void cannot be used from C# -- use typeof(void) to get the void type object."
+    IDS_ExplicitParamArray  "Do not use 'System.ParamArrayAttribute'. Use the 'params' keyword instead."
+    IDS_BitwiseOrSignExtend "Bitwise-or operator used on a sign-extended operand; consider casting to a smaller unsigned type first"
+    IDS_VolatileByRef       "Cannot pass volatile field '%1!ls!' as ref or out, or take its address"
+    IDS_VolatileStruct      "'%1!ls!': a volatile field can not be of the type '%2!ls!'"
+    IDS_VolatileAndReadonly "'%1!ls!': a field can not be both volatile and readonly"
+    IDS_InternalVirtual     "Other languages may permit the internal virtual member '%1!ls!' to be overridden"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+

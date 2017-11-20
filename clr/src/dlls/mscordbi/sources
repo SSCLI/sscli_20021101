@@ -1,0 +1,68 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+# Finish the libraries before starting this.
+SYNCHRONIZE_DRAIN=1
+
+INCLUDES                =$(INCLUDES);.;..\inc;..\..\inc
+
+C_DEFINES               = $(C_DEFINES) -DUNICODE -D_UNICODE
+
+MINORCOMP               = cor
+
+PRECOMPILED_INCLUDE     = stdafx.h
+PRECOMPILED_CXX         = 1
+PRECOMPILED_SOURCEFILE  = stdafx.cpp
+
+
+TARGETPRIORPATH=$(CORBUILDENV)
+TARGETLIBNAME  =mscordbi
+TARGETNAME     =$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH     =$(TARGETCORBIN)
+TARGETTYPE     =DYNLINK
+UMTYPE         =windows
+COFFBASE       =mscordbi
+
+DLLENTRY        =DllMain
+
+NTTARGETFILES = RegisterThisDll
+
+TARGETLIBS     = \
+!if "$(PLATFORM_UNIX)" != "1"
+                $(CORLIBS)\mscoree.lib \
+                $(CORLIBS)\utilcode.lib \
+!endif
+                $(CORLIBS)\corguids.lib \
+
+
+LINKLIBS       =$(CORLIBS)\ipcmanager.lib \
+                $(CORLIBS)\cordbdi.lib   \
+
+!if "$(PLATFORM_UNIX)" != "1"
+LINKLIBS=$(LINKLIBS)                   \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt -lsscoree -lmscorpe
+USE_CC_LIB = 1
+
+DLLDEF=$(O)\mscordbi.def
+
+SOURCES= \
+    mscordbi.cpp \
+    mscorver.rc
+
+SOURCELIBS = $(LINKLIBS)
+

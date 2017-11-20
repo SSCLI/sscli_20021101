@@ -1,0 +1,74 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+UMENTRY		=wmain
+
+TARGETTYPE=PROGRAM
+TARGETNAME=$(CORBUILDENV)al
+TARGETPATH=$(TARGETCORBIN)
+
+CREATE_BIN_CONFIG=1
+CREATE_URT_CONFIG=1
+
+UMTYPE=console
+
+#USE_MSVCRT=1
+USE_STATIC_ATL=1
+NO_UM_ENTRY=1
+
+
+USER_INCLUDES=$(ATL_INCLUDES);..\inc
+USER_INCLUDES=$(USER_INCLUDES);$(CORBASE)\src\inc;..\..\inc
+
+USER_C_DEFINES=-DX86 -D_MBCS -D_WINDOWS -DSTRICT -DNT -D_ATL_STATIC_REGISTRY -D_SHIM_
+USER_C_DEFINES=$(USER_C_DEFINES) -DFEATURE_PAL
+USER_C_FLAGS=$(USER_C_DEFINES)
+
+!if "$(BUILT_FLAVOR)"=="debug"
+# add runtime checks in debug build
+#USER_C_FLAGS=$(USER_C_FLAGS) -RTCs -RTCv -RTCc
+!endif
+
+!if "$(PLATFORM_UNIX)" != "1"
+# Enable 64-bit warnings
+USER_C_FLAGS=$(USER_C_FLAGS) -Wp64
+!endif
+
+EXCEPTION_HANDLING = $(SEHONLY)
+# These files are listed in alphabetical order.  Keep them that way!
+SOURCES= \
+    alink.cpp
+
+
+TARGETLIBS= \
+
+LINKLIBS= \
+    $(CORLIBS)\alink_shared.lib \
+    $(CORLIBS)\unilib.lib \
+!if "$(PLATFORM_UNIX)" != "1"
+    $(CORLIBS)\alink.lib \
+    $(CORLIBS)\rotor_pal.lib \
+    $(CORLIBS)\rotor_palrt.lib \
+    $(CORLIBS)\mscoree.lib
+!endif
+
+UNIX_DLL_LIBS=-lrotor_pal -lrotor_palrt -lsscoree -lmscorsn -lalink
+USE_CC_LIB = 1
+
+PRECOMPILED_INCLUDE=stdafx.h
+PRECOMPILED_SOURCEFILE=stdafx.cpp
+PRECOMPILED_PCH=stdafx.pch
+PRECOMPILED_OBJ=stdafx.obj
+PRECOMPILED_CXX=1

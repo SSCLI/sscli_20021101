@@ -1,0 +1,220 @@
+basictest.rc
+
+
+success tests\basictest.rc
+Comparing Output "success tests\basictest.satellite" and baseline "success tests\basictest.baseline"
+bigtest.rc
+
+
+success tests\bigtest.rc
+Comparing Output "success tests\bigtest.satellite" and baseline "success tests\bigtest.baseline"
+otherresourcetest.rc
+
+
+success tests\otherresourcetest.rc
+UNKNOWN resource MYRES found on line  125 in 
+	success tests\otherresourcetest.rc, ignoring
+UNKNOWN resource 300 found on line  126 in 
+	success tests\otherresourcetest.rc, ignoring
+UNKNOWN resource MYRES2 found on line  127 in 
+	success tests\otherresourcetest.rc, ignoring
+Comparing Output "success tests\otherresourcetest.satellite" and baseline "success tests\otherresourcetest.baseline"
+preproctest.rc
+
+
+success tests\preproctest.rc
+UNKNOWN resource MYRES found on line  125 in 
+	c:\rotor\tools\resourcecompiler\test_suite\success tests\otherresourcetest.rc, ignoring
+UNKNOWN resource 300 found on line  126 in 
+	c:\rotor\tools\resourcecompiler\test_suite\success tests\otherresourcetest.rc, ignoring
+UNKNOWN resource MYRES2 found on line  127 in 
+	c:\rotor\tools\resourcecompiler\test_suite\success tests\otherresourcetest.rc, ignoring
+Comparing Output "success tests\preproctest.satellite" and baseline "success tests\preproctest.baseline"
+sorttest.rc
+
+
+success tests\sorttest.rc
+Comparing Output "success tests\sorttest.satellite" and baseline "success tests\sorttest.baseline"
+whitespacetest.rc
+
+
+success tests\whitespacetest.rc
+Comparing Output "success tests\whitespacetest.satellite" and baseline "success tests\whitespacetest.baseline"
+stringtableformattest.rc
+
+
+success tests\stringtableformattest.rc
+Comparing Output "success tests\stringtableformattest.satellite" and baseline "success tests\stringtableformattest.baseline"
+basictest.rc
+
+
+success tests\basictest.rc
+Comparing Output "success tests\basictest.satellite" and baseline "success tests\basictest.baseline"
+basictest.rc
+
+
+success tests\basictest.rc
+Comparing Output "success tests\basictest.satellite" and baseline "success tests\basictest.baseline"
+basictest.rc
+
+
+success tests\basictest.rc
+Comparing Output "success tests\basictest.satellite" and baseline "success tests\basictest.baseline"
+basictest.rc
+
+
+success tests\basictest.rc
+Comparing Output "success tests\basictest.satellite" and baseline "success tests\basictest.baseline"
+definetest.rc
+
+
+success tests\definetest.rc
+Comparing Output "success tests\definetest.satellite" and baseline "success tests\definetest.baseline"
+A filename must be specified
+Usage: resourcecompiler [options] inputfile
+
+Options: 
+
+	/?  Displays a list of resource compiler command-line options.
+	/d  Defines a symbol for the preprocessor that you can test
+	    with the ifdef directive
+	/fo Rename output file
+	/h  Displays a list of command-line options
+	/i  Searches the specified directory before searching the
+	    directories specified by the INCLUDE enviornment variable
+	/c  specifies the codepage to be used for compilation
+	/n  Null terminates all strings in the string table
+	/r  Ignored. Provided for compatibility with existing
+	    makefiles
+	/l  Ignored. Provided for compatibility with existing
+	    makefiles
+	/z  Ignored. Provided for compatibility with existing
+	    makefiles
+	/u  Undefines a symbol for the preprocessor
+	/v  Displays messages that report on the progress of the
+	    compiler
+	/w  Warns if invalid codepage (default is error)
+	/x  Prevents RC from checking INCLUDE enviornment variable
+	    when searching for header files or resource files
+
+Unknown argument
+Usage: resourcecompiler [options] inputfile
+
+Options: 
+
+	/?  Displays a list of resource compiler command-line options.
+	/d  Defines a symbol for the preprocessor that you can test
+	    with the ifdef directive
+	/fo Rename output file
+	/h  Displays a list of command-line options
+	/i  Searches the specified directory before searching the
+	    directories specified by the INCLUDE enviornment variable
+	/c  specifies the codepage to be used for compilation
+	/n  Null terminates all strings in the string table
+	/r  Ignored. Provided for compatibility with existing
+	    makefiles
+	/l  Ignored. Provided for compatibility with existing
+	    makefiles
+	/z  Ignored. Provided for compatibility with existing
+	    makefiles
+	/u  Undefines a symbol for the preprocessor
+	/v  Displays messages that report on the progress of the
+	    compiler
+	/w  Warns if invalid codepage (default is error)
+	/x  Prevents RC from checking INCLUDE enviornment variable
+	    when searching for header files or resource files
+
+badcodepagepragma1test.rc
+
+
+fail tests\badcodepagepragma1test.rc
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests\badcodepagepragma1test.rc: 
+resourcecompiler: #pragma code_page(elephant)
+resourcecompiler: Bad Format in code_page pragma
+badcodepagepragma2test.rc
+
+
+fail tests\badcodepagepragma2test.rc
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests\badcodepagepragma2test.rc: 
+resourcecompiler: #pragma code_page(1)
+resourcecompiler: Invalid Code Page Value
+badincludetest.rc
+Fail Tests\badincludetest.rc(6) : fatal error C1034: I DO NOT EXIST: no include path set
+
+
+fail tests\badincludetest.rc
+resourcecompiler: fatal error RC0001 : resourcecompiler: Preprocessor Failed
+baduserdefinedtest.rc
+
+
+fail tests\baduserdefinedtest.rc
+UNKNOWN resource MYRES2 found on line  11 in 
+	fail tests\baduserdefinedtest.rc, ignoring
+resourcecompiler: fatal error RC0001 : on line 12 in fail tests\baduserdefinedtest.rc: 
+resourcecompiler: I DON"T BELONG HERE
+
+resourcecompiler: Bad Format in User Defined Resource
+doubletest.rc
+
+
+fail tests\doubletest.rc
+resourcecompiler: fatal error RC0001 : resourcecompiler: Duplicate StringID for Values: VALUE, VALUE
+noBEGINtest.rc
+
+
+fail tests\noBEGINtest.rc
+resourcecompiler: fatal error RC0001 : on line 7 in fail tests\noBEGINtest.rc: 
+resourcecompiler: No BEGIN or { following STRINGTABLE
+noENDtest.rc
+
+
+fail tests\noENDtest.rc
+resourcecompiler: fatal error RC0001 : on line 12 in fail tests\noENDtest.rc: 
+resourcecompiler: end of file before END in stringtable
+noidtest.rc
+
+
+fail tests\noidtest.rc
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests\noidtest.rc: 
+resourcecompiler:  "987654321"
+
+resourcecompiler: STRINGTABLE in bad form or missing END
+novaluetest.rc
+
+
+fail tests\novaluetest.rc
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests\novaluetest.rc: 
+resourcecompiler: StringID with no StringValue in STRINGTABLE
+unexpectedendoffile1test.rc
+
+
+fail tests\unexpectedendoffile1test.rc
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests\unexpectedendoffile1test.rc: 
+resourcecompiler: Unexpected end of file in Stringtable
+unexpectedendoffile2test.rc
+
+
+fail tests\unexpectedendoffile2test.rc
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests\unexpectedendoffile2test.rc: 
+resourcecompiler: Unexpected end of file in stringtable
+unexpectedendoffile3test.rc
+
+
+fail tests\unexpectedendoffile3test.rc
+resourcecompiler: fatal error RC0001 : on line 19 in fail tests\unexpectedendoffile3test.rc: 
+resourcecompiler: Unexpected end of file
+unknownescapevaluetest.rc
+
+
+fail tests\unknownescapevaluetest.rc
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests\unknownescapevaluetest.rc: 
+resourcecompiler:  987654321 "VALUE\Q"
+
+resourcecompiler: Unknown escape sequence in String Value
+unknownpragmatest.rc
+
+
+fail tests\unknownpragmatest.rc
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests\unknownpragmatest.rc: 
+resourcecompiler: #pragma elephant
+resourcecompiler: unknown pragma

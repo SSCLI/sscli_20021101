@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html> 
+<head>
+<title>Cleanbuild Sample</title>
+<link rel="stylesheet" type="text/css" href="../../../docs/rotor.css">
+</head>
+
+<body>		
+
+
+<h1> Cleanbuild Sample</h1>
+
+
+<h2>Sample Overview</h2>
+
+
+<p>This sample illustrates obtaining standard output and standard error from a 
+console application without deadlocking.&nbsp; </p>
+
+
+<p>The sample can be used to clean up a Shared Source CLI (SSCLI) build 
+environment of all files generated during the build.&nbsp;It does this by using 
+the tar application to list the contents of the SSCLI TAR file and comparing that 
+list to the existing files in the sscli directory.&nbsp; A script is generated 
+that will delete the files that were not originally included with the archive; running that script  deletes the build-generated files.</p>
+
+
+<p><font color="#FF0000">Caution: The script created by this sample will delete 
+files.&nbsp; The user takes responsibility for understanding the functionality 
+of the sample and for reading the deletion script before running it.</font></p>
+
+
+<p>When the sample  runs, it asks the user for the following information:</p>
+
+
+<ul>
+  <li>The location of the directory where the SSCLI TAR file was extracted.</li>
+  <li>The location of the SSCLI TAR file.</li>
+  <li>A path for placing the deletion script file.</li>
+  <li>Whether to output status to the console (verbose mode) or not.</li>
+</ul>
+
+
+<p>The sample uses a class named ConsoleProcess that is a wrapper class over 
+the Process class.&nbsp;The advantage of the <b>ConsoleProcess</b> class is that it 
+provides <b>WaitForOutput()</b> methods for both standard error and standard output as 
+well as access to the underlying <b>Process</b> object that has the <b>WaitForExit()</b> 
+method.&nbsp;This allows the developer to wait until the process is terminated 
+and all output is finished before working with the output. The console 
+output synchronization is handled using <b>ThreadPool</b> objects and 
+<b>ManualResetEvent</b> instances.</p>
+
+
+<p>After the user has executed the sample application, it stores the input 
+settings in an XML file in the directory in which it was run.&nbsp;Subsequent 
+executions will use this information automatically.</p>
+
+
+<p>The sample also supports the following command-line options that can be used 
+to override the settings stored in the settings file:</p>
+
+
+<table border="1" width="90%">
+  <tr>
+    <th width="24%">Option</th> 
+    <th width="66%">Description</th>
+  <tr>
+    <td width="24%"><b>-?</b></td>
+    <td width="66%">Outputs usage banner to the console.</td>
+  </tr>
+  <tr>
+    <td width="24%"><b>-d:</b><i>deletionfilepath </i></td>
+    <td width="66%">Specifies location of the deletion batch file or script in <i>deletionfilepath.</i></td>
+  </tr>
+  <tr>
+    <td width="24%"><b>-e:</b><i>SSCLIrootdirectory</i></td>
+    <td width="66%">Specifies the path to the SSCLI root directory in <i>SSCLIrootdirectory.</i></td>
+  </tr>
+  <tr>
+    <td width="24%"><b>-k</b></td>
+    <td width="66%">Kills the current settings file.</td>
+  </tr>
+  <tr>
+    <td width="24%"><b>-t:</b><i>TarFilePath</i></td>
+    <td width="66%">Specifies the path to the TAR file in <i>TarFilePath.</i></td>
+  </tr>
+  <tr>
+    <td width="24%"><b>-v</b></td>
+    <td width="66%">Turns on verbose mode.</td>
+  </tr>
+</table>
+
+<h2>Sample Source and Build Output Locations</h2>
+
+
+<p>The sample source is found in sscli\samples\utilities\cleanbuild.&nbsp; </p>
+
+
+<p>The source file is:</p>
+
+
+<ul class="none">
+  <li><a href="cleanbuild.cs">cleanbuild.cs</a></li>
+</ul>
+
+
+<p>The build output location is %TARGETCOMPLUS%\samples\utilities\cleanbuild.&nbsp;The output file is an executable assembly named cleanbuild.exe.</p>
+
+
+<h2>Building the Sample</h2>
+
+
+<p>All samples are built from the buildall script.&nbsp;  </p>
+
+
+<p>You can also build all the 
+samples by switching to the root of the sample directory, sscli\samples, and typing 
+<code>build -c</code>.</p>
+
+
+<p>You can build this specific sample  by switching to the sample directory and typing 
+<code>build -c</code>.</p>
+
+
+<h2>Running the Sample</h2>
+
+
+<p>These steps require that the Shared Source CLI (SSCLI) be already built and 
+functional.</p>
+
+
+<ol>
+  <li>Run  env.bat, or source the env.csh or env.sh script files, depending on 
+  your platform.</li>
+  <li>Switch to the %TARGETCOMPLUS%\samples\utilities\cleanbuild directory.</li>
+  <li>Type the following command:<blockquote>
+
+
+<p>clix cleanbuild.exe</p>
+
+
+  </blockquote>
+
+
+  </li>
+</ol>
+
+
+<hr>
+
+
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i></p>
+</body> 
+</html>

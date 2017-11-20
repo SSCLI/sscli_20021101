@@ -1,0 +1,5 @@
+[ErrorsAllowed]
+2
+# errors during attach 2x:
+# (cordbg) a 0
+# Error: hr=0x80070057, The parameter is incorrect.

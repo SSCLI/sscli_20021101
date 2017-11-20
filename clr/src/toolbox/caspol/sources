@@ -1,0 +1,40 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.csc
+
+!ifdef LINKONLY
+NTTARGETFILE1   = csc_target CopyManagedPdb
+NTTARGETFILE0   = csc_compile_resource
+!else
+NTTARGETFILE0   = 
+!endif
+
+TARGETNAME      = caspol
+TARGETPATH      = $(TARGETCORLIB)\$(TARGET_DIRECTORY)\$(DDKBUILDENV)
+TARGETTYPE      = PROGRAM
+SOURCES         =
+NO_BROWSER_FILE = 1
+
+SYNCHRONIZE_DRAIN=1
+
+CSC_SOURCE_DIR  =  $(CORBASE)\src\toolbox\caspol
+CSC_TARGET_TYPE  = PROGRAM
+
+WIN32_RESOURCE_FILE = caspol.rc
+EMBEDEDRESOURCE = caspol.resources
+
+CSC_SET_VERSION = 1
+
+CSC_SOURCES = \
+        caspol.cs

@@ -1,0 +1,31 @@
+# ==++==
+#
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+
+#
+# For proper incremental building, this needs to be the relative 
+# path from the {wks|srv} directory to the I386 directory
+#
+ROTOR_X86_SOURCES_DIR = ..\rotor_x86
+
+ROTOR_X86_SOURCES = \
+    $(ROTOR_X86_SOURCES_DIR)\cgenx86.cpp \
+    $(ROTOR_X86_SOURCES_DIR)\ExcepX86.cpp \
+    $(ROTOR_X86_SOURCES_DIR)\asmhelpers.asm \
+    $(ROTOR_X86_SOURCES_DIR)\jithelp.asm \
+    $(ROTOR_X86_SOURCES_DIR)\JITinterfaceX86.cpp \
+    $(ROTOR_X86_SOURCES_DIR)\remotingx86.cpp \
+    $(ROTOR_X86_SOURCES_DIR)\gmsx86.cpp \
+    $(ROTOR_X86_SOURCES_DIR)\gmsasm.asm \
+    ..\gcsmp.cpp

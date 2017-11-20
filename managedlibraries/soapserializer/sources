@@ -1,0 +1,74 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.csc
+!include $(NTMAKEENV)\sources.cor
+
+TARGETNAME      = System.Runtime.Serialization.Formatters.Soap
+TARGETLIBNAME   = $(TARGETNAME)
+
+TARGETPATH      = $(TARGETCORLIB)\$(TARGET_DIRECTORY)\$(DDKBUILDENV)
+
+!ifdef LINKONLY
+NTTARGETFILE1   = SoapFormatter.resources csc_target_sign CopyManagedPdb
+!endif
+
+
+# set targettype=dynlink to pick up dependencies from makefile.inc
+TARGETTYPE      = DYNLINK
+NO_BROWSER_FILE = 1
+SOURCES         =
+CSC_SOURCE_DIR  = $(CORBASE)\src\SoapSerializer
+CSC_CLASS_DIR   = $(CSC_SOURCE_DIR)\$(_OBJ_DIR)\$(TARGET_DIRECTORY)
+CSC_TARGET_TYPE = DYNLINK
+
+# Set version information in assembly manifest
+CSC_SET_VERSION = 1 
+
+ASSEMBLY_KEY_TYPE=MICROSOFT
+SIGN_ASSEMBLY=1
+
+# Base address to load System.Runtime.Serialization.Formatters.Soap.dll
+CSC_BASE         = $(TARGETNAME)
+
+# Run comreg to export a type library (.tlb)
+#CSC_TYPELIB_EXPORT = 1
+
+# Include a version stamp for Windows' Explorer's version tab.
+WIN32_RESOURCE_FILE = soapserializer.rc
+
+CSC_COMPILE_FLAGS = /res:$(O)\SoapFormatter.resources
+
+CSC_COMPILE_FLAGS = $(CSC_EXTRA_PREPROCESS_FLAGS) $(CSC_COMPILE_FLAGS) /r:$(TARGETCOMPLUS)\System.Xml.dll
+
+
+CSC_PERMISSION_REBUILD = 1
+CSC_SECURITY_DB = SecurityDB
+
+
+SERIALIZATION_SOURCES = \
+	soapformatter.cs \
+	soapparser.cs \
+	soapcommonclasses.cs \
+	soapenums.cs \
+	soapconverter.cs \
+	soapwriter.cs \
+	soapobjectreader.cs \
+	soapobjectwriter.cs \
+	soapobjectinfo.cs \
+	isoapparser.cs 
+
+
+CSC_SOURCES  =    \
+     $(SERIALIZATION_SOURCES) \
+

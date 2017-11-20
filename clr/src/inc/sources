@@ -1,0 +1,42 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+# Compile the IDLs before continuing.
+SYNCHRONIZE_BLOCK=1
+
+INCLUDES        = $(INCLUDES);.;..\inc;..\..\inc
+
+MINORCOMP       =corinc
+
+NTTARGETFILE0   = opcode.refops copyheaders
+NTTARGETFILE1   = doscript
+
+TARGETNAME =$(CORBUILDENV)corguids
+TARGETPATH =$(TARGETCORLIB)
+TARGETTYPE =LIBRARY
+
+MIDL_OPTIMIZATION       = -Zp4 -dlldata nul -proxy nul
+NO_BROWSER_FILE         = 1
+
+PASS0_SOURCEDIR         = $(O)
+
+SOURCES     = $(O)/cordebug_i.c  \
+              $(O)/CorFFI_i.c    \
+              $(O)/CorSym_i.c    \
+              $(O)/corprof_i.c   \
+              $(O)/corpub_i.c    \
+              $(O)/IValidator_i.c \
+              $(O)/gchost_i.c
+

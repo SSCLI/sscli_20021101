@@ -1,0 +1,161 @@
+# /*++
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+# Module Name : makefile.in
+#
+# process this file with configure to create a makefile
+# --*/
+
+############################
+# constant parts of makefile
+
+SHELL = @SHELL@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+top_srcdir = @top_srcdir@
+srcdir = @srcdir@
+
+TOOL_SUBDIR = $(srcdir)/build_tools
+INCLUDE_DIRs = -I$(srcdir)/.. -I$(srcdir)/include -I$(srcdir)/obj($BUILD_ALT_DIR)
+
+CC = @CC@
+LDPARTIAL = @LDPARTIAL@
+PTHREAD_OPTIONS = @PTHREAD_OPTIONS@
+CC_SONAME = @CC_SONAME@
+C_RUNTIME = @C_RUNTIME@
+SHARED_LIB = @SHARED_LIB@
+SHARED_LIB_EXTENSION = @SHARED_LIB_EXTENSION@
+FRAMEWORKS = @FRAMEWORKS@
+EXTRA_LIBS = @EXTRA_LIBS@
+
+.SUFFIXES:
+
+###########################
+# variable part of makefile
+
+TOP_BUILD_DIR = .
+
+MODULE_NAME = librotor_pal$(SHARED_LIB_EXTENSION)
+MODULE_PATH = $(TARGETPATH)/$(TARGET_DIRECTORY)/$(CORBUILDENV)
+SATELLITE_NAME = rotor_pal.satellite
+
+# object files that make up librotor_pal
+OBJS = obj$(BUILD_ALT_DIR)/cruntimeobjs.o \
+       obj$(BUILD_ALT_DIR)/debugobjs.o \
+       @DLCOMPAT_OBJ@ \
+       obj$(BUILD_ALT_DIR)/exceptionobjs.o \
+       obj$(BUILD_ALT_DIR)/fileobjs.o \
+       obj$(BUILD_ALT_DIR)/handlemgrobjs.o \
+       obj$(BUILD_ALT_DIR)/loaderobjs.o \
+       obj$(BUILD_ALT_DIR)/localeobjs.o \
+       obj$(BUILD_ALT_DIR)/mapobjs.o \
+       obj$(BUILD_ALT_DIR)/memoryobjs.o \
+       obj$(BUILD_ALT_DIR)/miscobjs.o \
+       obj$(BUILD_ALT_DIR)/initobjs.o \
+       @POLL_OBJ@ \
+       obj$(BUILD_ALT_DIR)/socketobjs.o \
+       obj$(BUILD_ALT_DIR)/syncobjs.o \
+       obj$(BUILD_ALT_DIR)/threadobjs.o \
+       obj$(BUILD_ALT_DIR)/archobjs.o \
+       obj$(BUILD_ALT_DIR)/shmemoryobjs.o
+
+# subdirectories containing makefile.in files
+OBJDIRS = cruntime \
+	debug \
+	@DLCOMPAT_DIR@ \
+	exception \
+	file \
+	handlemgr \
+	loader \
+	locale \
+	map \
+	memory \
+	misc \
+	init \
+	@POLL_DIR@ \
+	socket \
+	sync \
+	thread \
+	arch \
+	shmemory
+
+# subdirectories to recurse into
+SUBDIRS = build_tools $(OBJDIRS)
+ALLSUBDIRS = $(SUBDIRS) examples
+
+#################
+# targets
+
+all: check_env makefile librotor_pal pal_examples pal_header
+	@echo "PAL build complete."
+
+check_env:
+	@if test ! "$(BUILD_ALT_DIR)" ; then \
+	    echo "Environment not set. Run '. env.sh' before building the PAL"; \
+	    exit 1; \
+	 fi    
+
+pal_examples:
+	cd examples && $(MAKE) && cd ..
+
+pal_header:
+	mkdir -p "$(TARGETCOMPLUS)/sdk/pal/inc"
+	cp -f "$(ROTOR_DIR)/pal/rotor_pal.h" "$(TARGETCOMPLUS)/sdk/pal/inc"
+    
+librotor_pal: makefile
+#run make in subdirs, link into library
+	@dir_list='$(SUBDIRS)'; for subdir in $$dir_list; do \
+	  cd $$subdir && $(MAKE) && cd .. || exit 1; \
+	done;
+#re-invoke make so librotor_pal only gets re-linked if objects have changed
+	$(MAKE) "$(MODULE_PATH)$(MODULE_NAME)"
+# Copy the library to its final destination
+	cp -f "$(MODULE_PATH)$(MODULE_NAME)" "$(TARGETCOMPLUS)/$(MODULE_NAME)"
+	cp -f $(SATELLITE_NAME) "$(TARGETCOMPLUS)/$(SATELLITE_NAME)"
+
+#we don't provide rules to build the individual object files;
+#the recursive librotor_pal target does that
+$(MODULE_PATH)$(MODULE_NAME): $(OBJS)
+	mkdir -p "$(MODULE_PATH)"
+	$(CC) $(PTHREAD_OPTIONS) $(SHARED_LIB) $(CC_SONAME) $(FRAMEWORKS) $(OBJS) \
+	    -o "$(MODULE_PATH)$(MODULE_NAME)" -l$(C_RUNTIME) -lm $(EXTRA_LIBS)
+	    
+
+makefile : makefile.in
+	@echo $? is newer than $@, please rerun $(srcdir)/configure.
+	@exit 1
+
+depend: check_env $(TOOL_SUBDIR)/mdtool
+#run make depend in subdirs
+	@dir_list='$(ALLSUBDIRS)'; for subdir in $$dir_list; do \
+	  cd $$subdir && $(MAKE) depend && cd .. || exit 1; \
+	done;
+
+$(TOOL_SUBDIR)/mdtool:
+	cd $(TOOL_SUBDIR) && $(MAKE) mdtool
+
+clean:  check_env
+#run make clean in subdirs, remove output files (makefile, etc)
+	@dir_list='$(ALLSUBDIRS)'; for subdir in $$dir_list; do \
+	  cd $$subdir && $(MAKE) clean && cd .. || exit 1; \
+	done;
+	rm -f "$(MODULE_PATH)$(MODULE_NAME)"
+	rm -f "$(TARGETCOMPLUS)/$(MODULE_NAME)"
+	rm -f "$(TARGETCOMPLUS)/$(SATELLITE_NAME)"
+
+
+check:
+	echo "The tests to run are in xport/tests/*"
+
+.PHONY: check clean
+

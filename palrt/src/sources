@@ -1,0 +1,78 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+# undefine USE_MSVCRT defined in sources.cor
+!undef USE_MSVCRT
+
+USE_NOLIBS                              = 1
+NO_NTDLL                                = 1
+
+TARGETTYPE=DYNLINK
+
+TARGETPRIORPATH=$(CORBUILDENV)
+TARGETLIBNAME=rotor_palrt
+TARGETNAME=$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH=$(TARGETCORBIN)
+
+COFFBASE=rotor_palrt
+
+DLLENTRY=DllMain
+
+!if "$(PLATFORM_UNIX)" != "1"
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\rotor_pal.lib
+!endif
+UNIX_DLL_LIBS = -lrotor_pal
+
+INCLUDES=$(INCLUDES);..\inc;..\..\pal;$(CORBASE)\src\inc
+
+EXCEPTION_HANDLING  = $(SEHONLY)
+
+SOURCES=bignum.cpp \
+        bstr.cpp \
+        cocreate.cpp \
+        coguid.cpp \
+        convert.cpp \
+        crtstuff.cpp \
+	decarith.cpp \
+	decimal.cpp \
+	dllmain.cpp \
+        errinfo.cpp \
+	guid.cpp \
+        crypt.cpp \
+        inifile.cpp \
+        loadstring.cpp \
+        md5.cpp \
+        memorystream.cpp \
+        numprs.cpp \
+        palconfig.cpp \
+        path.cpp \
+        rotor_palrt.rc \
+        sarray.cpp \
+        sha1.cpp \
+        shstr.cpp \
+        strings.cpp \
+        urlpars.cpp \
+        variant.cpp
+
+!if "$(PLATFORM_UNIX)" != "1"
+DLLLIBOBJECTS=$(O)\guid.obj
+!endif
+
+USE_CC_LIB = 1
+
+!ifdef LINKONLY
+MISCFILES=$(ROTOR_DIR)\palrt\inc\*.h
+!endif

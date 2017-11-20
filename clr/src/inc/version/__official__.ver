@@ -1,0 +1,47 @@
+// ==++==
+// 
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+// 
+// ==--==
+//
+// __official__.ver
+//
+// This one file defines the official master build number for all
+// files built in the COM+ Runtime.
+//
+
+#ifndef COR_OFFICIAL_BUILD_NUMBER
+#define COR_OFFICIAL_BUILD_NUMBER SSCLI_VERSION_RELEASE
+#endif
+
+//
+// For now do not update the assembly version number.
+//
+#ifndef CLR_OFFICIAL_ASSEMBLY_NUMBER
+#define CLR_OFFICIAL_ASSEMBLY_NUMBER 3300
+#endif
+
+#ifndef COR_BUILD_YEAR
+#define COR_BUILD_YEAR 1
+#endif
+
+#ifndef COR_BUILD_MONTH
+#define COR_BUILD_MONTH 0
+#endif
+
+#ifndef COR_BUILD_MAJOR
+#define COR_BUILD_MAJOR 1
+#endif
+
+#ifndef COR_BUILD_MINOR
+#define COR_BUILD_MINOR 0
+#endif

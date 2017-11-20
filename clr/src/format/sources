@@ -1,0 +1,32 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+NO_CRT                  =1
+!include $(NTMAKEENV)\sources.cor
+
+INCLUDES        = $(INCLUDES);.;..\inc;..\..\inc
+
+MINORCOMP       =format
+
+TARGETNAME      =$(CORBUILDENV)format
+TARGETPATH      =$(TARGETCORLIB)
+TARGETTYPE      =LIBRARY
+
+TARGETLIBS      =
+
+COR_C_FLAGS     = -DUNICODE -D_UNICODE
+
+CDEFINES                = $(CDEFINES) $(COR_C_FLAGS)
+
+SOURCES=                        \
+	format.cpp

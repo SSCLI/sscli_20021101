@@ -1,0 +1,44 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+INCLUDES		  =$(INCLUDES);..\..\..\src\inc;
+
+TARGETNAME=$(DDKBUILDENV)\clix
+TARGETPATH=$(TARGETCORBIN)
+TARGETTYPE=PROGRAM
+!if "$(PLATFORM_UNIX)" != "1"
+COMPILER_WARNINGS=/W3 /WX
+!endif
+COR_C_FLAGS=-DUNICODE -D_UNICODE
+#-DFV_DEBUG_CORDBDB
+
+TARGETLIBS      = \
+!if "$(PLATFORM_UNIX)" != "1"
+    $(CORLIBS)\rotor_pal.lib \
+    $(CORLIBS)\rotor_palrt.lib \
+!endif
+
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt
+USE_CC_LIB = 1
+
+LINKER_FLAGS=$(LINKER_FLAGS) /LARGEADDRESSAWARE
+
+SOURCES=clix.cpp \
+        clix.rc
+
+LINKLIBS= $(CORLIBS)\utilcode.lib       \
+    $(LINKLIBS)
+
+UMTYPE=console

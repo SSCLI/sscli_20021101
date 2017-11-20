@@ -1,0 +1,10 @@
+[ErrorsAllowed]
+2
+# these ones are
+#  40:Error getting array indicies.
+# 263: Error getting array indicies.
+
+[IgnoreLineRx]
+Error loading source file.*String\.cs
+Console::OpenStandardError
+ErrorOffset

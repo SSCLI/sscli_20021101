@@ -1,0 +1,1214 @@
+dnl /*++
+dnl 
+dnl  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+dnl 
+dnl  The use and distribution terms for this software are contained in the file
+dnl  named license.txt, which can be found in the root of this distribution.
+dnl  By using this software in any fashion, you are agreeing to be bound by the
+dnl  terms of this license.
+dnl 
+dnl  You must not remove this notice, or any other, from this software.
+dnl 
+dnl
+dnl Module Name : configure.in
+dnl
+dnl process this file with autoconf to create a configure script
+dnl
+dnl --*/
+
+AC_INIT(include/pal/palinternal.h)
+
+if test ! "$BUILD_ALT_DIR"
+then
+    echo "Environment not set. Run '. env.sh' before building the PAL."
+    exit
+fi
+
+AC_CONFIG_HEADER(obj$BUILD_ALT_DIR/config.h:config.h.in)
+
+dnl configure options go here.
+
+AC_ARG_ENABLE(debug,
+[  --disable-debug          compile out all debug-only code],
+[if test "$enableval" = "no"; then DEBUG_ENABLED="no"; fi])
+
+AC_ARG_ENABLE(dbgmsg,
+[  --disable-dbgmsg         compile out all debugging messages],
+[if test "$enableval" = "no"; then DEBUG_MSGS="no"; fi])
+
+AC_ARG_ENABLE(appendtraces,
+[  --enable-appendtraces    append debug traces to existing file \
+instead of overwriting],
+[if test "$enableval" = "yes"; then DBG_APPEND="yes"; else DBG_APPEND="no"; fi])
+
+AC_ARG_ENABLE(tracechecks,
+[  --enable-tracechecks     check format specifiers in trace macros (gcc only)],
+,enable_tracechecks=no)
+
+dnl define more options here
+
+AC_SUBST(OPTIONS)
+
+AC_MSG_CHECKING(architecture)
+ARCH_DIR=`uname -p`
+if test "$ARCH_DIR" = "unknown"; then
+    ARCH_DIR=`uname -m`
+fi
+ARCH_DIR=`echo $ARCH_DIR | sed -e s/powerpc/ppc/ -e s/i.86/i386/`
+AC_MSG_RESULT($ARCH_DIR)
+AC_SUBST(ARCH_DIR)
+
+
+if test "$DEBUG_ENABLED" = "no"
+then
+    AC_DEFINE(_NO_DEBUG_MESSAGES_)
+else
+    AC_DEFINE(_DEBUG)
+    if test "$DEBUG_MSGS" = "no"
+    then
+        AC_DEFINE(_NO_DEBUG_MESSAGES_)
+    fi
+fi
+
+if test "$DBG_APPEND" = "yes"
+then
+        AC_DEFINE(_PAL_APPEND_DBG_OUTPUT_)
+fi
+
+if test "$enable_tracechecks" = "yes"
+then
+        AC_DEFINE(CHECK_TRACE_SPECIFIERS,1)
+else
+        AC_DEFINE(CHECK_TRACE_SPECIFIERS,0)
+fi
+
+dnl Define BIGENDIAN if the current system is big-endian.
+dnl The presence of this macro causes autoconf 2.13 to print a warning
+dnl about cross-compiling.  The warning is a non-issue and can't be
+dnl disabled without modifying autoconf.
+AC_C_BIGENDIAN
+if test "$ac_cv_c_bigendian" = yes; then
+    BIGENDIAN="-DBIGENDIAN"
+else
+    dnl For completeness
+    BIGENDIAN=""
+fi
+AC_SUBST(BIGENDIAN)
+
+dnl Default compiler flags. Honor any set in the environment, but
+dnl also turn all warnings on, create position-independent code,
+dnl disable exceptions, and disallow common symbols between
+dnl compilation units because the linker won't allow them on some
+dnl systems.
+dnl Note that this has to go before AC_PROG_CC because that will set
+dnl default CFLAGS values if CFLAGS isn't already set. Since we don't
+dnl always want the -g -O2 that autoconf uses by default, we have to
+dnl set CFLAGS before AC_PROG_CC.
+CFLAGS="$CFLAGS -Wall -fno-exceptions -fno-common $BIGENDIAN"
+
+dnl Allow us to have tests which require the math library.
+LIBS="$LIBS -lm"
+
+dnl If we're on Solaris, we also need to set __EXTENSIONS__ to be
+dnl able to see prototypes for APIs that are not in ANSI C.
+dnl Also, set _POSIX_C_SOURCE=199506L so we see modern POSIX prototypes
+dnl for various POSIX APIs rather then the pre-POSIX Solaris
+dnl prototypes for the same APIs and set _LARGEFILE64_SOURCE and
+dnl _FILE_OFFSET_BITS=64 so we use 64-bit data types and functions for
+dnl file APIs. Finally, we require v9 instructions, so we build only
+dnl for that CPU.
+AC_MSG_CHECKING(whether __EXTENSIONS__ and _POSIX_C_SOURCE are required)
+if test `uname -s` = "SunOS"; then
+    CFLAGS="$CFLAGS -D__EXTENSIONS__ -D_POSIX_C_SOURCE=199506L"
+    CFLAGS="$CFLAGS -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -Wa,-Av9"
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Decide whether to enable debugging.
+if test "$NTDEBUG" != "ntsdnodbg"; then
+    CFLAGS="$CFLAGS -g"
+fi
+
+dnl If we are fastchecked (df) or free (r), turn on optimizations.
+dnl If we are building checked (d), turn optimizations off.
+if test "$BUILD_ALT_DIR" = "d"; then
+    CFLAGS="$CFLAGS -O0 -finline"
+fi
+if test "$BUILD_ALT_DIR" = "df"; then
+    CFLAGS="$CFLAGS -O2"
+fi
+if test "$BUILD_ALT_DIR" = "r"; then
+    CFLAGS="$CFLAGS -O2"
+fi
+dnl We still have some changes to make to CFLAGS. Save the current
+dnl set of flags till later.
+CFLAGS_NO_PIC="$CFLAGS"
+AC_SUBST(CFLAGS_NO_PIC)
+CFLAGS="$CFLAGS -fPIC -DPIC"
+ac_saved_cflags=$CFLAGS
+
+dnl Checks for programs go here.
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+
+dnl command to do partial linking (join multiple .o files in a single .o file)
+LDPARTIAL="ld -r"
+AC_SUBST(LDPARTIAL)
+
+dnl gcc -M lets the preprocessor generate a list of dependencies. we want
+dnl to use this for "make depend", but we need to do something else if
+dnl $CC isn't gcc. So we need a test to detect availability of gcc -M
+MDTOOL=mdtool_gcc
+dnl MDTOOL=mdtool_dummy                         
+AC_SUBST(MDTOOL)
+
+dnl Checks for libraries go here.
+
+dnl On FreeBSD, the option -pthread must be passed to gcc in order to link with
+dnl libc_r (thread-safe version of libc, which also includes pthread functions).
+dnl It's unclear how to check for the validity of -pthread because it isn't a
+dnl library flag, so we'll just check for the presence of pthread_self in
+dnl libc_r instead.
+AC_CHECK_LIB(c_r, pthread_self, has_pthread_flag=yes, has_pthread_flag=no)
+if test $has_pthread_flag = yes; then
+    PTHREAD_OPTIONS="-pthread"
+else
+    PTHREAD_OPTIONS=
+fi
+AC_SUBST(PTHREAD_OPTIONS)
+
+dnl Autoconf doesn't have any way to validate flags to the linker. This is a
+dnl bit of a hack, but it's probably better to do this than to switch on the
+dnl result of uname.
+dnl This doesn't work in Autoconf 2.5, which passes $LIBS to the compiler
+dnl when it does AC_TRY_LINK_FUNC.
+AC_MSG_CHECKING(for linker support for -soname)
+saved_libs=$LIBS
+LIBS="$LIBS -soname libfoo.so"
+AC_TRY_LINK_FUNC(malloc, has_soname=yes, has_soname=no)
+LIBS=$saved_libs
+if test $has_soname = yes; then
+    AC_MSG_RESULT(yes)
+    CC_SONAME="-Wl,-soname,\$(MODULE_NAME)"
+else
+    AC_MSG_RESULT(no)
+    CC_SONAME=
+fi
+dnl We'll substitute CC_SONAME below, after we have a chance to set it on
+dnl Autoconf 2.5.2 platforms.
+
+dnl Set our file system case-sensitivity flag.
+AC_MSG_CHECKING(whether to build for a case-sensitive file system)
+if test "$FEATURE_CASE_SENSITIVE_FS" = "1"; then
+    AC_DEFINE(HAVE_CASE_SENSITIVE_FILESYSTEM)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Figure out what our C runtime library is. At the same time, we can
+dnl determine the flags that we need to pass to the compiler to get the
+dnl linker to produce a shared library, and also set the extension for
+dnl the library. Also, since this section notices if we're on Mac OS X,
+dnl set a flag that tells us that we can use CoreFoundation, and another
+dnl which determines whether we should use dlcompat.
+
+DLCOMPAT_DIR=
+DLCOMPAT_OBJ=
+DLCOMPAT_INC=
+
+dnl libc_r is the C runtime that we use on FreeBSD.
+AC_CHECK_LIB(c_r, printf, has_libc_r=yes, has_libc_r=no)
+if test $has_libc_r = yes; then
+    C_RUNTIME=c_r
+    SHARED_LIB=-shared
+    SHARED_LIB_EXTENSION=.so
+    FRAMEWORKS=
+    CFLAGS=$ac_saved_cflags
+    EXTRA_LIBS="/usr/lib/crt1.o"
+else
+    dnl libSystem is Darwin's C runtime.
+    AC_CHECK_LIB(System, printf, has_libSystem=yes, has_libSystem=no)
+    if test $has_libSystem = yes; then
+        C_RUNTIME=System
+        SHARED_LIB=-dynamiclib
+        SHARED_LIB_EXTENSION=.dylib
+        FRAMEWORKS="-framework CoreFoundation"
+        AC_DEFINE(HAVE_CFSTRING)
+        AC_CHECK_LIB(System, _NSGetEnviron, AC_DEFINE(HAVE__NSGETENVIRON))
+        DLCOMPAT_DIR=dlcompat
+        DLCOMPAT_OBJ="obj\$(BUILD_ALT_DIR)/dlcompatobjs.o"
+        DLCOMPAT_INC="-I../\$(TOP_SRC_DIR)/dlcompat"
+        AC_DEFINE(HAVE_DYLIBS)
+        CFLAGS="$ac_saved_cflags -no-cpp-precomp"
+        EXTRA_LIBS="-sub_library libSystem"
+        CC_SONAME="-install_name \$(TARGETCOMPLUS)/\$(MODULE_NAME)"
+    else
+        dnl Solaris includes libsocket.
+        AC_CHECK_LIB(socket, connect, has_libsocket=yes, has_libsocket=no)
+        if test $has_libsocket = yes; then
+            C_RUNTIME=c
+            SHARED_LIB=-shared
+            SHARED_LIB_EXTENSION=.so
+            FRAMEWORKS=
+            CFLAGS=$ac_saved_cflags
+            EXTRA_LIBS="-lrt -lsocket -lthread"
+        else
+            dnl Assume that it's like libc on x86.
+
+            dnl Some systems have libpthread.  See if we need that.
+            AC_CHECK_LIB(pthread, pthread_create, has_libpthread=yes,
+                         has_libpthread=no)
+            dnl Some systems have libm.  See if we need that.
+            AC_CHECK_LIB(m, asin, has_libm=yes, has_libm=no)
+            dnl Some systems have libdl.  See if we need that.
+            AC_CHECK_LIB(dl, dlopen, has_libdl=yes, has_libdl=no)
+            C_RUNTIME=c
+            SHARED_LIB=-shared
+            SHARED_LIB_EXTENSION=.so
+            FRAMEWORKS=
+            EXTRA_LIBS=
+            dnl Set _GNU_SOURCE to enable assorted non-POSIX APIs.
+            CFLAGS="$ac_saved_cflags -D_GNU_SOURCE -D_REENTRANT"
+            if test $has_libpthread = yes; then
+                EXTRA_LIBS="$EXTRA_LIBS -lpthread"
+            fi
+            if test $has_libm = yes; then
+                EXTRA_LIBS="$EXTRA_LIBS -lm"
+            fi
+            if test $has_libdl = yes; then
+                EXTRA_LIBS="$EXTRA_LIBS -ldl"
+            fi
+        fi
+    fi
+fi
+AC_SUBST(CC_SONAME)
+
+AC_SUBST(C_RUNTIME)
+AC_SUBST(SHARED_LIB)
+AC_SUBST(SHARED_LIB_EXTENSION)
+AC_SUBST(FRAMEWORKS)
+AC_SUBST(DLCOMPAT_DIR)
+AC_SUBST(DLCOMPAT_OBJ)
+AC_SUBST(DLCOMPAT_INC)
+AC_SUBST(CFLAGS)
+AC_SUBST(EXTRA_LIBS)
+
+dnl Checks for header files go here.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(wchar.h wctype.h ieeefp.h alloca.h stdint.h inttypes.h)
+AC_CHECK_HEADERS(stropts.h sys/vmparam.h sys/filio.h sys/sockio.h)
+AC_CHECK_HEADERS(crt_externs.h sys/time.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics go here.
+dnl Check if pthread_rwlock_t exists.
+AC_MSG_CHECKING(for pthread_rwlock_t)
+AC_EGREP_CPP(pthread_rwlock_t, [
+    #define _GNU_SOURCE 1
+    #include <pthread.h>
+    int main(void) { exit(0); }
+], ac_has_pthread_rwlock_t=yes, ac_has_pthread_rwlock_t=no)
+if test $ac_has_pthread_rwlock_t = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_PTHREAD_RWLOCK_T)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check if in_addr_t exists.
+AC_MSG_CHECKING(for in_addr_t)
+AC_EGREP_CPP(in_addr_t, [
+    #include <sys/types.h>
+    int main(void) { exit(0); }
+], ac_has_in_addr_t=yes, ac_has_in_addr_t=no)
+if test $ac_has_in_addr_t = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_IN_ADDR_T)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check if caddr_t exists.
+AC_MSG_CHECKING(for caddr_t)
+AC_EGREP_CPP(caddr_t, [
+    #include <sys/ptrace.h>
+    int main(void) { exit(0); }
+], ac_has_caddr_t=yes, ac_has_caddr_t=no)
+if test $ac_has_caddr_t = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_CADDR_T)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check if socklen_t exists.
+AC_MSG_CHECKING(for socklen_t)
+AC_EGREP_CPP(socklen_t, [
+    #include <sys/socket.h>
+    int main(void) { exit(0); }
+], ac_has_socklen_t=yes, ac_has_socklen_t=no)
+if test $ac_has_socklen_t = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_SOCKLEN_T)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check if siginfo_t exists.
+AC_MSG_CHECKING(for siginfo_t)
+AC_EGREP_CPP(siginfo_t, [
+    #include <signal.h>
+    int main(void) { exit(0); }
+], ac_has_siginfo_t=yes, ac_has_siginfo_t=no)
+if test $ac_has_siginfo_t = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_SIGINFO_T)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check if ucontext_t exists
+AC_MSG_CHECKING(for ucontext_t)
+AC_EGREP_CPP(ucontext_t, [
+    #include <ucontext.h>
+    int main(void) { exit(0); }
+], ac_has_ucontext_t=yes, ac_has_ucontext_t=no)
+if test $ac_has_ucontext_t = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_UCONTEXT_T)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check the size of off_t. If it's 32 bits or less, we'll
+dnl avoid right-shifting off_t values by 32 in some places.
+AC_CHECK_SIZEOF(off_t)
+
+dnl Check if the stat structure supports time in nsecs.
+dnl This could be in one of two ways: either the structure has a field
+dnl called 'st_atimespec', or a field called 'st_atimensec'.
+AC_MSG_CHECKING(for timespec fields in struct stat)
+AC_TRY_COMPILE([#include <sys/types.h>
+#include <sys/stat.h>], [struct stat s; s.st_atimespec;],
+ac_stat_struct_timespec=yes, ac_stat_struct_timespec=no)
+if test $ac_stat_struct_timespec = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_STAT_TIMESPEC)
+else
+    AC_MSG_RESULT(no)
+    AC_MSG_CHECKING(for nsec fields in struct stat)
+    AC_TRY_COMPILE([#include <sys/types.h>
+    #include <sys/stat.h>], [struct stat s; s.st_atimensec;],
+    ac_stat_struct_nsec=yes, ac_stat_struct_nsec=no)
+
+    if test $ac_stat_struct_nsec = yes; then
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_STAT_NSEC)
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
+dnl Check if struct sockaddr has an sa_len field.
+AC_MSG_CHECKING(for sa_len field in struct sockaddr)
+AC_TRY_COMPILE([#include <sys/types.h>
+    #include <sys/socket.h>], [struct sockaddr s; s.sa_len;],
+    ac_struct_sockaddr_sa_len=yes, ac_struct_sockaddr_sa_len=no)
+if test $ac_struct_sockaddr_sa_len = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_SOCKADDR_SA_LEN)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check if realpath requires that the last path component exist.
+AC_MSG_CHECKING(whether realpath requires that the last path component exist)
+AC_TRY_RUN([
+    #include <sys/param.h>
+    #include <stdlib.h>
+    
+    int main(void) {
+        char *path;
+#ifdef PATH_MAX
+        char resolvedPath[PATH_MAX];
+#elif defined(MAXPATHLEN)
+        char resolvedPath[MAXPATHLEN];
+#else
+        char resolvedPath[1024];
+#endif
+        path = realpath("a_nonexistent_file", resolvedPath);
+        if (path == NULL) {
+            exit(1);
+        }
+        exit(0);
+    }
+    ],
+    ac_realpath_last_must_exist=no, ac_realpath_last_must_exist=yes,
+    ac_realpath_last_must_exist=no)
+if test $ac_realpath_last_must_exist = yes; then
+    AC_MSG_RESULT(yes)
+else
+    AC_DEFINE(REALPATH_SUPPORTS_NONEXISTENT_FILES)
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check to see if the BSD struct reg is supported.
+AC_MSG_CHECKING(whether the BSD struct reg is supported)
+AC_TRY_COMPILE([#include <machine/reg.h>], [struct reg regs;],
+ac_regs_struct_t=yes, ac_regs_struct_t=no)
+if test $ac_regs_struct_t = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_BSD_REGS_T)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check for the existence of struct pt_regs (ptrace registers).
+AC_MSG_CHECKING(for struct pt_regs)
+AC_TRY_COMPILE([#include <asm/ptrace.h>], [struct pt_regs registers;],
+               has_pt_regs=yes, has_pt_regs=no)
+if test $has_pt_regs = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_PT_REGS)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check to see if mcontext_t has named registers.
+if test $ac_has_ucontext_t = yes; then
+    AC_MSG_CHECKING(whether mcontext_t contains a gregset_t)
+    AC_TRY_COMPILE([#include <ucontext.h>],
+                   [ucontext_t context; context.uc_mcontext.gregs[0] = 0;],
+                   has_gregset_t=yes, has_gregset_t=no)
+    if test $has_gregset_t = yes; then
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_GREGSET_T)
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
+dnl This check is done because FreeBSD's sscanf doesn't seem to support 
+dnl the "%ll" (long long) prefix but has "%q" instead.
+AC_MSG_CHECKING(supported behavior of sscanf(%ll))
+AC_TRY_RUN([
+            #include <stdio.h>
+            int main(void)
+            {
+              long long n = 0;                
+              sscanf("5000000000", "%qu", &n);
+              exit (n == 5000000000);
+            }
+            ],
+            ac_sscanf_support_ll=yes, ac_sscanf_support_ll=no,
+            ac_sscanf_support_ll=no)
+if test $ac_sscanf_support_ll = yes; then
+    AC_DEFINE(SSCANF_SUPPORT_ll)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl snprintf has trouble when printing "%#x" with large values
+dnl of 'n' on some systems.
+AC_MSG_CHECKING(whether snprintf supports large values of n)
+AC_TRY_RUN([
+        #include <stdio.h>
+
+        int main(void) {
+            char buf[256] = { 0 };
+            snprintf(buf, 0x7fffffff, "%#x", 0x12345678);
+            if (buf[0] == '\0') {
+                exit(1);
+            }
+            exit(0);
+        }
+], has_large_snprintf=yes, has_large_snprintf=no, has_large_snprintf=yes)
+if test $has_large_snprintf = yes; then
+    AC_DEFINE(HAVE_LARGE_SNPRINTF_SUPPORT)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Checking whether select() on an open fifo that hasn't been
+dnl written to returns that it has data available.
+AC_MSG_CHECKING(for broken select() behavior with fifos)
+AC_TRY_RUN([
+        #include <fcntl.h>
+        #include <string.h>
+        #include <sys/stat.h>
+        #include <sys/types.h>
+        #include <sys/time.h>
+        #include <unistd.h>
+        
+        int main(void) {
+            int fd, numFDs;
+            fd_set readFDs, writeFDs, exceptFDs;
+            struct timeval time = { 0 };
+            char *filename;
+
+            /* We're not worried about any security issues with regard
+             * to this call, since this is just for an autoconf test. */
+            filename = tmpnam(NULL);
+            if (filename == NULL) {
+                exit(1);
+            }
+            if (mkfifo(filename, S_IRWXU) != 0) {
+                if (unlink(filename) != 0) {
+                    exit(1);
+                }
+                if (mkfifo(filename, S_IRWXU) != 0) {
+                    exit(1);
+                }
+            }
+            fd = open(filename, O_RDWR | O_NONBLOCK);
+            if (fd == -1) {
+                exit(1);
+            }
+        
+            FD_ZERO(&readFDs);
+            FD_ZERO(&writeFDs);
+            FD_ZERO(&exceptFDs);
+            FD_SET(fd, &readFDs);
+            numFDs = select(fd + 1, &readFDs, &writeFDs, &exceptFDs, &time);
+                
+            close(fd);
+            unlink(filename);
+            
+            /* numFDs is zero if select() works correctly */
+            exit(numFDs);
+        }
+], has_broken_fifo_select=no, has_broken_fifo_select=yes,
+   has_broken_fifo_select=yes)
+if test $has_broken_fifo_select = yes; then
+    AC_DEFINE(HAVE_BROKEN_FIFO_SELECT)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Check whether names for ISO locales include an underscore after
+dnl "ISO". FreeBSD 4.4 includes the underscore, FreeBSD 4.5 and later
+dnl include both versions of each name, and Mac OS X and Solaris only
+dnl include the version without the extra underscore.
+AC_MSG_CHECKING(for underscores in ISO locale names)
+AC_TRY_RUN([
+    #include <locale.h>
+    
+    int main(void) {
+        char *locale;
+        
+        locale = setlocale(LC_CTYPE, "en_US.ISO8859-1");
+        /* locale is NULL if the locale is not supported. */
+        exit(locale == NULL);
+    }
+], has_iso_locale_underscore=no, has_iso_locale_underscore=yes,
+   has_iso_locale_underscore=no)
+if test $has_iso_locale_underscore = yes; then
+    AC_DEFINE(REQUIRES_ISO_LOCALE_UNDERSCORE)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+if test $ac_cv_sizeof_off_t -gt 4; then
+    dnl Check whether ftruncate'ing a zero-byte file to a very large length
+    dnl fails as expected.  Mac OS X's ftruncate returns success in that
+    dnl case, even though it actually fails.
+    AC_MSG_CHECKING(whether ftruncate correctly fails for very large lengths)
+    AC_TRY_RUN([
+        #include <fcntl.h>
+        #include <stdlib.h>
+        #include <string.h>
+        #include <unistd.h>
+        
+        /* INT64_MAX */
+        #define OFFSET  9223372036854775807
+        
+        int main(void) {
+            int fd;
+            off_t result;
+            char filename[1024];
+            
+            strcpy(filename, "ftruncate_test");
+            fd = mkstemp(filename);
+            if (fd == -1) {
+                exit(1);
+            }
+        
+            result = ftruncate(fd, OFFSET);
+            unlink(filename);
+            close(fd);
+        
+            if (result != -1) {
+                exit(1);
+            }    
+            exit(0);
+        }
+        ], has_ftruncate_large_length_support=yes,
+           has_ftruncate_large_length_support=no,
+       has_ftruncate_large_length_support=no)
+    if test $has_ftruncate_large_length_support = yes; then
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_FTRUNCATE_LARGE_LENGTH_SUPPORT)
+    else
+        AC_MSG_RESULT(no)
+    fi
+fi
+
+AC_MSG_CHECKING(for yield system call)
+AC_TRY_COMPILE([#include <sys/syscall.h>], [int foo = SYS_yield;],
+    ac_has_sys_yield=yes, ac_has_sys_yield=no)
+if test $ac_has_sys_yield = yes; then
+    AC_DEFINE(HAVE_YIELD_SYSCALL)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Checks for library functions go here.
+AC_CHECK_FUNCS(gmtime_r timegm _snwprintf)
+AC_CHECK_FUNCS(futimes utimes sysctl sysconf directio vm_allocate)
+AC_CHECK_FUNCS(setcontext getcontext copysign)
+AC_CHECK_FUNC(poll, ac_has_poll=yes, ac_has_poll=no)
+if test $ac_has_poll = yes; then
+    POLL_DIR=
+    POLL_OBJ=
+    AC_DEFINE(HAVE_POLL)
+    dnl Check for INFTIM.
+    AC_MSG_CHECKING(for INFTIM)
+    AC_TRY_COMPILE([#include <poll.h>], [int foo = (int) INFTIM;],
+        ac_has_inftim=yes, ac_has_inftim=no)
+    if test $ac_has_inftim = yes; then
+        AC_DEFINE(HAVE_INFTIM)
+        AC_MSG_RESULT(yes)
+    else
+        AC_MSG_RESULT(no)
+    fi
+else
+    POLL_DIR=poll
+    POLL_OBJ="obj\$(BUILD_ALT_DIR)/pollobjs.o"
+fi
+AC_SUBST(POLL_DIR)
+AC_SUBST(POLL_OBJ)
+
+AC_CHECK_FUNC(strtok_r, AC_DEFINE(HAVE_STRTOK_R))
+if test $ac_cv_func_strtok_r != yes; then
+    AC_MSG_ERROR(strtok_r is required)
+fi
+
+AC_CHECK_FUNC(localtime_r, AC_DEFINE(HAVE_LOCALTIME_R))
+if test $ac_cv_func_localtime_r != yes; then
+    AC_MSG_ERROR(localtime_r is required)
+fi
+
+AC_CHECK_FUNC(ctime_r, AC_DEFINE(HAVE_CTIME_R))
+if test $ac_cv_func_ctime_r != yes; then
+    AC_MSG_ERROR(ctime_r is required)
+fi
+
+dnl Solaris uses statvfs instead of statfs. It still has statfs
+dnl but it's deprecated, so we prefer statvfs if it's available.
+AC_CHECK_FUNC(statvfs, AC_DEFINE(HAVE_STATVFS))
+if test $ac_cv_func_statvfs != yes; then
+    AC_CHECK_FUNC(statfs, AC_DEFINE(HAVE_STATFS))
+    if test $ac_cv_func_statfs != yes; then
+        AC_MSG_ERROR(Either statfs or statvfs is required)
+    fi
+fi
+
+dnl We need to figure out how to suspend and resume threads.
+AC_CHECK_LIB(c_r, pthread_resume_np, ac_pthread_resume_np=yes, ac_pthread_resume_np=no)
+if test $ac_pthread_resume_np = yes; then
+    AC_DEFINE(HAVE_PTHREAD_NP)
+else
+    dnl If we don't have pthread_suspend_np, we might have Mach threads
+    dnl and can use mach_thread_suspend instead.
+    AC_CHECK_FUNC(pthread_mach_thread_np, ac_has_mach_threads=yes,
+                  ac_has_mach_threads=no)
+    if test $ac_has_mach_threads = yes; then
+        AC_DEFINE(HAVE_MACH_THREADS)
+    else
+        dnl Perhaps we have Solaris threads. Try thr_suspend.
+        AC_CHECK_FUNC(thr_suspend, ac_has_thr_suspend=yes, ac_has_thr_suspend=no)
+        if test $ac_has_thr_suspend = yes; then
+            AC_DEFINE(HAVE_SOLARIS_THREADS)
+        else
+            AC_MSG_ERROR(Don't know how to suspend and resume threads on this platform)
+        fi
+    fi
+fi
+
+dnl Check for thread_set_exception_ports. If it exists, we have Mach
+dnl exceptions, and we'll use those in place of our signal handlers.
+AC_CHECK_FUNC(thread_set_exception_ports, ac_has_mach_exceptions=yes,
+              ac_has_mach_exceptions=no)
+if test $ac_has_mach_exceptions = yes; then
+    AC_DEFINE(HAVE_MACH_EXCEPTIONS)
+fi
+
+dnl Check for vm_read_overwrite. If it exists, we have Mach VM
+dnl read/write functions, and we'll use those in place of ptrace.
+AC_CHECK_FUNC(vm_read_overwrite, ac_has_vm_read_overwrite=yes,
+              ac_has_vm_read_overwrite=no)
+if test $ac_has_vm_read_overwrite = yes; then
+    AC_DEFINE(HAVE_VM_READ)
+fi
+
+dnl Check for sigreturn in libc_r. If it's there, we can call it. If not,
+dnl check for _thread_sys_sigreturn. FreeBSD 4.4 doesn't alias
+dnl _thread_sys_sigreturn to sigreturn in libc_r.
+AC_CHECK_LIB(c_r, sigreturn, ac_has_sigreturn=yes, ac_has_sigreturn=no, -pthread)
+if test $ac_has_sigreturn = yes; then
+    AC_DEFINE(HAVE_SIGRETURN)
+else
+    dnl Check for _thread_sys_sigreturn now.
+    AC_CHECK_LIB(c_r, _thread_sys_sigreturn, ac_has_thread_sys_sigreturn=yes,
+                 ac_has_thread_sys_sigreturn=no, -pthread)
+    if test $ac_has_thread_sys_sigreturn = yes; then
+        AC_DEFINE(HAVE__THREAD_SYS_SIGRETURN)
+    fi
+fi
+
+dnl Determine whether tzname is supported. tzname is not the
+dnl preferred means of reading time zone names on Unix, but
+dnl its (at times incorrect) distinction between standard and
+dnl daylight saving times is required for the PAL.
+AC_MSG_CHECKING(for tzname global variable)
+AC_TRY_LINK([#include <time.h>], [char *c = tzname[0];],
+ac_tzname_var=yes, ac_tzname_var=no)
+if test $ac_tzname_var = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_TZNAME)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Figure out where to get the offset of this timezone.
+dnl Many SysV systems have an extern timezone, while BSD
+dnl systems typically have a tm_gmtoff field in struct tm.
+dnl We prefer the BSD version, but we can use the SysV one
+dnl if necessary.
+dnl The SysV solution is insufficient for cases in which a
+dnl timezone's GMT offset is dependent on the current date,
+dnl as is the case for countries whose time zone has varied
+dnl over the years.
+AC_MSG_CHECKING(for tm_gmtoff field in struct tm)
+AC_TRY_COMPILE([#include <time.h>], [struct tm t; t.tm_gmtoff;],
+ac_tm_struct_gmtoff=yes, ac_tm_struct_gmtoff=no)
+if test $ac_tm_struct_gmtoff = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(HAVE_TM_GMTOFF)
+else
+    AC_MSG_RESULT(no)
+    AC_MSG_CHECKING(for timezone global variable)
+    AC_TRY_LINK([#include <time.h>], [extern long int timezone;],
+    ac_timezone_var=yes, ac_timezone_var=no)
+    if test $ac_timezone_var = yes; then
+        AC_MSG_RESULT(yes)
+        AC_DEFINE(HAVE_TIMEZONE_VAR)
+    else
+        AC_MSG_RESULT(no)
+        AC_MSG_ERROR(Either tm_gmtoff in struct tm or extern timezone is required)
+    fi
+fi
+
+dnl Checking whether mmap() can map from /dev/zero
+AC_MSG_CHECKING(for mmap() of /dev/zero)
+AC_TRY_RUN([
+        #include <stdlib.h>
+        #include <sys/types.h>
+        #include <sys/mman.h>
+        #include <fcntl.h>
+
+        int main(void) {
+            int devzero;
+            void *retval;
+
+            devzero = open("/dev/zero", O_RDWR);
+            if (-1 == devzero) {
+                exit(1);
+            }
+            retval = mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE, devzero, 0);
+            if (retval == (void *)-1) {
+                exit(1);
+            }
+            exit(0);
+        }
+], has_mmap_dev_zero=yes, has_mmap_dev_zero=no,
+   has_mmap_dev_zero=no)
+if test $has_mmap_dev_zero = yes; then
+    AC_DEFINE(HAVE_MMAP_DEV_ZERO)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+dnl Checking whether mmap uses its hint parameter
+AC_MSG_CHECKING(whether mmap uses its hint parameter)
+AC_TRY_RUN([
+    #include <fcntl.h>
+    #include <stdlib.h>
+    #include <sys/types.h>
+    #include <sys/mman.h>
+    #include <unistd.h>
+    
+    int main(void) {
+        void *hint, *ptr;
+        int pagesize;
+        int fd;
+        
+        pagesize = getpagesize();
+        fd = open("/etc/passwd", O_RDONLY);
+        if (fd == -1) {
+            exit(1);
+        }
+        ptr = mmap(NULL, pagesize, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
+        if (ptr == MAP_FAILED) {
+            exit(1);
+        }
+        hint = mmap(NULL, pagesize, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
+        if (hint == MAP_FAILED) {
+            exit(1);
+        }
+        if (munmap(ptr, pagesize) != 0) {
+            exit(1);
+        }
+        if (munmap(hint, pagesize) != 0) {
+            exit(1);
+        }
+        ptr = mmap(hint, pagesize, PROT_NONE, MAP_PRIVATE, fd, 0);
+        if (ptr == MAP_FAILED || ptr != hint) {
+            exit(1);
+        }
+        exit(0);
+    }
+], mmap_ignores_hint=no, mmap_ignores_hint=yes, mmap_ignores_hint=yes)
+if test $mmap_ignores_hint = yes; then
+    AC_DEFINE(MMAP_IGNORES_HINT)
+    AC_MSG_RESULT(no)
+else
+    AC_MSG_RESULT(yes)
+    dnl Check whether mmap ignores its protection parameter when mapping
+    dnl anonymous pages.
+    AC_MSG_CHECKING(whether mmap ignores PROT_NONE when mapping anonymously)
+    AC_TRY_RUN([
+        #include <sys/types.h>
+        #include <sys/mman.h>
+        #include <signal.h>
+        #include <stdlib.h>
+        #include <unistd.h>
+
+        int handle_signal(int signal) {
+            /* If we reach this, we've crashed due to mmap honoring
+               PROT_NONE. */
+            _exit(1);
+        }
+
+        int main(void) {
+            int *ptr;
+            struct sigaction action;
+            
+            ptr = (int *) mmap(NULL, getpagesize(), PROT_NONE,
+                               MAP_ANON | MAP_PRIVATE, -1, 0);
+            if (ptr == (int *) MAP_FAILED) {
+                exit(0);
+            }
+            action.sa_handler = &handle_signal;
+            action.sa_flags = 0;
+            sigemptyset(&action.sa_mask);
+            if (sigaction(SIGBUS, &action, NULL) != 0) {
+                exit(0);
+            }
+            if (sigaction(SIGSEGV, &action, NULL) != 0) {
+                exit(0);
+            }
+            /* This will drop us into the signal handler if PROT_NONE
+               is honored. */
+            *ptr = 123;
+            exit(0);
+        }
+    ], has_mmap_protections=no, has_mmap_protections=yes,
+       has_mmap_protections=no)
+    if test $has_mmap_protections = yes; then
+        AC_MSG_RESULT(no)
+    else
+        AC_DEFINE(MMAP_ANON_IGNORES_PROTECTION)
+        AC_MSG_RESULT(yes)
+    fi
+fi
+
+AC_MSG_CHECKING(whether pthread_create modifies errno on success)
+AC_TRY_RUN([
+#include <errno.h>
+#include <pthread.h>
+#include <stdlib.h>
+
+void *start_routine(void *param) { return NULL; }
+
+int main() {
+    int result;
+    pthread_t tid;
+
+    errno = 0;
+    result = pthread_create(&tid, NULL, start_routine, NULL);
+    if (result != 0) {
+        exit(0);
+    }
+    if (errno != 0) {
+        exit(1);
+    }
+    exit(0);
+}
+], pthread_create_modifies_errno=no, pthread_create_modifies_errno=yes,
+   pthread_create_modifies_errno=no)
+if test $pthread_create_modifies_errno = yes; then
+    AC_DEFINE(PTHREAD_CREATE_MODIFIES_ERRNO)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether /proc/<pid>/ctl is supported)
+AC_TRY_RUN([
+#include <fcntl.h>
+#include <stdlib.h>
+
+int main(void) {
+    int fd;
+    
+    fd = open("/proc/curproc/ctl", O_WRONLY);
+    if (fd == -1) {
+        exit(1);
+    }
+    exit(0);
+}
+
+], has_procfs_ctl=yes, has_procfs_ctl=no, has_procfs_ctl=no)
+if test $has_procfs_ctl = yes; then
+    AC_DEFINE(HAVE_PROCFS_CTL)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether acos returns NaN on invalid input)
+AC_TRY_RUN([
+#include <math.h>
+#include <stdlib.h>
+
+int main(void) {
+    if (!isnan(acos(10))) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_compatible_acos=yes, has_compatible_acos=no, has_compatible_acos=yes)
+if test $has_compatible_acos = yes; then
+    AC_DEFINE(HAVE_COMPATIBLE_ACOS)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether asin returns NaN on invalid input)
+AC_TRY_RUN([
+#include <math.h>
+#include <stdlib.h>
+
+int main(void) {
+    if (!isnan(asin(10))) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_compatible_asin=yes, has_compatible_asin=no, has_compatible_asin=yes)
+if test $has_compatible_asin = yes; then
+    AC_DEFINE(HAVE_COMPATIBLE_ASIN)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether pow returns expected results for edge cases)
+AC_TRY_RUN([
+#include <math.h>
+#include <stdlib.h>
+
+int main(void) {
+    double infinity = 1.0 / 0.0;
+    if (!isnan(pow(1.0, infinity))) {
+        exit(1);
+    }
+    if (pow(0.0, -1) != infinity) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_compatible_pow=yes, has_compatible_pow=no, has_compatible_pow=yes)
+if test $has_compatible_pow = yes; then
+    AC_DEFINE(HAVE_COMPATIBLE_POW)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether pow correctly handles x**y for negative x and large magnitude odd y)
+AC_TRY_RUN([
+#include <math.h>
+#include <stdlib.h>
+
+int main(int argc, char **argv) {
+    double result;
+
+    result = pow(-3.2e-10, -5e14 + 1);
+    if (result != -1.0 / 0.0) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_valid_negative_inf_pow=yes, has_valid_negative_inf_pow=no)
+if test $has_valid_negative_inf_pow = yes; then
+    AC_DEFINE(HAVE_VALID_NEGATIVE_INF_POW)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether atan2 returns pi when x is -0.0)
+AC_TRY_RUN([
+#include <math.h>
+#include <stdlib.h>
+
+int main(void) {
+    double pi = 3.1415926535;
+    double result;
+    
+    result = atan2(0.0, -0.0);
+    if (fabs(pi - result) > 0.0000001) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_compatible_atan2=yes, has_compatible_atan2=no,
+   has_compatible_atan2=yes)
+if test $has_compatible_atan2 = yes; then
+    AC_DEFINE(HAVE_COMPATIBLE_ATAN2)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether log returns NaN when x is negative)
+AC_TRY_RUN([
+#include <math.h>
+#include <stdlib.h>
+
+int main(void) {
+    if (!isnan(log(-10000))) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_compatible_log=yes, has_compatible_log=no, has_compatible_log=yes)
+if test $has_compatible_log = yes; then
+    AC_DEFINE(HAVE_COMPATIBLE_LOG)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether log10 returns NaN when x is negative)
+AC_TRY_RUN([
+#include <math.h>
+#include <stdlib.h>
+
+int main(void) {
+    if (!isnan(log10(-10000))) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_compatible_log10=yes, has_compatible_log10=no,
+   has_compatible_log10=yes)
+if test $has_compatible_log10 = yes; then
+    AC_DEFINE(HAVE_COMPATIBLE_LOG10)
+    AC_MSG_RESULT(yes)
+else
+    AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(for the name of the Shift-JIS locale)
+AC_TRY_RUN([
+#include <locale.h>
+#include <stdlib.h>
+
+int main(void) {
+    if (setlocale(LC_CTYPE, "ja_JP.SJIS") == NULL) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_shift_jis=yes, has_shift_jis=no, has_shift_jis=no)
+if test $has_shift_jis = yes; then
+    AC_DEFINE(HAVE_STANDARD_SHIFT_JIS_NAME)
+    AC_MSG_RESULT(ja_JP.SJIS)
+else
+    AC_MSG_RESULT(ja_JP.PCK)
+fi
+
+AC_MSG_CHECKING(for the name of the Big 5 locale)
+AC_TRY_RUN([
+#include <locale.h>
+#include <stdlib.h>
+
+int main(void) {
+    if (setlocale(LC_CTYPE, "zh_TW.Big5") == NULL) {
+        exit(1);
+    }
+    exit(0);
+}
+], has_caps_big5=no, has_caps_big5=yes, has_caps_big5=no)
+if test $has_caps_big5 = yes; then
+    AC_DEFINE(HAVE_BIG5_CAPS_NAME)
+    AC_MSG_RESULT(zh_TW.BIG5)
+else
+    AC_MSG_RESULT(zh_TW.Big5)
+fi
+
+AC_OUTPUT([
+makefile
+obj$BUILD_ALT_DIR/makefile.common:makefile.common.in
+arch/makefile
+arch/$ARCH_DIR/makefile
+cruntime/makefile
+debug/makefile
+dlcompat/makefile
+exception/makefile
+file/makefile
+handlemgr/makefile
+loader/makefile
+locale/makefile
+map/makefile
+memory/makefile
+misc/makefile
+init/makefile
+poll/makefile
+shmemory/makefile
+socket/makefile
+sync/makefile
+thread/makefile
+examples/makefile
+build_tools/mdtool_gcc
+build_tools/makefile ])
+
+dnl mdtool_gcc is a shell script; it needs to be executable.
+AC_OUTPUT_COMMANDS([ chmod +x build_tools/mdtool_gcc ])
+
+echo
+echo "Configure finished.  Do 'make depend && make' to compile the PAL."
+echo

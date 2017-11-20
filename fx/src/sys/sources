@@ -1,0 +1,94 @@
+# ==++==
+# 
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+
+!ifdef PASS0ONLY
+NTTARGETFILE0   = prep_target
+!else
+!ifdef LINKONLY
+NTTARGETFILE1   = csc_target
+!else
+NTTARGETFILE0   = prep_target
+!endif
+!endif
+
+!include $(NTMAKEENV)\sources.cor
+
+TARGETNAME=System
+TARGETLIBNAME=$(TARGETNAME)
+TARGETPATH      = $(O)
+TARGETPATHLIB=$(TARGETCOMPLUS)\private\lib
+TARGETTYPE=DYNLINK
+NO_BROWSER_FILE = 1
+SOURCES         =
+
+COMPLUSTYPE=DLL
+ASSEMBLY_KEY_TYPE=ECMA
+SIGN_ASSEMBLY=1
+INCLUDE_ASSEMBLY_ATTRIBUTES=
+
+SYNCHRONIZE_BLOCK=1
+
+ALLOW_PARTIALTRUSTCALLS=1
+
+SECURITY_LEVEL     = SYSTEM_COMPONENT
+
+RESGEN_SOURCE      = system.txt
+RESGEN_CLASS       = System.SR
+
+
+COMPLUS_LIB_IMPORTS=\
+
+COMPLUSIMPORTS = \
+	$(TARGETCOMPLUS)\System.Xml.dll
+
+
+PUBLISH_SOURCES=1
+
+CSHARP_ALLOW_UNSAFE=1
+
+
+REGEX=$(DNAROOT)\src\regex
+COMPMOD=$(DNAROOT)\src\compmod
+NET=$(DNAROOT)\src\net
+CONFIG=$(DNAROOT)\src\config
+IO=$(DNAROOT)\src\services\io
+TIMERS=$(DNAROOT)\src\services\timers
+DIAGNOSTICS=$(DNAROOT)\src\services\monitoring
+EVENTLOGMESSAGES=
+PERFCOUNTER=$(DNAROOT)\src\servicesunmanaged\perfcounterlib
+
+CSC_SOURCES=\
+                $(REGEX)\system\text\regularexpressions\*.cs                   \
+                $(COMPMOD)\system\codedom\*.cs                                 \
+                $(COMPMOD)\system\componentmodel\*.cs                          \
+                $(COMPMOD)\system\diagnostics\*.cs                             \
+                $(COMPMOD)\system\codedom\compiler\*.cs                        \
+                $(COMPMOD)\system\collections\specialized\*.cs                 \
+                $(COMPMOD)\microsoft\win32\*.cs                                \
+                $(COMPMOD)\microsoft\csharp\*.cs                               \
+                $(NET)\system\*.cs                                             \
+                $(NET)\system\net\*.cs                                         \
+                $(NET)\system\net\sockets\*.cs                                 \
+                $(NET)\system\net\configuration\*.cs                           \
+                $(CONFIG)\system\configuration\*.cs                            \
+                $(DIAGNOSTICS)\system\diagnosticts\*.cs                        \
+                $(COMPMOD)\system\configuration\*.cs                           \
+                $(DNAROOT)\src\misc\hresults.cs                                \
+                $(DNAROOT)\src\misc\externdll.cs                               \
+                $(DNAROOT)\src\misc\invariantcomparer.cs                       \
+
+
+
+INCLUDES=$(INCLUDES);$(DNAROOT)\public\tools\inc\private\version;$(NTMAKEENV)

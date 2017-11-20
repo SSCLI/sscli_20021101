@@ -1,0 +1,28 @@
+run threads.exe
+m dumpmemoryinbytes 1
+dump 000000 5
+dump 0x0000 5
+dump 0x0f5e 5
+dump 03fa 17
+dump 0x0150000 50
+show 35
+setip 200
+show
+s
+o
+n
+s
+w
+u
+show
+setip 200
+d
+w
+setip 219
+setip 227
+setip 239
+setip 243
+setip 239
+kill
+m dumpmemoryinbytes 0
+exit

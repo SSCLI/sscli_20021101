@@ -1,0 +1,43 @@
+// ==++==
+//
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+//
+// ==--==
+#include <windows.h>
+#include "clix.h"
+
+#define VER_FILETYPE                VFT_APP
+#define VER_FILESUBTYPE             VFT2_UNKNOWN
+#define VER_FILEDESCRIPTION_STR     "Managed application launcher"
+
+#define VER_INTERNALNAME_STR        "clix.exe"
+#define VER_ORIGINALFILENAME_STR    "clix.exe"
+
+
+STRINGTABLE DISCARABLE
+BEGIN
+
+// Messages with no parameters
+MSG_OutOfMemory         "Out of memory."
+MSG_BadFileSize	        "Invalid EXE file size"
+MSG_BadFormat		"Invalid EXE format"
+MSG_InvalidExeSignature "Invalid EXE signature"
+MSG_NotIL		"EXE is not Managed"
+MSG_Usage		"Managed application launcher.\n\nUsage: clix managed_exe [optional arguments to the exe]\n"
+
+// Messages with parameters - %1 is the pText
+//                          - %2 is the Win32 LastError text
+MSG_CantLoadEE		"Failed to load execution environment from  %1.  %2"
+MSG_CantFindExeMain     "Could not find CorExeMain in the execution environment at %1.  %2."
+MSG_CantOpenExe         "Could not open file %1.  %2"
+
+END

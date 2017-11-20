@@ -1,0 +1,10 @@
+[ErrorsAllowed]
+0
+
+[IgnoreLineRx]
+Error loading source file.*Console\.cs
+
+# this could alarm an error if there is something
+# like Loaded class: IO::Error...
+^Loaded class:.*
+

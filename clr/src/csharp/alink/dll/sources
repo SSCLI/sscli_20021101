@@ -1,0 +1,100 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+USE_NOLIBS                              = 1
+
+
+UIDLLNAME=alinkui
+TARGETTYPE=DYNLINK
+!if "$(PLATFORM_UNIX)" != "1"
+TARGETEXT=dll
+!endif
+TARGETLIBNAME=alink
+TARGETPRIORPATH=$(CORBUILDENV)
+TARGETNAME=$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH=$(TARGETCORBIN)
+
+UMTYPE=windows
+NO_NTDLL=1
+USE_STATIC_ATL=1
+
+COFFBASE=ALink
+DLLDEF=alink.def
+
+DLLENTRY= DllMain
+EXCEPTION_HANDLING = $(SEHONLY)
+
+
+USER_INCLUDES=$(ATL_INCLUDES);..\inc;
+USER_INCLUDES=$(USER_INCLUDES);$(CORBASE)\src\inc;..\..\inc
+USER_C_DEFINES=-DX86 -D_MBCS -DALINK_EXPORTS -D_WINDOWS -DSTRICT -DNT -D_WIN32_WINNT=0x0400 -DWIN32 -D_ATL_STATIC_REGISTRY -D_USRDLL
+USER_C_DEFINES=$(USER_C_DEFINES) -DFEATURE_PAL
+!if "$(PLATFORM_UNIX)"!="1"
+USER_C_FLAGS=-MD$(D) $(USER_C_DEFINES)
+
+!if $(FREEBUILD)
+# The compiler is very performance intensive. Optimize for PURE SPEED!
+MSC_OPTIMIZATION=/O2
+!else
+# add runtime checks in debug build
+# USER_C_FLAGS=$(USER_C_FLAGS) -RTCs -RTCc
+!endif
+
+# Enable 64-bit warnings
+USER_C_FLAGS=$(USER_C_FLAGS) -Wp64
+
+LIBRARIAN_FLAGS=$(LIBRARIAN_FLAGS) /NAME:$(TARGETNAME)
+
+!if "$(BUILD_BROWSE)"!="no"
+BROWSER_INFO=1
+NO_BROWSER_FILE=1
+!endif
+
+!endif
+
+# These files are listed in alphabetical order.  Keep them that way!
+SOURCES= \
+    msgs.rc \
+    alinklib.cpp \
+    asmlink.cpp \
+    assembly.cpp
+
+
+
+NTTARGETFILES= \
+
+TARGETLIBS= \
+    $(CORLIBS)\unilib.lib \
+    $(CORLIBS)\alink_shared.lib \
+!if "$(PLATFORM_UNIX)" != "1"
+    $(CORLIBS)\corguids.lib \
+    $(CORLIBS)\mscoree.lib \
+!endif
+
+
+!if "$(PLATFORM_UNIX)" != "1"
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+
+UNIX_DLL_LIBS=-lrotor_pal -lrotor_palrt -lsscoree -lmscorsn
+USE_CC_LIB = 1
+
+PRECOMPILED_INCLUDE=stdafx.h
+PRECOMPILED_SOURCEFILE=stdafx.cpp
+PRECOMPILED_PCH=stdafx.pch
+PRECOMPILED_OBJ=stdafx.obj
+PRECOMPILED_CXX=1

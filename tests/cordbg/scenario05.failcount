@@ -1,0 +1,3 @@
+[IgnoreLineRx]
+Error loading source file.*Thread\.cs
+Error loading source file.*CallContext\.cs

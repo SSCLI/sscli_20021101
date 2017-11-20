@@ -1,0 +1,38 @@
+#!/bin/sh
+# ==++==
+# 
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+# Drives csc while it's building mscorlib. This is needed so
+# we can set __SECURITY_BOOTSTRAP_DB for csc's environment.
+#
+# Parameters should be as follows:
+# $1: $(CSC_SOURCE_DIR)
+# $2: $(CSC_COMPILER)
+# $3: $(DDKBUILDENV)
+# $4: $(0)
+#
+# This script does not do parameter validation. It is only
+# called from makefile.inc, so it should never break unless
+# the call to csc changes and this script is not updated.
+
+echo __SECURITY_BOOTSTRAP_DB=$1
+__SECURITY_BOOTSTRAP_DB=$1
+echo export __SECURITY_BOOTSTRAP_DB
+export __SECURITY_BOOTSTRAP_DB
+echo $2 @BclFiles.$3 /noconfig $4/Version.cs $4/AppDomainSetup.cs
+$2 @BclFiles.$3 /noconfig $4/Version.cs $4/AppDomainSetup.cs
+
+# Unlike makefile.inc, we don't need to unset the environment
+# variable. It goes away when the shell running this script
+# exits, which happens when the script itself exits.

@@ -1,0 +1,131 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+TARGETTYPE=DYNLINK
+!if "$(PLATFORM_UNIX)" != "1"
+TARGETEXT=dll
+!endif
+
+TARGETPRIORPATH=$(CORBUILDENV)
+TARGETLIBNAME=cscomp
+TARGETNAME=$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH=$(TARGETCORBIN)
+
+UMTYPE=windows
+NO_NTDLL=1
+USE_NOLIBS=1
+USE_STATIC_ATL=1
+
+EXCEPTION_HANDLING = $(SEHONLY)
+
+COFFBASE=cscomp
+DLLDEF=sccomp_rotor.def
+DLLENTRY=DllMain
+
+
+# Get the XML includes first so we pick-up the msxml2.h
+USER_INCLUDES=..\inc
+USER_INCLUDES=$(USER_INCLUDES);$(CORBASE)\src\inc;..\..\inc;..\..\alink\inc
+USER_C_DEFINES=-DX86 -D_MBCS -DTESTCMD -D_WINDOWS -DSTRICT -DNT -D_WIN32_WINNT=0x0400 -D_ATL_STATIC_REGISTRY -D_USRDLL -DSCCOMP_EXPORTS
+
+!if "$(PLATFORM_UNIX)" != "1"
+USER_C_FLAGS=$(USER_C_FLAGS) -MD$(D)
+
+# Enable 64-bit warnings
+USER_C_FLAGS=$(USER_C_FLAGS) -Wp64 $(USER_C_DEFINES)
+!endif
+
+!if "$(PLATFORM_UNIX)" != "1"
+!if $(FREEBUILD)
+# The compiler is very performance intensive. Optimize for PURE SPEED!
+MSC_OPTIMIZATION=/O2
+!else
+# add runtime checks in debug build
+# USER_C_FLAGS=$(USER_C_FLAGS) -RTCs -RTCc
+!endif
+!endif
+
+!if "$(PLATFORM_UNIX)" != "1"
+LIBRARIAN_FLAGS=$(LIBRARIAN_FLAGS) /NAME:$(TARGETNAME)
+!endif
+
+!if "$(BUILD_BROWSE)"!="no"
+BROWSER_INFO=1
+NO_BROWSER_FILE=1
+!endif
+
+# These files are listed in alphabetical order.  Keep them that way!
+SOURCES= \
+    alloc.cpp \
+    clsdrec.cpp \
+    compiler.cpp \
+    complus.cpp \
+    controller.cpp \
+    emitter.cpp \
+    error.cpp \
+    factory.cpp \
+    fncbind.cpp \
+    fncpbind.cpp \
+    ilgen.cpp \
+    import.cpp \
+    incbuild.cpp \
+    inputset.cpp \
+    inttree.cpp \
+    lexer.cpp \
+    map.cpp \
+    metaattr.cpp \
+    metahelp.cpp \
+    namemgr.cpp \
+    options.cpp \
+    parser.cpp \
+    pefile.cpp \
+    sccomp.cpp \
+    srcdata.cpp \
+    srcmod.cpp \
+    symmgr.cpp \
+    tests.cpp \
+    timing.cpp
+
+ROTOR_X86_SOURCES=\
+    msgs.rc
+
+PPC_SOURCES=\
+    msgs.rc
+
+SPARC_SOURCES=\
+    msgs.rc
+
+TARGETLIBS= \
+    $(CORLIBS)\unilib.lib \
+    $(CORLIBS)\cscutil.lib \
+!if "$(PLATFORM_UNIX)" != "1"
+    $(CORLIBS)\corguids.lib \
+    $(CORLIBS)\mscoree.lib
+!endif
+
+!if "$(PLATFORM_UNIX)" != "1"
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+
+UNIX_DLL_LIBS=-lrotor_pal -lrotor_palrt -lsscoree -lmscorsn
+USE_CC_LIB = 1
+
+PRECOMPILED_INCLUDE=stdafx.h
+PRECOMPILED_SOURCEFILE=stdafx.cpp
+PRECOMPILED_PCH=stdafx.pch
+PRECOMPILED_OBJ=stdafx.obj
+PRECOMPILED_CXX=1

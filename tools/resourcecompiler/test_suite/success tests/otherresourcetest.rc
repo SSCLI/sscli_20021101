@@ -1,0 +1,172 @@
+// ==++==
+//
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+//
+// ==--==
+STRINGTABLE
+BEGIN
+3001 "string1"
+3002 "string2"
+END
+
+
+STRINGTABLE
+BEGIN
+3003 "string3"
+3004 "string4"
+END
+
+1 ACCELERATORS
+{
+  "^C",  IDDCLEAR         ; control C
+  "K",   IDDCLEAR         ; shift K
+  "k",   IDDELLIPSE, ALT  ; alt k
+  98,    IDDRECT, ASCII   ; b
+  66,    IDDSTAR, ASCII   ; B (shift b)
+  "g",   IDDRECT          ; g
+  "G",   IDDSTAR          ; G (shift G)
+  VK_F1, IDDCLEAR, VIRTKEY                ; F1
+  VK_F1, IDDSTAR, CONTROL, VIRTKEY        ; control F1
+  VK_F1, IDDELLIPSE, SHIFT, VIRTKEY       ; shift F1
+  VK_F1, IDDRECT, ALT, VIRTKEY            ; alt F1
+  VK_F2, IDDCLEAR, ALT, SHIFT, VIRTKEY    ; alt shift F2
+  VK_F2, IDDSTAR, CONTROL, SHIFT, VIRTKEY ; ctrl shift F2
+  VK_F2, IDDRECT, ALT, CONTROL, VIRTKEY   ; alt control F2
+} 
+
+disk1   BITMAP disk.bmp
+12      BITMAP diskette.bmp 
+
+cursor1 CURSOR bullseye.cur
+2       CURSOR "d:\\cursor\\arrow.cur" 
+
+ErrorDialog DIALOG  10, 10, 300, 110
+STYLE WS_POPUP | WS_BORDER
+CAPTION "Error!" 
+{
+    CTEXT "Select One:", 1, 10, 10, 280, 12
+    PUSHBUTTON "&Retry", 2, 75, 30, 60, 12
+    PUSHBUTTON "&Abort", 3, 75, 50, 60, 12
+    PUSHBUTTON "&Ignore", 4, 75, 80, 60, 12
+} 
+
+5 FONT  CMROMAN.FNT 
+
+desk1   ICON desk.ico
+11      ICON custom.ico 
+
+sample MENU
+{
+     MENUITEM "&Soup", 100
+     MENUITEM "S&alad", 101
+     POPUP "&Entree"
+     {
+          MENUITEM "&Fish", 200
+          MENUITEM "&Chicken", 201, CHECKED
+          POPUP "&Beef"
+          {
+               MENUITEM "&Steak", 301
+               MENUITEM "&Prime Rib", 302
+          }
+     }
+     MENUITEM "&Dessert", 103
+} 
+
+nameID MESSAGETABLE filename
+
+POPUP "&Elements"
+    {
+         MENUITEM "&Oxygen", 200
+         MENUITEM "&Carbon", 201, CHECKED
+         MENUITEM "&Hydrogen", 202
+         MENUITEM SEPARATOR
+         MENUITEM "&Sulfur", 203
+         MENUITEM "Ch&lorine", 204
+    } 
+
+chem MENU
+{
+    POPUP "&Elements"
+    {
+         MENUITEM "&Oxygen", 200
+         MENUITEM "&Carbon", 201, CHECKED
+         MENUITEM "&Hydrogen", 202
+         MENUITEM SEPARATOR
+         MENUITEM "&Sulfur", 203
+         MENUITEM "Ch&lorine", 204
+    } 
+    POPUP "&Compounds"
+    {
+         POPUP "&Sugars"
+         {
+            MENUITEM "&Glucose", 301
+            MENUITEM "&Sucrose", 302, CHECKED
+            MENUITEM "&Lactose", 303, MENUBREAK
+            MENUITEM "&Fructose", 304
+         }
+         POPUP "&Acids"
+         {
+              "&Hydrochloric", 401
+              "&Sulfuric", 402
+         }
+    }
+} 
+
+resname RCDATA
+{
+   "Here is an ANSI string\0",    // explicitly null-terminated 
+   L"Here is a Unicode string\0", // explicitly null-terminated 
+   1024,                          // integer, stored as WORD 
+   7L,                            // integer, stored as DWORD 
+   0x029a,                        // hex integer 
+   0o733,                         // octal integer 
+} 
+
+array   MYRES   data.res
+14      300     custom.res
+18 MYRES2
+{
+   "Here is an ANSI string\0",    // explicitly null-terminated 
+   L"Here is a Unicode string\0", // explicitly null-terminated 
+   1024,                          // integer, stored as WORD 
+   7L,                            // integer, stored as DWORD 
+   0x029a,                        // hex integer 
+   0o733,                         // octal integer 
+} 
+
+versionID VERSIONINFO fixed-info  {      block-statement      . . .  }
+
+AUTO3STATE text, id, x, y, width, height , style , extended-style
+
+AUTORADIOBUTTON text, id, x, y, width, height , style , extended-style
+
+COMBOBOX 777, 10, 10, 50, 54, CBS_SIMPLE | WS_VSCROLL | WS_TABSTOP 
+ 
+CONTROL text, id, class, style, x, y, width, height , extended-style
+
+DEFPUSHBUTTON "Cancel", 101, 10, 10, 24, 50 
+
+EDITTEXT  3, 10, 10, 100, 10 
+
+PUSHBOX text, id, x, y, width, height , style , extended-style
+
+PUSHBUTTON "ON", 7, 10, 10, 20, 10 
+
+RADIOBUTTON "Italic", 100, 10, 10, 40, 10
+
+RTEXT "Number of Messages", 4, 30, 50, 100, 10 
+
+SCROLLBAR 999, 25, 30, 10, 100 
+
+STATE3 text, id, x, y, width, height , style , extended-style
+
+LANGUAGE language, sublanguage

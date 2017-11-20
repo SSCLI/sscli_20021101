@@ -1,0 +1,64 @@
+run threads.exe -t5
+set worker 0x0
+p
+p args
+p args[0]
+p args[0][0]
+p args[0][1]
+p args[1]
+p args[a]
+p args.Length
+break 178
+cont
+dis
+reg
+s
+dis
+reg
+n
+reg
+dis
+break 197
+show
+break 197
+cont
+set threads 5
+p
+set threads 6
+p
+p exception
+p threads
+s
+p
+p numthreads
+p exceptionthread
+break 203
+cont
+p worker
+p worker._number
+p worker._numthreads
+p worker._initialized
+p worker._exceptionthread
+p worker._f
+p worker._f.number_
+p worker._t1
+p worker._t1[0]
+p worker._t1[3]
+p worker._t1[1]
+p worker._t1[4]
+p worker._t1[a]
+p worker._t1[1].m_name
+p worker._t1[1].m_priority
+p worker._t1[1].DONT_USE_InternalThread
+p ThreadTest::Threads::_c
+set worker._initialized false
+p
+set worker._initialized true
+p
+break 221
+cont
+s
+wt
+# we don't know our current state because wt might allow one of thread
+# to run to an unhandled exception 
+exit

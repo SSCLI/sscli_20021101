@@ -1,0 +1,79 @@
+# ==++==
+#
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+#
+# ==--==
+# ============================================================================
+# File: Makefile.common
+# Common included makefile for most of Rotor
+# This should be included in a standard Makefile.in like this:
+#   TOP_SRC_DIR = @top_srcdir@
+#   include $(TOP_SRC_DIR)/makefile.common
+# ============================================================================
+
+SHELL = @SHELL@
+
+# Build directory
+# BSD make will cd into ./obj by default if it exists, which
+# causes problems for our build system.  We can prevent this
+# by setting .OBJDIR.
+.OBJDIR = .
+
+# Directories
+INCLUDE_DIRS = -I$(TOP_SRC_DIR)/pal -I$(TOP_SRC_DIR)/palrt/inc \
+                -I$(TOP_SRC_DIR)/clr/src/inc \
+				-I$(TOP_SRC_DIR)/palrt/idl
+
+# Compiler information
+CC = @CC@
+CPP = @CPP@
+CFLAGS = @CFLAGS@
+
+# Linker information
+PAL_LIB = rotor_pal
+LIB_PREFIX = lib
+LIB_SUFFIX = @SHARED_LIB_EXTENSION@
+PAL_LIB_FILE = $(LIB_PREFIX)$(PAL_LIB)$(LIB_SUFFIX)
+ROTOR_LIBS = -l$(PAL_LIB)
+LDFLAGS = -L$(TARGETCOMPLUS)
+GCC_LIB = @GCC_LIB@
+LINKER_FLAGS = @LINKER_FLAGS@
+
+# The C runtime static libraries that we need to get an application
+# up and running.
+REQUIRED_CRUNTIME = @REQUIRED_C_LIBS@
+
+# Constants
+BIGENDIAN = @BIGENDIAN@
+PALDEFS = -DFEATURE_PAL -DPLATFORM_UNIX
+
+# Additional suffix information
+.SUFFIXES : .rc .satellite
+
+# Resource compiler
+RC = $(TOP_SRC_DIR)/tools/resourcecompiler/resourcecompiler
+RC_INCLUDE_DIRS = /i$(TOP_SRC_DIR)/pal /i$(TOP_SRC_DIR)/palrt/inc
+
+# Other tools
+BINPLACE = $(TOP_SRC_DIR)/tools/binplace/binplace
+
+# Suffix mappings
+.c.o:
+	$(CC) -nostdinc -c $(PALDEFS) $(BIGENDIAN) $(CFLAGS) \
+	    $(LOCAL_CFLAGS) $(INCLUDE_DIRS) $(LOCAL_INCLUDE_DIRS) -o $@ $<
+
+.cpp.o:
+	$(CC) -nostdinc -c $(PALDEFS) $(BIGENDIAN) $(CFLAGS) \
+	    $(LOCAL_CFLAGS) $(INCLUDE_DIRS) $(LOCAL_INCLUDE_DIRS) -o $@ $<
+
+.rc.satellite:
+	$(RC) $(RC_INCLUDE_DIRS) $<

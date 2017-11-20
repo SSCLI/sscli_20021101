@@ -1,0 +1,654 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html> 
+<head>
+<title>Shared Source CLI Debugging Overview</title>
+<link rel="stylesheet" type="text/css" href="../rotor.css">
+</head>
+
+<body>		
+
+
+<h1>Shared Source CLI Debugging Overview</h1>
+
+
+<h3>Contents</h3>
+
+
+<ul>
+  <li><a href="#Introduction">Introduction</a></li>
+  <li><a href="#SymbolicInformationFiles">Symbolic Information Files</a></li>
+  <li><a href="#DebuggingandtheCLILoggingInfrastructure">Debugging and the CLI 
+  Logging Infrastructure</a></li>
+  <li><a href="#JIT-attachDebugging">JIT-attach Debugging</a></li>
+  <li><a href="#DebuggingManagedCodeRunningintheSSCLI">Debugging Managed Code 
+  Running in the SSCLI</a></li>
+  <li><a href="#DebuggingUnmanagedSSCLICodeonWindows">Debugging Unmanaged SSCLI 
+  Code on Windows</a><ul>
+    <li><a href="#OtherDebuggersOnWindows">Other Debuggers On Windows</a></li>
+    <li><a href="#AttachingtoaRunningProcessonWindows">Attaching to a Running 
+    Process on Windows</a></li>
+  </ul>
+  </li>
+  <li><a href="#DebuggingUnmanagedSSCLICodeonUNIXSystem-basedPlatforms">
+  Debugging Unmanaged SSCLI Code on UNIX System-based Platforms</a></li>
+  <li><a href="#DebuggingManagedCodeFromUnmanagedSSCLICode">Debugging Managed 
+  Code From Unmanaged SSCLI Code</a></li>
+</ul>
+
+
+<h2><a name="Introduction"></a>Introduction</h2>
+
+
+<p>The debugging tool you should use with the Shared Source CLI (SSCLI) depends 
+on your debugging scenario and the platform on which you are debugging. 
+Debugging scenarios can be placed into three main categories: </p>
+
+
+<ul>
+  <li>Debugging unmanaged code.</li>
+  <li>Debugging managed code running under the SSCLI.</li>
+  <li>Debugging managed code from unmanaged SSCLI code.</li>
+</ul>
+
+
+<p>Debugging platform options have two major categories:</p>
+
+
+<ul>
+  <li>Debugging on Microsoft&reg; Windows&reg;.</li>
+  <li>Debugging on UNIX system-based platforms.</li>
+</ul>
+
+
+<p>The following table shows the debugging combinations and options.</p>
+
+
+<table border="1" width="90%">
+  <tr  valign="top">
+    <th width="24%" align="left">
+    <p align="center">Debugging Scenario</th>
+    <th width="36%" align="center"><b>On Windows</b></th>
+    <th width="40%" align="center"><b>On UNIX system-based platforms</b></th>
+  </tr>
+  <tr>
+    <td width="24%" align="left">Managed code running under the SSCLI</td>
+    <td width="36%">Use the Runtime Debugger provided by the SSCLI 
+    distribution.<p>The application file is named cordbg.exe.</td>
+    <td width="40%">Use the Runtime Debugger provided by the SSCLI 
+    distribution.<p>The application file is named cordbg.</td>
+  </tr>
+  <tr  valign="top">
+    <td width="24%" align="left">Unmanaged code</td>
+    <td width="36%">Use the debugger of your choice. For example:<ul>
+      <li>Microsoft&reg; Visual Studio .NET</li>
+      <li>Windows platform debugging tools:<ul>
+      <li>NTSD debugger.</li>
+      <li>CDB debugger.</li>
+      <li>WinDbg debugger.</li>
+    </ul>
+      </li>
+    </ul>
+    </td>
+    <td width="40%">Use the GDB 
+    debugger.</td>
+  </tr>
+  <tr  valign="top">
+    <td width="24%" align="left">Debugging Managed Code From Unmanaged SSCLI 
+    Code</td>
+    <td width="36%">Use an unmanaged code debugger with the SOS debugger 
+    extension.<p>All  Windows platform debugging tools listed above can 
+    load the SOS extension.</p>
+    <p>Visual Studio .NET version 7.0 cannot load the SOS debugger extension but future 
+    versions might be to do so.&nbsp; Check the documentation 
+    for future versions of the Visual Studio development environment. </td>
+    <td width="40%">Use the GDB debugger with the SOS debugger extension.</td>
+  </tr>
+</table>
+
+
+<p>Debugging managed code in the .NET Framework and the SSCLI is supported by 
+the debugging services APIs.&nbsp; These interfaces and functions are described 
+in two documents included with the .NET Framework SDK: </p>
+
+
+<ul>
+  <li>...\FrameworkSDK\Tool Developers Guide\docs\Debug.doc</li>
+  <li>...\FrameworkSDK\Tool Developers Guide\docs\DebugRef.doc</li>
+</ul>
+
+
+<h2><a name="SymbolicInformationFiles"></a>Symbolic Information Files</h2>
+
+
+<p>When the SSCLI is built on Windows two 
+kinds of symbolic debugging information files are generated. Unmanaged code that 
+is built will generate .pdb files and managed code that is built will generate 
+.ildb files. The Windows debugger tools utilize the .pdb file format. The 
+Runtime Debugger (cordbg.exe on Windows) utilizes the SSCLI .ildb symbolic 
+file format.&nbsp; The SOS debugger extension does not use either format of debug 
+information.</p>
+
+
+<p>You can convert between the .ildb format and .pdb format using the
+<a href="../tools/ildbconv.html">ildbconv</a> conversion tool.&nbsp; You can 
+take an assembly built using the SSCLI tools, convert the corresponding .ildb 
+file to .pdb format, and then debug that assembly running under the .NET 
+Framework using Visual Studio .NET.</p>
+<p>When the SSCLI is built on UNIX system-based platforms, the gcc compiler 
+generates the symbolic 
+information for unmanaged code using the -g 
+option. On most systems this  results in the stabs debugging 
+information format which will be stored directly in the binary files and not as 
+separate debugging information files.</p>
+
+
+<h2><a name="DebuggingandtheCLILoggingInfrastructure"></a>Debugging and the CLI Logging Infrastructure</h2>
+
+
+<p>Several environment variables are used by the CLI logging 
+infrastructure which can be very useful when debugging the SSCLI or managed code 
+running in the SSCLI.</p>
+
+
+<p>The following table describes some of the most useful environment variables 
+for use with debugging.</p>
+
+<table  border="1" WIDTH="1003" >
+  <tr>
+    <th valign="top" width="261">Configuration setting</th>
+    <th valign="top" width="216">Values</th>
+    <th valign="top" width="486">Comment</th>
+  </tr>
+  <tr>
+    <td valign="top" width="261">COMPlus_BreakOnEELoad</td>
+    <td valign="top" width="216">0 or 1 </td>
+    <td valign="top" width="486">Breaks into the debugger on CLI startup if 
+    value is 1.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="261">COMPlus_BreakOnEEShutdown</td>
+    <td valign="top" width="216">0 or 1 </td>
+    <td valign="top" width="486">Breaks into the debugger on CLI shutdown if 
+    value is 1.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="261">COMPlus_BreakOnClassBuild</td>
+    <td valign="top" width="216"><i>ClassName</i></td>
+    <td valign="top" width="486">Breaks into the debugger when loading <i>ClassName</i>.</td>
+  </tr>
+  <tr>
+    <td valign="top" width="261">COMPlus_JitBreak</td>
+    <td valign="top" width="216"><i>ClassName.MethodName</i></td>
+    <td valign="top" width="486">Breaks into the debugger before JIT-compiling method</td>
+  </tr>
+  <tr>
+    <td valign="top" width="261">COMPlus_JitHalt</td>
+    <td valign="top" width="216"><i>ClassName.MethodName</i></td>
+    <td valign="top" width="486">Breaks into the debugger just after 
+    JIT-compiling method but before executing it.</td>
+  </tr>
+</table>
+
+
+<p>All the options above result in assert dialogs from the SSCLI on Windows except 
+COMPlusJitHalt.&nbsp; The assert dialog will have content such as the following 
+when <code>set COMPlus_BreakOnEELoad=1</code> is set:</p>
+
+
+<blockquote>
+
+
+<pre>---------------------------
+Assert Failure (PID 6016, Thread 4284/10bc)        
+---------------------------
+!"Loading EE!"
+
+d:\sscli\clr\src\vm\wks\..\ceemain.cpp, Line: 296
+
+Abort - Kill program
+Retry - Debug
+Ignore - Keep running
+
+
+Image:
+D:\sscli\build\v1.x86chk.rotor\clix.exe
+
+---------------------------
+Abort   Retry   Ignore   
+---------------------------
+</pre>
+
+
+</blockquote>
+
+
+<p>Select the &quot;Retry&quot; button to return back into the debugger at the point where 
+the assert was thrown.&nbsp; The Retry button will cause a rethrow of the 
+assertion and debuggers will normally catch the second assert and halt.</p>
+
+
+<p>The COMPlus_JitHalt setting will not cause an assert dialog and will simply 
+halt the debugger immediately after JIT-compiling code for the specified method 
+and just before running that code.</p>
+
+
+<p>See <a href="../techinfo/logging.html">logging.html</a> for more details on 
+the CLI logging infrastructure.</p>
+
+
+<h2><a name="JIT-attachDebugging"></a>JIT-Attach Debugging</h2>
+
+
+<p>Just-in-time (JIT)-attach debugging is the term used to describe attaching a debugger to an 
+executable image that has thrown an unhandled exception. JIT-attach debugging of 
+unmanaged code is 
+occurring on Windows when you see a message box that invites you to:</p>
+<ul>
+  <li>Click OK to terminate the program.</li>
+  <li>Click Cancel to debug the program. </li>
+</ul>
+<p>If you click Cancel, a debugger starts and attaches to the process. The 
+Windows setting for JIT-attach debugging of unmanaged code is set in the registry 
+at: HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\Current 
+Version\AeDebug.</p>
+
+
+<p>JIT-attach debugging has no direct relationship to JIT compilation other than 
+sharing the &quot;JIT&quot; acronym.</p>
+
+
+<p>In SSCLI builds, the default behavior  for JIT-attach debugging of managed code 
+that throws unhandled exceptions is as follows:</p>
+
+
+<ul>
+  <li>On Windows,  attachment to the Runtime Debugger  is enabled by 
+  default.</li>
+  <li>On UNIX system-based platforms attachment is disabled by default.</li>
+</ul>
+<p>The settings and the name of the debugger are set in source code in
+<a href="../../clr/src/debug/ee/debugger.cpp">debugger.cpp</a> as shown in the following 
+code:</p>
+
+
+<blockquote>
+
+
+<pre>#ifdef PLATFORM_UNIX
+    WCHAR *defaultDbgCmd = L"cordbg !a 0x%x";
+#else
+    WCHAR *defaultDbgCmd = L"cordbg.exe !a 0x%x";
+#endif
+
+</pre>
+
+
+</blockquote>
+
+
+<p>...</p>
+
+
+<blockquote>
+
+
+<pre>#ifdef PLATFORM_UNIX
+    // don't launch the cordbg by default on Unix
+    dwSetting = 1;
+#else
+    // show a dialog by default on Windows
+    dwSetting = 0;
+#endif
+</pre>
+
+
+</blockquote>
+
+
+<p>To change the default settings set the COMPlus_DbgJITDebugLaunchSetting 
+environment variable to:</p>
+
+
+<ul>
+  <li>0 to enable JIT-attach debugging.</li>
+  <li>1 to disable JIT-attach debugging.</li>
+</ul>
+
+
+<p>The environment variable will be used it if is present; otherwise the 
+defaults will remain in effect.&nbsp; </p>
+
+
+<p>On Windows the JIT-attach debugging behavior when it is enabled is as follows:</p>
+
+
+<ol>
+  <li>An unhandled exception occurs in managed code.</li>
+  <li>A message box appears.&nbsp; For example:</li>
+</ol>
+
+<blockquote>
+  <blockquote>
+
+
+<pre>---------------------------
+clix.exe - Common Language Runtime Debugging Services
+---------------------------
+Application has generated an exception that could not be handled. 
+
+Process id=0x108c (4236), Thread id=0x1100 (4352). 
+
+Click OK to terminate the application. 
+Click CANCEL to debug the application.
+---------------------------
+OK Cancel 
+---------------------------</pre>
+
+
+  </blockquote>
+</blockquote>
+
+<ol start="3">
+  <li>If you click Cancel, then the  Runtime Debugger is started.</li>
+  <li>If you click OK,  another message box appears.&nbsp; For example:</li>
+
+</ol>
+
+<blockquote>
+  <blockquote>
+
+
+<pre>---------------------------
+clix.exe - Application Error
+---------------------------
+The exception Integer division by zero.
+
+ (0xc0000094) occurred in the application at location 0x02ca2d94.
+
+
+Click on OK to terminate the program
+Click on CANCEL to debug the program
+---------------------------
+OK   Cancel   
+---------------------------
+</pre>
+
+
+  </blockquote>
+</blockquote>
+
+  <blockquote>
+    This second message box is the unmanaged code JIT-attach debugging message.</blockquote>
+<ol start="5">    
+  <li>If you click Cancel, the currently registered unmanaged code debugger in 
+  the registry starts.</li>
+  <li>If you click OK, no debugger starts. Unhandled exception 
+  output should be sent to the console.</li>
+</ol>
+
+
+<p>With  JIT-attach debugging disabled, the first message box does not appear and 
+you  have the option of debugging using the unmanaged code debugger only.</p>
+
+
+<p>On UNIX system-based platforms enable SSCLI JIT-attach debugging by setting 
+the COMPlus_DbgJITDebugLaunchSetting environment variable to 0 as shown in the 
+following example:</p>
+
+
+<blockquote>
+
+
+<pre>setenv COMPlus_DbgJITDebugLaunchSetting 0</pre>
+
+
+</blockquote>
+
+
+<p>Now when an unhandled exception occurs in managed code the Runtime Debugger 
+starts to debug the managed application.</p>
+
+
+<h2><a name="DebuggingManagedCodeRunningintheSSCLI"></a>Debugging Managed Code Running in the SSCLI</h2>
+
+
+<p>The SSCLI supports a subset of the debugging functionality supported by the 
+.NET Framework. In particular, the SSCLI does not have sufficient debugging support to 
+use  Microsoft&reg; Visual Studio .NET development to debug managed code 
+running in the SSCLI. The Microsoft CLR Debugger included with the .NET 
+Framework SDK is a variant of the Visual Studio .NET debugger and cannot be used 
+to debug managed code running under the SSCLI.</p>
+
+
+<p>The only option available for debugging managed code running under the SSCLI 
+is to use the Runtime Debugger (cordbg.exe on Windows, cordbg on UNIX 
+system-based platforms).</p>
+
+
+<p>For more information see the <a href="../tools/cordbg.html">Runtime Debugger</a> 
+documentation.</p>
+
+
+<p>On Windows you must be in an SSCLI console window in which an SSCLI 
+environment has been successfully built to ensure that you have a working copy 
+of the SSCLI version of cordbg.exe in your path. If you are not in a SSCLI 
+console window, you might inadvertently be running the .NET Framework SDK 
+implementation of cordbg.exe which will not launch the application being 
+debugged under the SSCLI. You do not have to explicitly use the
+<a href="../tools/clix.html">clix</a> SSCLI application launching utility when 
+you debug with the Runtime Debugger because the SSCLI implementation of the 
+debugger always starts all applications using the clix launcher.&nbsp; </p>
+
+
+<p>If  the code that you develop under the SSCLI will also run under the .NET 
+Framework, then you might choose to use the Visual Studio .NET debugger on 
+Windows and debug the code running under the .NET Framework. You can then run 
+the debugged application under the SSCLI by using the clix launcher.</p>
+
+
+<p>On FreeBSD  a known problem with kernels compiled for multi-processor 
+computers will cause the Runtime Debugger to function incorrectly. For more 
+information see the
+<a href="../relnotes.html#CorDBGDebuggerandMulti-processorKernelsonFreeBSD">
+release notes</a>.</p>
+
+
+<h2><a name="DebuggingUnmanagedSSCLICodeonWindows"></a>Debugging Unmanaged SSCLI Code on Windows</h2>
+
+
+<p>On Windows the preferred debugger for debugging unmanaged code is the Visual 
+Studio .NET debugger. To debug the SSCLI execution environment use the 
+following steps:</p>
+
+
+<ol>
+  <li>Set up an SSCLI console window using the <a href="../buildtools/env.html">
+  env.bat</a> batch file with either the checked or the fastchecked option. Because the fastchecked build option will introduce optimizations into the 
+  built code that might cause binary code to be moved relative to its source 
+  position in the source file, it is preferable to use the checked option.</li>
+  <li>Build the SSCLI.</li>
+  <li>From the SSCLI console window, execute the following command:
+</ol>
+  <blockquote>
+
+
+  <pre>devenv /debugexe %TARGETCOMPLUS%\clix.exe &lt;path_to_managed_application&gt;</pre>
+
+
+  </blockquote>
+  <blockquote>
+    The debugger will start up and create a default project for the clix 
+  launcher which is the application being debugged.&nbsp;
+  </blockquote>
+  <ol start="4">
+  <li>To start the debugger, choose <b>Step Into</b> from the <b>Debug</b> menu, (usually mapped to the F11 key). This will start debugging the clix application launcher.</li>
+  <li>After the debugger starts, you might be asked to save the solution file. Save the file in the default location.<p>You should now see the breakpoint waiting on the second line below (the 
+  opening brace) in 
+  clix.cpp:
+  </li>
+</ol>
+<blockquote>
+  <blockquote>
+
+
+<pre>int __cdecl main(int argc, char ** argv, char ** envp)
+{
+    DWORD nExitCode = 1; // error
+    WCHAR* pwzCmdLine;
+
+    PAL_RegisterLibrary(L"rotor_palrt");
+</pre>
+
+
+  </blockquote>
+</blockquote>
+<ol start="6">
+  
+  <li>You can now open other source files and set breakpoints or simply step 
+  through the SSCLI initialization process using the <b>Step Into</b> and <b>Step Over</b> 
+  commands.</li>
+</ol>
+
+
+<h3><a name="OtherDebuggersOnWindows"></a>Other Debuggers On Windows</h3>
+
+
+<p>There are times when Windows platform debuggers can be a useful substitute for 
+the Visual Studio .NET debugger. You should install the latest debugging tools 
+for Windows from the
+<a href="http://www.microsoft.com/ddk/debugging/">Microsoft Debugging Tools</a> 
+Web page to make sure that you have the most up-to-date version of the debuggers 
+on your computer.&nbsp;You can then use the NTSD, CDB, or WinDbg Windows 
+debuggers to debug the unmanaged code portions of the SSCLI.&nbsp;The process 
+of debugging is very similar to using the Visual Studio .NET debugger.</p>
+
+
+<ol>
+  <li>Set up an SSCLI console window using the <a href="../buildtools/env.html">
+  env.bat</a> batch file with either the checked or the fastchecked option. Because the fastchecked build option will introduce optimizations into the 
+  built code that might cause binary code to be moved relative to its source 
+  position in the source file, it is preferable to use the checked option.</li>
+  <li>Build the SSCLI.</li>
+  <li>From the SSCLI console window, execute the following command:<blockquote>
+
+
+<pre>ntsd clix.exe &lt;path_to_managed_application&gt;</pre>
+
+
+  </blockquote>
+  </li>
+  <li>You will initially stop at a breakpoint in the ntdll.dll module.&nbsp; At 
+  this point you can bring in source-level debugging information by using the 
+  .lines command.&nbsp; You should then set a breakpoint.&nbsp; For example, to 
+  get the  same location as you would by default with the Visual Studio .NET 
+  debugger and to step at the source level, use the  commands shown in boldin the 
+  following example. Some intermediate output has been removed for clarity.</li>
+</ol>
+<blockquote>
+  <blockquote>
+<pre>ntdll!DbgBreakPoint:
+77f97704 cc               int     3
+0:000> <b>.lines</b>
+Line number information will be loaded
+0:000> <b>L+t</b>
+Source options are 1:
+     1/t - Step/trace by source line
+0:000> <b>L+s</b>
+Source options are 5:
+     1/t - Step/trace by source line
+     4/s - List source code at prompt
+0:000> <b>L+o</b>
+Source options are d:
+     1/t - Step/trace by source line
+     4/s - List source code at prompt
+     8/o - Only show source code at prompt
+0:000> <b>bp clix!main</b>
+0:000> <b>g</b>
+Breakpoint 0 hit
+>  281: {
+0:000> <b>p</b>
+>  282:     DWORD nExitCode = 1; // error
+0:000>
+>  285:     PAL_RegisterLibrary(L"rotor_palrt");
+0:000>
+>  296:     pwzCmdLine = ::GetCommandLineW();
+0:000>
+</pre>
+
+  </blockquote>
+</blockquote>
+For more information on these debugging tools, see the documentation included with the Microsoft Platform debuggers. Also see the section below on 
+debugging unmanaged code with the SOS debugging extension.<p>You can also use 
+any other debugger that can debug Windows to debug the unmanaged code in the SSCLI. You will need to ensure that these alternate debuggers can utilize the .PDB 
+symbolic information format if you want to debug at the source line level.</p>
+<h3><a name="AttachingtoaRunningProcessonWindows"></a>Attaching to a Running Process on Windows</h3>
+<p>In some cases an error will cause an assertion in the SSCLI or the SSCLI to 
+stop responding. It is useful to be able to attach to the running process to diagnose 
+the source of the problem. </p>
+<p>To attach to a running process using Visual Studio .NET, start the 
+development environment and select the <b>Debug Processes</b> from the <b>Tools</b> 
+menu to 
+display a list of running processes and attach to clix.exe. In this mode 
+of using the development environment it is useful to be able to view the list of 
+Miscellaneous files that are source files opened in the course of 
+debugging.&nbsp; To view these files, on the <b>Tools</b> menu choose <b>Options</b> 
+and select 
+the <b>Documents</b> node under <b>Environments</b>.&nbsp; Select the item named 
+<b>Show Miscellaneous files in Solution Explorer</b>.</p>
+<p>To attach to a running process using the Windows debugging tools, start NTSD 
+or CDB with the <b>-pn</b> option and specify clix.exe as the process name. </p>
+<h2><a name="DebuggingUnmanagedSSCLICodeonUNIXSystem-basedPlatforms"></a>Debugging Unmanaged SSCLI Code on UNIX System-based Platforms</h2>
+
+
+<p>The  GDB debugger is usually used to debug SSCLI unmanaged code on UNIX 
+system-based platforms. The following example shows a typical session using the GDB 
+debugger on Mac&reg; OS X.&nbsp; Some console output has been removed for clarity.</p>
+
+
+<blockquote>
+
+
+<pre>/Users/yourname/sscli/build/v1.ppcchk.rotor&gt; <b>gdb clix</b>
+GNU gdb 5.1-20020408 (Apple version gdb-228) (Sun Jul 14 10:07:24 GMT 2002)
+(gdb) <b>r samples/hello/hello.exe</b>
+(gdb) <b>b main</b>
+Breakpoint 1 at 0x2b1c: file /Users/yourname/sscli/clr/src/tools/clix/clix.cpp, line 282.
+(gdb) <b>r</b>
+Starting program: /Users/yourname/sscli/build/v1.ppcchk.rotor/clix hello.exe
+[Switching to process 19319 thread 0xb03]
+Reading symbols for shared libraries ...... done
+
+Breakpoint 1, main (argc=2, argv=0xbffff780, envp=0xbffff78c) at /Users/yourname/sscli/clr/src/tools/clix/clix.cpp:282
+282 DWORD nExitCode = 1; // error</pre>
+
+
+</blockquote>
+
+
+<p>You can also attach to an already-running process that has thrown an assert 
+or otherwise needs to be debugged by using the attach command from within GDB.</p>
+
+
+<p>For more information, see the GDB info or man pages. There are also many 
+Web sites that provide helpful details on using the GDB debugger.</p>
+
+
+<h2><a name="DebuggingManagedCodeFromUnmanagedSSCLICode"></a>Debugging Managed Code From Unmanaged SSCLI Code</h2>
+
+
+<p>Although you cannot use the Visual Studio .NET debugger to debug both the 
+unmanaged SSCLI implementation code and managed code running under the SSCLI, 
+you can use the SOS debugger extension to obtain additional functionality to 
+support navigating through the managed code that is currently being executed.</p>
+
+
+<p>For more information on the SOS debugging extension usage under Windows and 
+UNIX system-based platforms see the <a href="sos.html">sos.html</a> document .</p>
+
+
+<hr>
+
+
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i></p>
+</body> 
+</html>

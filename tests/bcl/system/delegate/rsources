@@ -1,0 +1,28 @@
+# ==++==
+#
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+#
+# ==--==
+co1162invoke = co1162invoke.cs
+co1900begininvoke = co1900begininvoke.cs
+co1901clone = co1901clone.cs
+co1902createdelegate = co1902createdelegate.cs
+co3150equals = co3150equals.cs
+co3152getmethod = co3152getmethod.cs
+co3154gettarget = co3154gettarget.cs
+co3156getinvocationlist = co3156getinvocationlist.cs
+co3158combine = co3158combine.cs
+co3160combine = co3160combine.cs
+co3162remove = co3162remove.cs
+co3164dynamicinvoke = co3164dynamicinvoke.cs
+co3871op_comparisonoperators = co3871op_comparisonoperators.cs
+

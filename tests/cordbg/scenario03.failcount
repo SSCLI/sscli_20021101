@@ -1,0 +1,15 @@
+[ErrorsAllowed]
+1
+#(cordbg) break 450
+#Warning: source line may not have code. Breakpoint binding may fail.
+#Failed to find method to match source line. Unable to set breakpoint.
+#Error: hr=0x80004005, Unspecified error
+
+
+[IgnoreLineRx]
+#ignore this files, becuase they are not in retail versions
+Error loading source file.*String\.cs
+Error loading source file.*Object\.cs
+Error loading source file.*Thread\.cs
+Error loading source file.*CallContext\.cs
+

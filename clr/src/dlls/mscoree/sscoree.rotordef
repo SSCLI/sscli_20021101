@@ -1,0 +1,89 @@
+; ==++==
+;
+;   
+;    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+;   
+;    The use and distribution terms for this software are contained in the file
+;    named license.txt, which can be found in the root of this distribution.
+;    By using this software in any fashion, you are agreeing to be bound by the
+;    terms of this license.
+;   
+;    You must not remove this notice, or any other, from this software.
+;   
+;
+; ==--==
+EXPORTS
+        DllGetClassObject                                       private
+        MetaDataGetDispenser
+        GetMetaDataInternalInterface
+        GetMetaDataInternalInterfaceFromPublic
+        GetMetaDataPublicInterfaceFromInternal
+        _CorExeMain2
+        _CorDllMain                                                     
+        CoInitializeEE
+        CoUninitializeEE
+        CoInitializeCor                                                 
+        CoUninitializeCor                                               
+        PostError                                               @18 noname
+        LoadStringRC                                            @22 noname
+        ReOpenMetaDataWithMemory
+        g_ClassDumpData                                         @80 noname
+        TranslateSecurityAttributes
+        GetPermissionRequests
+        CoLogCurrentStack
+        CorExitProcess
+        ClrCreateManagedInstance
+
+        CorMarkThreadInThreadPool
+
+        ND_RU1
+        ND_RI2
+        ND_RI4
+        ND_RI8
+
+        ND_WU1
+        ND_WI2
+        ND_WI4
+        ND_WI8
+
+        ND_CopyObjSrc
+        ND_CopyObjDst
+
+        LogHelp_LogAssert
+        LogHelp_NoGuiOnAssert
+        LogHelp_TerminateOnAssert
+
+        GetPrivateContextsPerfCounters              
+        GetGlobalContextsPerfCounters       
+
+        GetAssemblyMDImport
+
+        GetCORSystemDirectory
+        GetCORVersion
+        GetCORRequiredVersion
+        LoadLibraryShim        
+        GetXMLObject
+        CreateConfigStream
+
+        StrongNameErrorInfo = MSCORSN.StrongNameErrorInfo
+        StrongNameFreeBuffer = MSCORSN.StrongNameFreeBuffer
+        StrongNameKeyGen = MSCORSN.StrongNameKeyGen
+        StrongNameKeyInstall = MSCORSN.StrongNameKeyInstall
+        StrongNameKeyDelete = MSCORSN.StrongNameKeyDelete
+        StrongNameGetPublicKey = MSCORSN.StrongNameGetPublicKey
+        StrongNameSignatureGeneration = MSCORSN.StrongNameSignatureGeneration
+        StrongNameTokenFromAssembly = MSCORSN.StrongNameTokenFromAssembly
+        StrongNameTokenFromAssemblyEx = MSCORSN.StrongNameTokenFromAssemblyEx
+        StrongNameTokenFromPublicKey = MSCORSN.StrongNameTokenFromPublicKey
+        StrongNameSignatureVerification = MSCORSN.StrongNameSignatureVerification
+        StrongNameCompareAssemblies = MSCORSN.StrongNameCompareAssemblies
+        StrongNameHashSize = MSCORSN.StrongNameHashSize
+        StrongNameSignatureSize = MSCORSN.StrongNameSignatureSize
+        StrongNameSignatureVerificationEx = MSCORSN.StrongNameSignatureVerificationEx
+        StrongNameSignatureVerificationFromImage = MSCORSN.StrongNameSignatureVerificationFromImage
+        GetHashFromAssemblyFile	= MSCORSN.GetHashFromAssemblyFile
+        GetHashFromFile = MSCORSN.GetHashFromFile
+        GetHashFromHandle = MSCORSN.GetHashFromHandle
+        GetHashFromBlob = MSCORSN.GetHashFromBlob
+        GetHashFromAssemblyFileW = MSCORSN.GetHashFromAssemblyFileW
+        GetHashFromFileW = MSCORSN.GetHashFromFileW

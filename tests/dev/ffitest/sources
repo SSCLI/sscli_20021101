@@ -1,0 +1,44 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+
+# don't default to linking against any .lib files
+USE_NOLIBS=1
+
+# undefine USE_MSVCRT defined in sources.cor
+!undef USE_MSVCRT
+
+# include hacks in makefile.inc to get it link with rotor_pal*.lib only
+NTTARGETFILES=
+
+
+INCLUDES		  =$(INCLUDES);..\..\..\clr\src\inc;
+
+TARGETNAME=..\..\ffi_test
+TARGETTYPE=PROGRAM
+TARGETPATH=.
+COR_C_FLAGS=-DUNICODE -D_UNICODE
+
+SOURCES=ffitest.cpp
+
+!if "$(PLATFORM_UNIX)" != "1"
+LINKLIBS= $(CORLIBS)\sscoree.lib       \
+    $(CORLIBS)\corguids.lib            \
+    $(LINKLIBS)
+!endif
+
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt -lsscoree
+
+UMTYPE=console

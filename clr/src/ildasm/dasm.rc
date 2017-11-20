@@ -1,0 +1,161 @@
+// ==++==
+// 
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+// 
+// ==--==
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+
+
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_USAGE_TITLE         "ILDASM command line syntax"
+    IDS_USAGE_01            "Usage: ildasm [options] <file_name> [options]\n\n"
+    IDS_USAGE_02            "Options for output redirection:\n"
+    IDS_USAGE_03            "  /OUT=<file name>    Direct output to file rather than to console.\n"
+    IDS_USAGE_05            "Options for file/console output:\n"
+    IDS_USAGE_07            "  /BYTES              Show actual bytes (in hex) as instruction comments.\n"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_USAGE_08            "  /RAWEH              Show exception handling clauses in raw form.\n"
+    IDS_USAGE_09            "  /TOKENS             Show metadata tokens of classes and members.\n"
+    IDS_USAGE_10            "  /SOURCE             Show original source lines as comments.\n"
+#ifdef _DEBUG
+    IDS_USAGE_10A           "  /PRETTY             Pretty print IL as pseudo-C code in comments.\n"
+#endif
+    IDS_USAGE_11            "  /LINENUM            Include references to original source lines.\n"
+    IDS_USAGE_12            "  /VISIBILITY=<vis>[+<vis>...]    Only disassemble the items with specified\n"
+    IDS_USAGE_13            "          visibility. (<vis> = PUB | PRI | FAM | ASM | FAA | FOA | PSC)\n"
+    IDS_USAGE_14            "  /PUBONLY            Only disassemble the public items (same as /VIS=PUB).\n"
+    IDS_USAGE_15            "  /QUOTEALLNAMES      Include all names into single quotes.\n"
+    IDS_USAGE_19            "  /UTF8               Use UTF-8 encoding for output (default - ANSI).\n"
+    IDS_USAGE_20            "  /UNICODE            Use UNICODE encoding for output.\n"
+    IDS_USAGE_21            "  /NOIL               Suppress IL assembler code output.\n"
+    IDS_USAGE_22            "  /HEADER             Include file header information in the output.\n"
+    IDS_USAGE_23            "  /ITEM=<class>[::<method>[(<sig>)]  Disassemble the specified item only\n\n"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_USAGE_24            "  /STATS              Include statistics on the image.\n"
+    IDS_USAGE_25            "  /CLASSLIST          Include list of classes defined in the module.\n"
+    IDS_USAGE_26            "  /ALL                Combination of /HEADER,/BYTES,/STATS,/CLASSLIST,/TOKENS\n\n"
+    IDS_USAGE_28            "  /METADATA[=<specifier>] Show MetaData, where <specifier> is:\n"
+    IDS_USAGE_29            "          MDHEADER    Show MetaData header information and sizes.\n"
+    IDS_USAGE_30            "          HEX         Show more things in hex as well as words.\n"
+    IDS_USAGE_31            "          CSV         Show the header sizes in Comma Separated format.\n"
+    IDS_USAGE_32            "          UNREX       Show unresolved externals.\n"
+    IDS_USAGE_34            "          SCHEMA      Show the MetaData schema information.\n"
+    IDS_USAGE_35            "          RAW         Show the raw MetaData tables.\n"
+    IDS_USAGE_36            "          HEAPS       Show the raw heaps.\n"
+    IDS_USAGE_37            "          VALIDATE    Validate the consistency of the metadata.\n"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_USAGE_40            "  /ALL        Combination of /HEADER, /BYTES, /TOKENS\n\n"
+    IDS_USAGE_41            "\nOption key is '-' or '/', options are recognized by first 3 characters\n\n"
+    IDS_USAGE_42            "Example:  ildasm /tok /byt myfile.exe /out=myfile.il\n\n"
+    IDS_USAGE_43            "\n\nPress any key to close the console window..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_INITLDR           "error : PELoader initialization failed"
+    IDS_E_FILEOPEN          "error : Cannot open file '%s' as a PE file"
+    IDS_E_NOCORHDR          "error : '%s' has no valid CLR header and cannot be disassembled"
+    IDS_E_BADCORHDR         "error : Bad CLR header, or the version of the file format is not supported"
+    IDS_E_OPENMD            "error : Failed to open meta data"
+    IDS_E_COPYRIGHT         "error : Copyrighted material - can not disassemble!"
+    IDS_E_DASMABORT         "********* DISASSEMBLY ABORTED BY THE OPERATOR **************"
+    IDS_E_DASMOK            "//*********** DISASSEMBLY COMPLETE ***********************"
+    IDS_E_PARTDASM          "// warning : THIS IS A PARTIAL DISASSEMBLY, NOT SUITABLE FOR RE-ASSEMBLING"
+    IDS_E_INSTRDT           "error : Failed to create instruction decoding table"
+    IDS_E_NOCOMPR           "error : Compression not supported"
+    IDS_E_CLSENUM           "error : Unable to enumerate classes"
+    IDS_E_SELFNSTD          "error : class %08X is nested in itself"
+    IDS_E_NOENCLOS          "error : class %08X is nested in missing class %08x"
+    IDS_E_INVALIDTK         "error :  invalid token (%08x)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_UNEXPTYPE         "error : unexpected token type, expected %02x, got %02x"
+    IDS_E_AUTOCA            "%s// --- The following custom attribute is added automatically, do not uncomment -------"
+    IDS_E_PARAMSEQNO        "// error : parameter %d has sequence number %d (0x%X), parameter info skipped"
+    IDS_E_METHBEG           "%s// Method begins at RVA 0x%x"
+    IDS_E_DASMERR           "%s ********* ERROR DISASSEMBLING THE METHOD IL CODE ***********"
+    IDS_E_DASMNATIVE        "%s//  Disassembly of native methods is not supported."
+    IDS_E_METHODRT          "%s//  Method provided by Runtime"
+    IDS_E_NORVA             "/* COULD NOT GET RVA */"
+    IDS_E_MEMBRENUM         "// Unable to enum members"
+    IDS_E_ODDMEMBER         "// Unidentified member 0x%08X of class '%s'"
+    IDS_E_ENUMINIT          "//*** EnumInit(mdtInterfaceImpl) failed"
+    IDS_E_NODATA            "// No data."
+    IDS_E_VTFUTABLE         "// Failed to get vtable fix-up table."
+    IDS_E_BOGUSRVA          "// Bogus RVA for entry."
+    IDS_E_EATJTABLE         "// Failed to get export address table jumps table."
+    IDS_E_EATJSIZE          "// Error!  size of ExportAddressTableJumps %d not a multiple of reserved size %d"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_RESFLAGS          "// Error!  reserved flags need to be 0."
+    IDS_E_MIHENTRY          "// Failed to get vtable method data."
+    IDS_E_CODEMGRTBL        "// Failed to get Code Manager table."
+    IDS_E_IMPORTDATA        "// Failed to read import data."
+    IDS_E_COMIMAGE          "// Not a CLR image"
+    IDS_E_MDDETAILS         "// Unable to get MetaData details."
+    IDS_E_MISTART           "//================================= M E T A I N F O ================================================\n"
+    IDS_E_MIEND             "//================================= END OF METAINFO ================================================\n"
+    IDS_E_ONLYITEMS         "// Only shown items having accessibility:"
+    IDS_E_ROGUEPTR          "ERROR: One of used pointers references undefined data (D_%8.8X)"
+    IDS_E_DECOMPRESS        "// Failed to decompress method"
+    IDS_E_COMPRESSED        "// Method is compressed"
+    IDS_E_CODESIZE          "%s// Code size       %d (0x%x)"
+    IDS_E_BOGUSLVSIG        "******** ERROR: Bogus local variable signature (0x%08X) ***********"
+    IDS_E_INSTRDECOD        "// ***Instruction decoding ERROR: %02X at position 0x%X (%d)"
+    IDS_E_INSTRTYPE         "// ERROR: Unknown type 0x%X of instruction 0x%X"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_E_ARGINDEX          "%-10s %d // ERROR: invalid arg index (>=%d)"
+    IDS_E_LVINDEX           "%-10s %d // ERROR: invalid local var index (>=%d)"
+    IDS_E_DEPRECINSTR       " // WARNING! Deprecated instruction"
+    IDS_E_SECTHEADER        "//  Error: no section header for RVA 0x%x, defaulting to empty string"
+    IDS_E_BADTOKENTYPE      "%-10s 0x%8.8X // ERROR: invalid token type"
+    IDS_E_DEPRDIR           "%s// WARNING: this directive is deprecated"
+    IDS_E_MDAIMPORT         "// ERROR: failed to obtain IMetaDataAssemblyImport (0x%08X)"
+    IDS_E_MDAFROMMDI        "// ERROR: failed to obtain IMetaDataAssemblyImport from IMDInternalImport (0x%08X)"
+    IDS_E_MDIIMPORT         "// ERROR: failed to obtain IMDInternalImport (0x%08X)"
+    IDS_E_NOMANIFEST        "// Module contains no Manifest data"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+

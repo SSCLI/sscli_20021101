@@ -1,0 +1,31 @@
+# ==++==
+#
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+#
+# ==--==
+
+#
+# For proper incremental building, this needs to be the relative 
+# path from the {wks|srv} directory to the ppc directory
+#
+PPC_SOURCES_DIR = ..\ppc
+
+PPC_SOURCES = \
+    $(PPC_SOURCES_DIR)\cgenppc.cpp \
+    $(PPC_SOURCES_DIR)\excepppc.cpp \
+    $(PPC_SOURCES_DIR)\asmhelpers.s \
+    $(PPC_SOURCES_DIR)\jithelp.s \
+    $(PPC_SOURCES_DIR)\jitinterfaceppc.cpp \
+    $(PPC_SOURCES_DIR)\remotingppc.cpp \
+    $(PPC_SOURCES_DIR)\gmsppc.cpp \
+    $(PPC_SOURCES_DIR)\gmsasm.s \
+    ..\gcsmp.cpp

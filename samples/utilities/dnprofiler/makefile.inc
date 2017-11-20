@@ -1,0 +1,22 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+UMLIBS=$(CORLIBS)\$(DYNLIB_PREFIX)rotor_pal.$(DYNLIB_SUFFIX)
+
+MACHINE_TARGETLIBS=
+
+target: $(SOURCES)
+    @binplace -R $(_NTTREE) $(BINPLACE_DBGFLAGS_NT) $(BINPLACE_FLAGS) $(COMPLUSTARGET)
+    @binplace -R $(_NTTREE) $(BINPLACE_FLAGS) *.bat *.sh *.csh
+
+

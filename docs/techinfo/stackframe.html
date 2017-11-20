@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html> 
+<head>
+<title>Stack Frame Format</title>
+<link rel="stylesheet" type="text/css" href="../rotor.css">
+</head>
+
+<body>
+<h1>Stack Frame Format  in the Shared Source CLI</h1>
+
+<p>When executing just-in-time (JIT) compiled code in the Shared Source Common 
+Language Infrastructure 
+(SSCLI), there is one
+simple format for the stackframe and a one calling convention.
+All arguments are located
+on the stack and nothing is passed in registers.&nbsp; In addition, the <b>this</b>
+pointer and the  return buffer pointer, if present, are always in a fixed 
+spot; and the prolog and epilog are identical from method to method.  
+Finally, only the ESI register is saved.  Other details to take into account  are described below.
+</p>
+<p>Note: In non-JIT-compiled code, such as helper stubs, other calling 
+conventions are at work, so do not expect to see a completely homogenous stack. 
+All calls to or from JIT-compiled code  follow the calling convention, but 
+calls between non-JIT-compiled components can follow other conventions.
+</p>
+
+<h3>Parameter Reordering</h3>
+<p>Create a stack frame  as follows:
+In the caller's code, up to and including the call instruction,  arguments
+to the method are pushed into the pushed argument area.  After this,
+the return address is pushed automatically as part of the call instruction.
+Arguments are pushed onto the stack in right-to-left order (using the "CIL
+calling convention").
+For a function <code>void MyFunc( <i>a</i>, <i>b</i>, <i>c</i> )</code>, parameter 
+<i>a</i> is
+pushed first, then <i>b</i>, and then <i>c</i>.  By the time the call instruction is encountered
+in the CIL stream, the arguments have been pushed onto the stack; now the JIT
+compiler will look for the first two arguments whose size
+is 4 bytes or smaller, first considering <i>a</i>, then <i>b</i>, and so on.  Once two arguments 
+matching the 4-byte size criterion are found, they are extended to 4 bytes (if
+necessary), and then hoisted into registers ECX and EDX.  After this, the 
+rest of the arguments on
+the stack are moved to take up the freed space, and finally, EDX is pushed back
+onto the stack, followed by ECX.
+</p>
+The following is an example of this sequence, for the function:<blockquote>
+<code>
+void MyFunc(int32 a, int64 b, int64 c, int32 d, int32 e)</code><br>
+</blockquote>
+<table width="50%">
+<tr><td width="50%">Before IL Call instruction</td><td>Before X86 call</td></tr>
+<tr><td valign="top"><pre> 
+Top of Stack
+
+e - int32
+d - int32 
+c - int64
+b - int64
+a - int32
+
+<i>(The two 4 byte arguments found are 'a' and 'd'.)</i>
+</pre></td>
+<td valign="top"><pre>Top of stack
+
+a - int32
+d - int32
+e - int32
+c - int64
+b - int64
+</pre></td>
+</tr>
+</table>
+
+<h3>Implied Parameters</h3>
+<p>The <b>this</b> pointer is a special argument which is not listed as an 
+argument of the function in CIL, but is always present in method calls on 
+objects. If the <b>this</b> pointer is present, it will always be the first __cdecl argument. The
+"return buffer pointer" is also a special argument that does not appear in the 
+CIL function signature. The  return buffer pointer will be the second __cdecl
+argument if the "this pointer" is present; otherwise, it is the first argument.
+</p>
+
+<p>The following examples show these implied parameters.</p>
+
+<table width="50%">
+<tr><td valign="top"><pre> 
+<b>ValueClass MyFunc(int32 a, int32 b)</b>
+
+Top of stack
+
+ret. buffer  - int32
+a            - int32
+b            - int32
+
+
+<b>ValueClass MyFunc(int64 a, int32 b)</b>
+
+Top of stack
+
+ret. buffer  - int32
+b            - int32
+a            - int64
+
+
+<b>ValueClass MyFunc(int64 a, int64 b)</b>
+
+Top of stack
+
+ret. buffer  - int32
+b            - int64
+a            - int64
+
+
+<b>ValueClass MyFunc(int32 this_pointer, int64 b, int64 c)</b>
+
+Top of stack
+
+this pointer - int32
+ret. buffer  - int32
+c            - int64
+b            - int64
+</pre></td>
+</tr>
+</table>
+
+<h3>FCALL Matching</h3>
+<p>The order of parameters to an FCALL (see fcall.h) has to match the JIT 
+calling convention described above, instead of matching the
+function signature as it appears in the framework classes. In fcall.h there are a number of macros to help in converting an 
+CIL-style signature to the JIT calling convention.
+</p>
+
+<h3>Variable-length Parameter Lists</h3>
+For functions with a variable number of parameters, a VarArg token is passed along with arguments. The signature
+of each call to a vararg function is described in the metadata, and the 
+VarArg token can be used to 
+look at the signature. The function signature does not describe the this 
+pointer and the return buffer pointer, but the garbage collector expects 
+to find them at a fixed offset, so they are pushed onto the stack after the VarArg token.
+All other arguments are pushed onto the stack before the VarArg token 
+from left to right, and there is no reordering to pull out 4-byte arguments.
+<p>The following two examples show variable length parameter lists.
+</p>
+
+<table width="50%"> 
+<tr><td valign="top"><pre> 
+<b>instance vararg void MyFunc(int64 a, int32 b, ValueClass c)</b>
+
+Top of stack
+
+this pointer - int32
+vararg token - int32
+c            - sizeof( c )
+b            - int32
+a            - int64
+
+
+<b>instance vararg ValueClass MyFunc(int64 a, int32 b, ValueClass c)</b>
+
+Top of stack
+
+this pointer - int32
+ret. buffer  - int32
+vararg token - int32
+c            - sizeof( c )
+b            - int32
+a            - int64
+</pre></td>
+</tr>
+</table>
+<br>
+<hr>
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i></p>
+</body>
+</html>

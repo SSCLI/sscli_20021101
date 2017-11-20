@@ -1,0 +1,12 @@
+src\inc\cordebug.idl
+src\inc\corffi.idl
+src\inc\corprof.idl
+src\inc\corpub.idl
+src\inc\corsym.idl
+src\inc\fusion.idl
+src\inc\fusionpriv.idl
+src\inc\gchost.idl
+src\inc\ivalidator.idl
+src\inc\ivehandler.idl
+src\inc\mscoree.idl
+src\fusion\idl\fuspriv.idl

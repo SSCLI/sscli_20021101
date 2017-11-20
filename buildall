@@ -1,0 +1,136 @@
+#!/bin/sh
+# ==++==
+# 
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+
+if test X"${TARGETCOMPLUS}" = "X" 
+then
+echo "ERROR: The TARGETCOMPLUS environment variable isn't set."
+echo "Please source the appropriate env.sh or env.csh file."
+exit 1
+fi
+
+CLEANOPTION=$1
+BUILDOPTIONS=$*
+if test -r ${ROTOR_DIR}/buildall.out; then rm -f ${ROTOR_DIR}/buildall.out;fi
+
+
+ReportError()
+{
+echo \*\*\* Error while building ${BUILDALL_BUILDING}
+echo     Open ${BUILDALL_ERRORLOG} to see the error log.
+if test X"${BUILDITALL}" != "X"
+then
+  echo setenv BUILDALL_BUILDING ${BUILDALL_BUILDING} > ${ROTOR_DIR}/buildall.out
+  echo setenv BUILDALL_ERRORLOG ${BUILDALL_ERRORLOG} >>${ROTOR_DIR}/buildall.out
+  echo setenv BUILDALL_WARNINGLOG ${BUILDALL_WARNINGLOG} >>${ROTOR_DIR}/buildall.out
+fi
+exit 1
+}
+
+ReportBuildError()
+{
+BUILDALL_ERRORLOG=${BUILDALL_BUILDING}/build${BUILD_ALT_DIR}.err
+BUILDALL_WARNINGLOG=${BUILDALL_BUILDING}/build${BUILD_ALT_DIR}.wrn
+ReportError
+}
+
+RunMake()
+{
+BUILDALL_BUILDING=$1
+shift
+echo Building $*...
+BUILDALL_ERRORLOG=${BUILDALL_BUILDING}/build${BUILD_ALT_DIR}.log
+if test -r ${BUILDALL_ERRORLOG}; then rm -f ${BUILDALL_ERRORLOG};fi
+cd ${BUILDALL_BUILDING}
+if test X"${CLEANOPTION}" = "X-c"
+then
+  echo $MAKE clean:>>${BUILDALL_ERRORLOG}
+  $MAKE clean >>${BUILDALL_ERRORLOG} 2>&1
+  if test $? != 0 ; then ReportError; fi
+fi
+echo $MAKE: >>${BUILDALL_ERRORLOG}
+$MAKE >${BUILDALL_ERRORLOG} 2>&1
+if test $? != 0 ; then ReportError; fi
+return 0
+}
+
+RunBuild()
+{
+BUILDALL_BUILDING=$1
+shift
+echo Building $*...
+cd ${BUILDALL_BUILDING}
+build $BUILDOPTIONS
+if test $? != 0 ; then ReportBuildError; fi
+}
+
+
+
+mkdir -p ${TARGETCOMPLUS}
+
+# Run ./configure if this is a clean build or if we don't think
+# ./configure has run to completion successfully yet.
+if [ X"$1" = "X-c" ] || [ ! -f ${ROTOR_DIR}/pal/unix/obj${BUILD_ALT_DIR}/makefile.common ]
+then
+  echo Running configure...
+  BUILDALL_BUILDING=${ROTOR_DIR}/configure
+  BUILDALL_ERRORLOG=${ROTOR_DIR}/build${BUILD_ALT_DIR}.log
+  if test "$NTDEBUG" = "ntsdnodbg"
+  then
+     ./configure -disable-debug > ${BUILDALL_ERRORLOG} 2>&1
+  else
+     ./configure > ${BUILDALL_ERRORLOG} 2>&1
+  fi
+  if test $? != 0 ; then ReportError; fi
+fi
+
+# Allow custom makes. We can use bsdmake on Mac OS X, for example.
+if test X"$MAKE" = "X"
+then
+    MAKE=make
+    export MAKE
+fi
+
+BUILDALL_BUILDING=${ROTOR_DIR}/pal/unix
+echo Building the PAL...
+BUILDALL_ERRORLOG=${BUILDALL_BUILDING}/build${BUILD_ALT_DIR}.log
+if test -r ${BUILDALL_ERRORLOG}; then rm -f ${BUILDALL_ERRORLOG};fi
+cd ${BUILDALL_BUILDING}
+if test X"${CLEANOPTION}" = "X-c"
+then
+echo $MAKE clean:>>${BUILDALL_ERRORLOG}
+$MAKE clean >>${BUILDALL_ERRORLOG} 2>&1
+if test $? != 0 ; then ReportError; fi
+echo $MAKE depend: >>${BUILDALL_ERRORLOG}
+$MAKE depend >>${BUILDALL_ERRORLOG} 2>&1
+if test $? != 0 ; then ReportError; fi
+fi
+echo $MAKE: >>${BUILDALL_ERRORLOG}
+$MAKE >>${BUILDALL_ERRORLOG} 2>&1
+if test $? != 0 ; then ReportError; fi
+
+RunMake ${ROTOR_DIR}/tools/nmake nmake tool
+RunMake ${ROTOR_DIR}/tools/cppmunge cppmunge tool
+RunMake ${ROTOR_DIR}/tools/binplace binplace tool
+RunMake ${ROTOR_DIR}/tools/build build tool
+RunBuild ${ROTOR_DIR}/tools/resourcecompiler the Resource Compiler
+RunBuild ${ROTOR_DIR}/palrt/src the PAL RT
+RunBuild ${CORBASE}/src the CLR
+RunBuild ${ROTOR_DIR}/fx/src FX
+RunBuild ${ROTOR_DIR}/managedlibraries ManagedLibraries
+RunBuild ${ROTOR_DIR}/jscript JScript
+RunBuild ${ROTOR_DIR}/samples the samples
+
+exit 0

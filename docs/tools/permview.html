@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<title>Permissions View Tool (permview.exe)</title>
+<link rel="stylesheet" type="text/css" href="../rotor.css">
+</head>
+
+<body>
+
+<h1>Permissions View Tool (permview.exe/permview)</h1>
+<p>The Permissions View tool is used to view the minimal, optional, 
+and refused permission sets requested by an assembly. Optionally, you can use 
+the Permissions View tool to view all declarative security used by an assembly. </p>
+<p>The application file is named permview.exe on Microsoft 
+Windows&reg; and permview on UNIX system-based platforms.</p>
+<h4>Usage</h4>
+<blockquote>
+  <pre class="syntax">permview [<b>/output</b> <i>filename</i>] [<b>/decl</b>] <i>manifestfile</i></pre>
+</blockquote>
+<p>Options can be specified using either a dash (-) or a slash (/). </p>
+<table border="1">
+  <tr VALIGN="top">
+    <th width="24%">Argument</th>
+    <th width="76%">Description</th>
+  </tr>
+  <tr VALIGN="top">
+    <td width="24%"><i>manifestfile</i></td>
+    <td width="76%">The file that contains the assembly's manifest. The manifest 
+    can be a standalone file or it can be incorporated in a portable executable 
+    (PE) file. The extension for this file is usually .exe or .dll, but it 
+    could also be .scr, or .ocx.</td>
+  </tr>
+</table>
+<h4>Options </h4>
+<table border="1">
+  <tr VALIGN="top">
+    <th width="24%">Option</th>
+    <th width="76%">Description</th>
+  </tr>
+  <tr VALIGN="top">
+    <td width="24%"><b>/decl</b></td>
+    <td width="76%">Displays all declarative security at the assembly, class, 
+    and method level for the assembly specified by <i>manifestfile</i>. This 
+    includes permission requests as well as demands, asserts, and all other 
+    security actions that can be applied declaratively. It does not refer to 
+    other assemblies linked to the specified assembly.</td>
+  </tr>
+  <tr VALIGN="top">
+    <td width="24%"><b>/h</b>[elp]</td>
+    <td width="76%">Displays command syntax and options for the tool.</td>
+  </tr>
+  <tr VALIGN="top">
+    <td width="24%"><b>/output </b><i>filename</i></td>
+    <td width="76%">Writes the output to the specified file. The default is to 
+    display the output to the console.</td>
+  </tr>
+  <tr VALIGN="top">
+    <td width="24%"><b>/?</b></td>
+    <td width="76%">Displays command syntax and options for the tool.<p>When you 
+    use this tool on UNIX system-based platforms, <b>/?</b> might expand to a 
+    filename. Instead use the <b>/help </b>option variation, use <b>-?</b>, or 
+    enclose the <b>/?</b> option in quotes: &quot;<b>/?</b>&quot;</td>
+  </tr>
+</table>
+<h4>Remarks</h4>
+<p>Developers can use the Permissions View tool to verify that they have applied permission 
+requests correctly to their code. Additionally, users can run this tool to 
+determine the permissions an assembly requires to execute. For example, if you 
+run a managed executable and get the error, 
+&quot;System.Security.Policy.PolicyException: Failed to acquire required 
+permissions,&quot; you can use the Permissions View tool to determine the permissions the code in 
+your executable must receive before it will execute.</p>
+<h4>Examples</h4>
+<p>The following command outputs to the console the permissions requested by the 
+assembly <code>myAssembly.exe</code>.</p>
+<pre>permview myAssembly.exe</pre>
+<p>If <code>myAssembly.exe</code> contains a minimum request for <b>FullTrust</b>, 
+the following output appears.</p>
+<pre>Microsoft (R) Shared Source CLI Permission Request Viewer. Version 1.x.x.x
+Copyright (C) Microsoft Corporation 1998-2002. All rights reserved.
+
+minimal permission set:
+&lt;PermissionSet class=&quot;System.Security.PermissionSet&quot; version =&quot;1&quot;&gt;
+   &lt;Unrestricted/&gt;
+&lt;/PermissionSet&gt;
+
+optional permission set:
+   Not specified
+
+refused permission set:
+   Not specified
+</pre>
+<p>The following command displays all declarative security on the assembly <code>
+myAssembly.exe</code>to the console. This command displays the 
+method-level security demand. </p>
+<pre>permview /decl myAssembly.exe</pre>
+<p>The following output appears.</p>
+<pre>Microsoft (R) Shared Source CLI Permission Request Viewer. Version 1.0.1.0
+Copyright (C) Microsoft Corporation 1998-2002. All rights reserved.
+
+Assembly RequestMinimum permission set:
+&lt;PermissionSet class=&quot;System.Security.PermissionSet&quot; version =&quot;1&quot;&gt;
+   &lt;Unrestricted/&gt;
+&lt;/PermissionSet&gt;
+
+Method A::myMethod() LinktimeCheck permission set:
+&lt;PermissionSet class=&quot;System.Security.PermissionSet&quot; version=&quot;1&quot;&gt;
+   &lt;Permission class=&quot;System.Security.Permissions.ReflectionPermission, mscorlib, Version=1.0.3300.0, 
+                      Culture=neutral, PublicKeyToken=b77a5c561934e089, version=&quot;1&quot;&gt;
+      &lt;MemberAccess/&gt;
+   &lt;/Permission&gt;
+&lt;/PermissionSet&gt;
+</pre>
+<p>The following command writes the permissions requested by the assembly <code>
+myAssembly.exe</code> to the file <code>myOutputFile</code>.</p>
+<pre>permview /output myOutputFile myAssembly.exe </pre>
+<h5>See Also</h5>
+<p><a href="tools_index.html">Tools Index</a></p>
+<hr>
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i></p>
+
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+; ==++==
+; 
+;   
+;    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+;   
+;    The use and distribution terms for this software are contained in the file
+;    named license.txt, which can be found in the root of this distribution.
+;    By using this software in any fashion, you are agreeing to be bound by the
+;    terms of this license.
+;   
+;    You must not remove this notice, or any other, from this software.
+;   
+; 
+; ==--==
+LIBRARY STRIKE
+EXPORTS
+    IP2MD
+    DumpMD
+    DumpClass
+    DumpMT
+    DumpObj
+    u
+    DumpStack
+    DumpStackObjects
+    EEStack
+    SyncBlk
+    Threads
+    ThreadPool
+    DumpModule
+    DumpDomain
+    DumpAssembly
+    DumpLoader
+    SearchStack
+    DumpCrawlFrame
+    Token2EE
+    Name2EE
+    SymOpt
+    Help
+    ip2md=IP2MD
+    dumpmd=DumpMD
+    dumpclass=DumpClass
+    dumpmt=DumpMT
+    dumpobj=DumpObj
+    dumpstack=DumpStack
+    dumpstackobjects=DumpStackObjects
+    eestack=EEStack
+    syncblk=SyncBlk
+    threads=Threads
+    threadpool=ThreadPool
+    dumpmodule=DumpModule
+    dumpdomain=DumpDomain
+    dumpassembly=DumpAssembly
+    dumploader=DumpLoader
+    searchstack=SearchStack
+    dumpcrawlframe=DumpCrawlFrame
+    token2ee=Token2EE
+    name2ee=Name2EE
+    symopt=SymOpt
+    help=Help
+    DebugExtensionNotify
+    DebugExtensionInitialize
+    DebugExtensionUninitialize
+

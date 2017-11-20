@@ -1,0 +1,50 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+INCLUDES                  =$(INCLUDES);..\..\..\src\inc;..\..\..\src\inc\$(O)
+
+COR_C_FLAGS     = -DUNICODE -D_UNICODE
+
+MINORCOMP       =peverify
+
+TARGETNAME      =$(DDKBUILDENV)\peverify
+TARGETPATH      =$(TARGETCORBIN)
+TARGETTYPE      =PROGRAM
+UMTYPE          =console
+UMENTRY         = wmain
+
+PRECOMPILED_INCLUDE     = stdpch.h
+PRECOMPILED_CXX         = 1
+PRECOMPILED_SOURCEFILE  = stdpch.cpp
+
+TARGETLIBS      =                       \
+!if "$(PLATFORM_UNIX)" != "1"
+    $(CORLIBS)\mscoree.lib              \
+!endif
+    $(CORLIBS)\utilcode.lib             \
+    $(CORLIBS)\corguids.lib             \
+
+!if "$(FEATURE_PAL)"=="1" && "$(PLATFORM_UNIX)"!="1"
+TARGETLIBS = $(TARGETLIBS) \
+        $(CORLIBS)\rotor_pal.lib \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+
+UNIX_DLL_LIBS=-lrotor_pal -lrotor_palrt -lsscoree
+USE_CC_LIB = 1
+
+SOURCES                 =  \
+    main.cpp               \
+    mscorver.rc

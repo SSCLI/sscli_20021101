@@ -1,0 +1,38 @@
+# ==++==
+#
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+#
+# ==--==
+
+# Need everything to have built...
+SYNCHRONIZE_DRAIN=1
+!include $(NTMAKEENV)\sources.cor
+
+INCLUDES                                = $(INCLUDES)
+
+MINORCOMP                               = none
+
+TARGETPRIORPATH	  =$(CORBUILDENV)
+TARGETLIBNAME     =none
+TARGETNAME        =$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH        =$(TARGETCORLIB)\$(TARGET_DIRECTORY)\$(DDKBUILDENV)
+TARGETTYPE        =DYNLINK
+UMTYPE            =windows
+COFFBASE          =none
+CORFLIBS          =
+
+!ifdef LINKONLY
+NTTARGETFILE1     = SetupTheGAC
+!endif
+
+SOURCES=
+NO_BROWSER_FILE =1   

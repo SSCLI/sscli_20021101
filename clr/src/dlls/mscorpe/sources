@@ -1,0 +1,63 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+
+# Sources file for CeeGen\PEWriter
+
+!include $(NTMAKEENV)\sources.cor
+
+INCLUDES        = $(INCLUDES);.;..\inc;..\..\inc;
+
+USE_NOLIBS      = 1
+NO_NTDLL        = 1
+
+MINORCOMP       =cor
+
+TARGETLIBNAME   =mscorpe
+TARGETPRIORPATH =$(DDKBUILDENV)/
+TARGETNAME      =$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH      =$(TARGETCORLIB)
+TARGETTYPE      =DYNLINK
+UMTYPE          =windows
+COFFBASE        =mscorpe
+
+DLLENTRY        =DllMain
+
+PRECOMPILED_INCLUDE     = stdafx.h
+PRECOMPILED_CXX         = 1
+PRECOMPILED_SOURCEFILE  = stdafx.cpp
+
+
+CORTHUNKLIBS    =
+
+TARGETLIBS      = \
+    $(CORLIBS)\utilcode.lib \
+    $(CORLIBS)\ceefgen.lib \
+    $(CORLIBS)\format.lib   \
+
+!if "$(PLATFORM_UNIX)" != "1"
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt
+USE_CC_LIB = 1
+
+EXCEPTION_HANDLING      = $(SEHONLY)
+
+SOURCES=                    \
+    ICeeFileGen.cpp     \
+    CeeFileGenWriter.cpp    \
+    PEWriter.cpp            \
+    CeeFileGenWriterTokens.cpp \
+    mscorver.rc

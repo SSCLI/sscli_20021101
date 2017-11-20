@@ -1,0 +1,68 @@
+# ==++==
+# 
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+#The following CorDbg test scenarios are intended to provide basic
+#coverage of the CorDbg debugger commands. Some of the inputs are 
+#MT and throw exceptions. The scenarios are not intended to cover 
+#aspx, web service, or other related debugging scenarios.
+#Scenario 01:
+#	Invoke all of the CorDbg commands (with options) with no debuggee
+#	process present.
+#Scenario 02:
+#	Single step, set/hit/delete breakpoints, show source, show stack traces,
+#	navigate stack traces, and print variables along strategic points of
+#	a MT C# program.	
+#Scenario 03:
+#	Set/hit/remove breakpoints, associate source with a specific breakpoint,
+#	show source, single step into/over/out, show stack traces, and print 
+#	variables along strategic points of a MT C# program.	
+#Scenario 04:
+#	Set/hit breakpoints, show source, obtain threads, show stack traces,
+#	navigate stack traces, print variables, single step, show modules/
+#	global functions/classes, show disassembly, and show appdomains along	 
+#	strategic points of a MT C# program.
+#Scenario 05:
+#	Display the help for every CorDbg command.
+#
+#Scenario 06:
+#	Display/modify CorDbg debugging modes, show stack traces, single step,
+#	set/hit/remove breakpoints, dump memory, show disassembly, kill and
+#	rerun debugging session, and print variables along strategic points
+#	of a MT C# program.
+#Scenario 07:
+#	Set/hit breakpoints, perform various funcevals, print variables, and
+#	show source along strategic points of a C# program.
+#Scenario 08:
+#	Catch/ignore class/module/exception/thread events, single step into/over
+#	instructions, and show dissasembly along strategic points of a MT C# 
+#	program.
+#Scenario 09:
+#	Set/display variables values, show source/disassembly, show the registers,
+#	set/hit/remove breakpoints, single step, and get the instruction count 
+#	(wt command) along strategic points of a MT C# program.
+#Scenario 10:
+#	Display/modify memory, show source/disassembly, set next statement, and 
+#	single step along strategic points of a MT C# program.
+#########################################################################
+cordbg_hello = cordbg_hello.cs, <NOGCSTRESS>, <CORDBGDRIVER>
+scenario01 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER> 
+scenario02 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>
+scenario03 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>, <NOTONFREEBSD>
+scenario04 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>
+scenario05 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>
+scenario06 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>, <NOTONFREEBSD>
+scenario07 = variety.cs, <NOGCSTRESS>, <CORDBGDRIVER>
+scenario08 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>
+scenario09 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>, <NOTONFREEBSD>
+scenario10 = threads.cs, <NOGCSTRESS>, <CORDBGDRIVER>

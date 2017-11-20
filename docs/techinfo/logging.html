@@ -1,0 +1,1655 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html> 
+<head>
+<title>Logging in the Rotor Shared Source CLI</title>
+<link rel="stylesheet" type="text/css" href="../rotor.css">
+
+<body>		
+<h1>Logging in the Shared Source CLI</h1>
+
+ 
+<h3>Contents</h3>
+
+ 
+<ul>
+  <li><a href="#PALLogging">PAL Logging</a><ul>
+    <li><a href="#PALLoggingonWindows">PAL Logging on Windows</a></li>
+    <li><a href="#PALLoggingonUNIXSystem-basedPlatforms">PAL Logging on UNIX 
+    System-based Platforms</a></li>
+  </ul>
+  </li>
+  <li><a href="#UnifiedCLILogging">Unified CLI Logging</a><ul>
+    <li><a href="#JIT-SpecificLoggingEnvironmentVariables">JIT-Specific Logging 
+    Environment Variables</a></li>
+    <li><a href="#GC-SpecificLoggingEnvironmentVariables">Garbage 
+    Collection-Specific Logging Environment Variables</a></li>
+    <li><a href="#AdditionalLoggingOptions">Additional Logging Options</a></li>
+  </ul>
+  </li>
+  <li><a href="#ExampleLoggingSession">Example Logging Sessions</a><ul>
+  <li><a href="#GarbageCollectionExample">Garbage Collection Example</a></li>
+  <li><a href="#SecurityExample">Security Example</a></li>
+  <li><a href="#LoaderExample">Loader Example</a></li>
+  <li><a href="#DumpOnClassLoadExample">DumpOnClassLoad Example</a></li>
+  <li><a href="#JitCodeLogMainExampleLogLevel4">JitCodeLog=Main Example: 
+  LogLevel=4</a></li>
+  <li><a href="#JitCodeLogMainExampleLogLevel5">JitCodeLog=Main Example: 
+  LogLevel=5</a></li>
+  <li><a href="#JitCodeLogMainExampleLogLevel6">JitCodeLog=Main Example: 
+  LogLevel=6</a></li>
+  <li><a href="#GarbageCollectionExampleDetailLevel1">Garbage Collection 
+  Example: Detail Level=1</a></li>
+  <li><a href="#GarbageCollectionExampleDetailLevel2">Garbage Collection 
+  Example: Detail Level=2</a></li>
+  <li><a href="#GarbageCollectionExampleDetailLevel3">Garbage Collection 
+  Example: Detail Level=3</a></li>
+  <li><a href="#ManagedCodeLoggingSerializationExample">Managed Code Logging - 
+  Serialization Example</a></li>
+  <li><a href="#ManagedCodeLoggingResourcesExample">Managed Code Logging - 
+  Resources Example</a></li>
+</ul>
+
+ 
+  </li>
+</ul>
+
+ 
+<p>There are several ways to turn on logging in the Shared Source Common 
+Language Infrastructure (SSCLI) 
+implementation.&nbsp; The two main categories of logging are:</p>
+
+ 
+<ul>
+  <li>Platform Adaptation Layer (PAL) logging.&nbsp; 
+
+ 
+<ul>
+  <li>This is logging at a low level before calls are made to the operating 
+  system.</li>
+</ul>
+
+ 
+  </li>
+  <li>Unified CLI logging.&nbsp; 
+
+ 
+<ul>
+  <li>This log processes in the SSCLI&nbsp; such as garbage 
+  collection, just-in-time (JIT) compilation, and so on.</li>
+</ul>
+
+ 
+  </li>
+</ul>
+
+ 
+<h2><a name="PALLogging"></a>PAL Logging</h2>
+
+ 
+<p>The SSCLI logging capabilities are different on the Microsoft&reg; Windows&reg; 
+operating system and  UNIX system-based platforms.</p>
+
+ 
+<p>Note: On all platforms, it is safe to copy and use a checked or fastchecked build of 
+the rotor_pal dynamic library in a retail build, so you can utilize API logging 
+while running optimized binaries.</p>
+
+ 
+<h3><a name="PALLoggingonWindows"></a>PAL Logging on Windows</h3>
+
+ 
+    <table border="1" width="90%">
+      <tr VALIGN="top">
+        <th width="18%">Environment variable</th>
+        <th width="14%">Value</th>
+        <th width="35%">Description</th>
+      </tr>
+      <tr VALIGN="top">
+        <td width="18%" rowspan="4">PAL_API_TRACING</td>
+        <td width="14%">debugger</td>
+        <td width="35%">Sends log output to the debugger through OutputDebugString 
+        API.<p>
+        Note that from inside a debugger, if you modify the global variable 
+        rotor_pal!<i>LogFileHandle</i> from the default value of 0 to 0xffffffff, then 
+        logging will immediately begin to be output to the debugger. Setting the 
+        variable 
+        back to 0 will disable it again.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="14%"><i>filename</i></td>
+        <td width="35%">Sends log output to the  specified <i>filename.</i></td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="14%">stderr</td>
+        <td width="35%">Sends log output to the standard error handler.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="14%">stdout</td>
+        <td width="35%">Sends log output to the console.</td>
+      </tr>
+</table>
+
+ 
+<h3><a name="PALLoggingonUNIXSystem-basedPlatforms"></a>PAL Logging on UNIX 
+System-based Platforms</h3>
+
+ 
+<p>The logging infrastructure and options are fully documented in 
+%ROTOR_PAL%/pal/unix/include/pal/<a href="../../pal/unix/include/pal/dbgmsg.h">dbgmsg.h</a>.</p>
+
+ 
+    <table border="1" width="90%">
+      <tr VALIGN="top">
+        <th width="16%" height="22">Environment variable</th>
+        <th width="23%" height="22">Value</th>
+        <th width="28%" height="22">Description</th>
+      </tr>
+      <tr VALIGN="top">
+        <td width="16%" height="92">PAL_API_TRACING</td>
+        <td width="23%" height="92"><i>filename</i></td>
+        <td width="28%" height="92">Sends log output to  the specified <i>filename.</i></td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="16%" rowspan="3" height="129">PAL_DBG_CHANNELS</td>
+        <td width="23%" height="22">[+|-]</td>
+        <td width="28%" height="22">+ turns logging on.&nbsp;  - turns logging off.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="23%" height="38"><i>channel</i>.</td>
+        <td width="28%" height="38">Must be  PAL,  FILE, or another channel option listed in 
+        dbgmsg.h or the option &quot;all&quot; for all the channels.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="23%" height="57"><i>level</i>[: ...]</td>
+        <td width="28%" height="57">Must be TRACE, ENTRY, WARN, ERROR or &quot;all&quot;<p>Debug levels are  described in dbgmsg.h.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="16%" height="137">PAL_API_LEVELS</td>
+        <td width="23%" height="137">1</td>
+        <td width="28%" height="137">Prevents the PAL from logging intra-PAL calls.
+        <p>When this environment variable is set to 1 and when the PAL's 
+        implementation of a Win32 API like CreateFile calls PAL EnterCriticalSection, 
+        you will see  the call to CreateFile, but not the nested call to 
+        EnterCriticalSection. Otherwise, the intra-PAL calls complicate the log 
+        file considerably, usually without a lot of additional value.</td>
+      </tr>
+</table>
+
+ 
+<p>The following example logs all API entries and exits to the file  entry.log:</p>
+
+ 
+<blockquote>
+
+ 
+<pre>set PAL_DBG_CHANNELS=&quot;+all.ENTRY&quot;
+set PAL_API_TRACING=&quot;entry.log&quot;</pre>
+
+ 
+</blockquote>
+
+ 
+<h2><a name="UnifiedCLILogging"></a>Unified CLI Logging</h2>
+
+ 
+<p>The following environment variables can be set  to enable detailed 
+execution 
+logging.&nbsp; </p>
+
+ 
+<p>A unified logging system is used for garbage collection, JIT compilation, and other execution logging; the logging system is controlled by a set of variables.&nbsp;The implementation 
+of the logging system is in %ROTOR_DIR%/clr/src/utilcode/<a href="../../clr/src/utilcode/log.cpp">log.cpp</a> and %ROTOR_DIR%/clr/src/inc/<a href="../../clr/src/inc/log.h">log.h</a>.&nbsp; Logging  is enabled 
+only in 
+checked and fastchecked builds.&nbsp;If you want to change, this see the comment 
+in log.cpp.</p>
+
+ 
+<p>Environment variables have the same name as code variables but must be 
+prefaced with &quot;COMPlus_&quot;.</p>
+
+ 
+<p>Every variable is read first from the environment, then from the per-user 
+rotor.ini configuration file, and finally from the per-installation rotor.ini configuration file.</p>
+
+ 
+<p>Some additional environment variables are used by the specific subsystem as 
+described in the following table.</p>
+
+ 
+    <table border="1" width="90%">
+      <tr VALIGN="top">
+        <th width="15%">Environment variable</th>
+        <th width="24%">Value</th>
+        <th width="28%">Description</th>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogEnable</td>
+        <td width="24%">1</td>
+        <td width="28%">Enables logging.&nbsp;This value can be toggled on and 
+        off without changing the other options.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogToConsole</td>
+        <td width="24%" rowspan="3">1<p>One of these options must be set 
+        to 1 to enable logging output</td>
+        <td width="28%">Enables logging output to the console</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogToDebugger</td>
+        <td width="28%">Enables logging to the debugger (cordbg.exe)</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogToFile</td>
+        <td width="28%">Enables logging to a file</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogFile</td>
+        <td width="24%">Name of log file</td>
+        <td width="28%">Requires COMPlus_LogToFile=1</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogFlushFile</td>
+        <td width="24%">&nbsp;</td>
+        <td width="28%">Flushes file buffers every time anything is logged. Applies 
+        to both LogToConsole and LogToFile. Slow but very reliable logging.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogFileAppend</td>
+        <td width="24%">1</td>
+        <td width="28%">Appends to log file instead of replacing it.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogLevel</td>
+        <td width="24%"><i>n</i></td>
+        <td width="28%">Specifies the detail level of log output. n
+        ranges from 1 to 9, where 1 is the least detailed log output and 9 is 
+        the most detailed log output.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_LogFacility</td>
+        <td width="24%"><i>bitmask_value</i></td>
+        <td width="28%">Hexadecimal bitmask of facilities log.&nbsp;Each bit represents 
+        one facility to log.<p>The list of facilities is in 
+        <a href="../../clr/src/inc/loglf.h">sscli/clr/src/inc/loglf.h</a></p>
+        <p>Some useful settings for <i>bitmask_value</i>:</p>
+        <ul>
+          <li>0x00000001&nbsp;&nbsp; Log garbage collector activity.</li>
+          <li>0x00000008&nbsp;&nbsp; Log JIT compilation activity.</li>
+          <li>0x12000003&nbsp;&nbsp; Log garbage collector, live pointers, app domains, 
+          and security activity.</li>
+        </ul>
+        <p>For more details on this option, see the examples below.</td>
+      </tr>
+      </table>
+
+ 
+<h3><a name="JIT-SpecificLoggingEnvironmentVariables"></a>JIT Compilation-Specific Logging Environment Variables</h3>
+
+ 
+<p>By default, these environment variables are  operational only on checked or fastchecked builds.</p>
+
+ 
+<p>Note: The COMPlus_JitDisasm variable that emits native code is 
+not supported in the SSCLI.&nbsp;To obtain similar functionality, set 
+COMPlus_JitBreak to the function you are interested in disassembling and then 
+view the disassembled code in the debugger after the debugger breaks in that function.</p>
+
+ 
+    <table border="1" width="90%">
+      <tr>
+        <th width="15%">Environment variable</th>
+        <th width="24%">Value</th>
+        <th width="28%">Description</th>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_JitName </td>
+        <td width="24%"><i>LibraryName</i></td>
+        <td width="28%">Indicates the name of the JIT DLL library.&nbsp; If not defined, defaults 
+        to the hard-coded names mscorejt.dll on Microsoft&reg; Windows&reg; or libmscorejt.so on 
+        UNIX system-based platforms.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_JitBreak</td>
+        <td width="24%"><i>FunctionName</i></td>
+        <td width="28%">Breaks into the debugger before JIT-compiling <i>FunctionName.</i><p>
+        Use the wildcard character *  to JIT-compile all functions.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_JitHalt</td>
+        <td width="24%"><i>FunctionName</i></td>
+        <td width="28%">Emits a debugger break before the prolog of <i>FunctionName</i>. 
+        The inserted break  occurs just before execution of the function.<p>
+        Use the wildcard character *  to JIT-compile all functions.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_JitTrace</td>
+        <td width="24%">0<p>1</td>
+        <td width="28%">If 1, prints out the trace of functions that were 
+        JIT-compiled.
+        <p>This trace output can also be obtained through the central logging system 
+        but this is a more lightweight mechanism that generates only JIT 
+        information.<br>
+&nbsp;</td>
+      </tr>
+      </table>
+
+ 
+<h3><a name="GC-SpecificLoggingEnvironmentVariables"></a>Garbage 
+Collection-Specific Logging Environment Variables</h3>
+
+ 
+<p>By default these are  operational only on checked or fastchecked builds.</p>
+
+ 
+    <table border="1" width="90%">
+      <tr>
+        <th width="15%">Environment Variable</th>
+        <th width="24%">Value</th>
+        <th width="28%">Description</th>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_GCprnLvl</td>
+        <td width="24%"><i>detailnumber</i></td>
+        <td width="28%">Sets the level of detail of the logging output to <i>
+        detailnumber</i>.&nbsp;The higher the number, the more data  output.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_GCtraceStart</td>
+        <td width="24%"><i>startnumber</i></td>
+        <td width="28%">The garbage collection generation at which to start 
+        logging output.</td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_GCtraceEnd</td>
+        <td width="24%"><i>endnumber</i></td>
+        <td width="28%">The garbage collection generation at which to stop 
+        logging output.</td>
+      </tr>
+</table>
+
+ 
+<h3><a name="AdditionalLoggingOptions"></a>Additional Logging Options</h3>
+
+ 
+<p>By default these are  operational only on checked or fastchecked builds.</p>
+
+ 
+<p>These options require that Unified CLI Logging be enabled but do not affect 
+the other options set for Unified logging.</p>
+
+ 
+    <table border="1" width="90%">
+      <tr>
+        <th width="15%">Environment variable</th>
+        <th width="24%">Value</th>
+        <th width="28%">Description</th>
+      </tr>
+      <tr>
+        <td width="15%">COMPlus_DumpOnClassLoad</td>
+        <td width="24%"><i>classname</i></td>
+        <td width="28%">Dumps information about the <i>classname</i> class when 
+        it is loaded.&nbsp; The information that is dumped contains:<ul>
+          <li>Method table summary.</li>
+          <li>Number of class static fields.</li>
+          <li>Number of class instance fields.</li>
+          <li>Number of class static object reference fields.</li>
+          <li>Number of declared fields.</li>
+          <li>Number of declared methods.</li>
+          <li>A vtable dump.</li>
+          <li>A field layout dump.</li>
+          <li>A garbage collection descriptor dump.</li>
+        </ul>
+        </td>
+      </tr>
+      <tr VALIGN="top">
+        <td width="15%">COMPlus_JitCodeLog</td>
+        <td width="24%"><i>FunctionName</i></td>
+        <td width="28%">Used only for JIT-compilation logging.<p>Log JIT-compilation information for <i>FunctionName</i>.</p>
+        <p>You can 
+        use FunctionName=* to  log all  functions</td>
+      </tr>
+</table>
+
+ 
+<h3>Managed Code Logging Options</h3>
+
+ 
+<p>By default, these are operational only on checked or fastchecked builds.</p>
+
+ 
+<p>These options require that Unified CLI Logging be enabled.&nbsp; </p>
+
+ 
+<p>This functionality is defined in
+<a href="../../clr/src/bcl/system/bcldebug.cs">sscli\clr\src\bcl\system\bcldebug.cs</a>.&nbsp; To find locations where 
+this logging facility is used, search for BCLDebug.Log in the sscli\clr\src\bcl 
+base class library source code 
+files.</p>
+
+ 
+<p>When using these logging functions it is recommended that you turn off logging for 
+most unmanaged code facilities. For example, set COMPlus_LogFacility=1.</p>
+
+ 
+<p>The COMPlus_LogLevel values are mapped for managed code logging to the following:</p>
+
+ 
+<table border="1" style="width: 90%">
+  <tr>
+    <th width="5%">Loglevel</th>
+    <th width="17%">Mapping</th>
+    <th width="30%">Description</th>
+  </tr>
+  <tr>
+    <td width="5%">0</td>
+    <td width="17%">LogLevel.Panic</td>
+    <td width="30%">Logs panic asserts.</td>
+  </tr>
+  <tr>
+    <td width="5%">1</td>
+    <td width="17%">LogLevel.Error</td>
+    <td width="30%">Logs error asserts.</td>
+  </tr>
+  <tr>
+    <td width="5%">2</td>
+    <td width="17%">LogLevel.Error</td>
+    <td width="30%">Logs error asserts.</td>
+  </tr>
+  <tr>
+    <td width="5%">3</td>
+    <td width="17%">LogLevel.Warning</td>
+    <td width="30%">Logs warning asserts.</td>
+  </tr>
+  <tr>
+    <td width="5%">4</td>
+    <td width="17%">LogLevel.Warning</td>
+    <td width="30%">Logs warning asserts.</td>
+  </tr>
+  <tr>
+    <td width="5%">5</td>
+    <td width="17%">LogLevel.Status</td>
+    <td width="30%">Logs status-level output.</td>
+  </tr>
+  <tr>
+    <td width="5%">6</td>
+    <td width="17%">LogLevel.Status</td>
+    <td width="30%">Logs status-level output.</td>
+  </tr>
+  <tr>
+    <td width="5%">7</td>
+    <td width="17%">LogLevel.Trace</td>
+    <td width="30%">Logs all trace output.&nbsp; This is the highest degree of 
+    detail.</td>
+  </tr>
+  <tr>
+    <td width="5%">8</td>
+    <td width="17%">LogLevel.Trace</td>
+    <td width="30%">Logs all trace output. Same as 7.</td>
+  </tr>
+  <tr>
+    <td width="5%">9</td>
+    <td width="17%">LogLevel.Trace</td>
+    <td width="30%">Logs all trace output. Same as 7.</td>
+  </tr>
+  </table>
+
+ 
+<p>To see detailed output from the COMPlus_ManagedLogFacility setting requires 
+having COMPlus_LogLevel set to 7, 8, or 9.</p>
+
+ 
+<p>The following table contains additional environment variables used by the 
+managed code logging implementation.</p>
+
+ 
+    <table border="1" width="90%">
+      <tr>
+        <th width="15%">Environment variable</th>
+        <th width="12%">Value</th>
+        <th width="40%" colspan="3">Description</th>
+      </tr>
+      <tr>
+        <td width="15%" rowspan="13">COMPlus_ManagedLogFacility</td>
+        <td width="12%" rowspan="13"><i>bitmask_value</i></td>
+        <td width="40%" colspan="3">Hexadecimal bitmask of facilities log.&nbsp; Each bit represents 
+        one facility to log.<p>The settings for <i>bitmask_value </i>are:</p>
+        </td>
+      </tr>
+      <tr>
+        <td width="8%" align="center"><b>Mask Value</b></td>
+        <td width="11%" align="center"><b>Switch Name</b></td>
+        <td width="21%" align="center"><b>Description</b></td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000001&nbsp; </td>
+        <td width="11%">NLS</td>
+        <td width="21%">Traces globalization usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000002</td>
+        <td width="11%">SER</td>
+        <td width="21%">Traces serialization usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000004&nbsp;&nbsp;&nbsp; </td>
+        <td width="11%">DYNIL</td>
+        <td width="21%">Traces some Reflection.Emit usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000008&nbsp;&nbsp;&nbsp; </td>
+        <td width="11%">REMOTE</td>
+        <td width="21%">Traces remoting usage. </td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000010 </td>
+        <td width="11%">BINARY</td>
+        <td width="21%">Traces binary formatter usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000020 </td>
+        <td width="11%">SOAP</td>
+        <td width="21%">Traces soap formatter usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000040 </td>
+        <td width="11%">REMOTINGCHANNELS</td>
+        <td width="21%">Traces remoting channels usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000080</td>
+        <td width="11%">CACHE</td>
+        <td width="21%">Traces reflection cache usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000100&nbsp; </td>
+        <td width="11%">RESMGRFILEFORMAT</td>
+        <td width="21%">Traces .resources file usage.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000200</td>
+        <td width="11%">PERF</td>
+        <td width="21%">Traces perf.&nbsp; Not used in SSCLI.</td>
+      </tr>
+      <tr>
+        <td width="8%">0x00000400&nbsp; </td>
+        <td width="11%">CORRECTNESS</td>
+        <td width="21%">Traces correctness.&nbsp; Not used in SSCLI.</td>
+      </tr>
+</table>
+
+ 
+<p>&nbsp;</p>
+
+ 
+<h2><a name="ExampleLoggingSession"></a>Example Logging Sessions</h2>
+
+ 
+<h3><a name="GarbageCollectionExample"></a>Garbage Collection Example</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogFacility=1</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_LogLevel=4</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs StringBuilder and thread safety tests.</p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bcl\ThreadSafety\Types Co8788StringBuilder.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>TID c10: Executing program with command line 'Co8788StringBuilder.exe'
+  </li>
+  <li>TID 9a0: Finalizer thread 
+  starting...C:\Data\Rotor2\tests\bcl\ThreadSafety\Types Co8788StringBuilder
+  </li>
+  <li>.cs , for StringBuilder - threadsafety test </li>
+  <li>{ =========== BEGINGC 0, (gen = 0, collect_classes = 0) ========== </li>
+  <li>TID 1078: Promotion Phase, Stack </li>
+  <li>TID 1078: Promotion Phase, Handles </li>
+  <li>TID 1078: Relocation Phase, Stack </li>
+  <li>TID 1078: Relocation Phase, Handles </li>
+  <li>TID 1078: ========== ENDGC (gen = 0, collect_classes = 0) ===========}
+  </li>
+  <li>TID e1c: { =========== BEGINGC 1, (gen = 0, collect_classes = 0) 
+  ========== </li>
+  <li>TID e1c: Promotion Phase, Stack </li>
+  <li>TID e1c: Promotion Phase, Handles </li>
+  <li>TID e1c: Relocation Phase, Stack </li>
+  <li>TID e1c: Relocation Phase, Handles </li>
+  <li>TID e1c: ========== ENDGC (gen = 0, collect_classes = 0) ===========} </li>
+  <li>TID c6c: { =========== BEGINGC 2, (gen = 0, collect_classes = 0) 
+  ========== </li>
+  <li>TID c6c: Promotion Phase, Stack </li>
+  <li>TID c6c: Promotion Phase, Handles </li>
+  <li>TID c6c: Relocation Phase, Stack </li>
+  <li>TID c6c: Relocation Phase, Handles </li>
+</ul>
+
+ 
+<h3><a name="SecurityExample"></a>Security Example</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogFacility=0x10000000</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_LogLevel=6</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs StringBuilder and threadsafety tests.</p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bcl\ThreadSafety\Types Co8788StringBuilder.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>TID 4bc: Executing program with command line 'Co8788StringBuilder.exe'
+  </li>
+  <li>TID 4bc: Code-access security check invoked. </li>
+  <li>TID 4bc: Method: CodeAccessSecurityEngine.Check </li>
+  <li>TID 4bc: Method: CodeAccessSecurityEngine.Check </li>
+  <li>TID 4bc: Method: CodeAccessPermission.Demand </li>
+  <li>TID 4bc: Method: Directory.GetCurrentDirectory </li>
+  <li>TID 4bc: Method: Environment.get_CurrentDirectory </li>
+  <li>TID 4bc: Method: Co8788StringBuilder..cctor </li>
+  <li>TID 4bc: Method: Co8788StringBuilder.Main </li>
+  <li>TID 4bc: Code-access stackwalk completed. </li>
+  <li>TID 4bc: Code-access check passed. </li>
+</ul>
+
+ 
+<h3><a name="LoaderExample"></a>Loader Example</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogFacility=0x00000010</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_LogLevel=4</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs StringBuilder and threadsafety tests.</p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bcl\ThreadSafety\Types Co8788StringBuilder.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>TID a00: Executing program with command line 'Co8788StringBuilder.exe'
+  </li>
+  <li>TID a00: Set: APPBASE: *C:\Data\Rotor2\tests\bcl\ThreadSafety\Types\*.
+  </li>
+  <li>TID a00: Set: APP_CONFIG_FILE: *Co8788StringBuilder.exe.config*. </li>
+  <li>TID a00: Set: APP_NAME: *Co8788StringBuilder.exe*. </li>
+  <li>TID a00: Set: MACHINE_CONFIG: 
+  *C:\Data\Rotor2\build\v1.x86chk.rotor\config\machine.config*. </li>
+</ul>
+
+ 
+<h3><a name="DumpOnClassLoadExample"></a>DumpOnClassLoad Example</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_DumpOnClassLoad=MainApp</li>
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_LogLevel=1</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs the Hello World sample.</p>
+<blockquote>
+
+ 
+<p>clix  hello.exe</p>
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>TID 9d8: Method table summary for 'MainApp': </li>
+  <li>TID 9d8: Number of static fields: 0 </li>
+  <li>TID 9d8: Number of instance fields: 0 </li>
+  <li>TID 9d8: Number of static obj ref fields: 0 </li>
+  <li>TID 9d8: Number of declared fields: 0 </li>
+  <li>TID 9d8: Number of declared methods: 2 </li>
+  <li>TID 9d8: Vtable (with interface duplicates) for 'MainApp': </li>
+  <li>TID 9d8: Total duplicate slots = 201 </li>
+  <li>TID 9d8: slot 0: System.Object[mscorlib.dll]::ToString 0x3E2073 (slot = 0)
+  </li>
+  <li>TID 9d8: slot 1: System.Object[mscorlib.dll]::Equals 0x3E2223 (slot = 1)
+  </li>
+  <li>TID 9d8: slot 2: System.Object[mscorlib.dll]::GetHashCode 0x3E2253 (slot = 
+  2) </li>
+  <li>TID 9d8: slot 3: System.Object[mscorlib.dll]::Finalize 0x3E2113 (slot = 3)
+  </li>
+  <li>TID 9d8: &lt;-- vtable ends here </li>
+  <li>TID 9d8: slot 4: MainApp[hello.exe]::Main 0x7B50AB (slot = 4) </li>
+  <li>TID 9d8: slot 5: MainApp[hello.exe]::.ctor 0x7B50D3 (slot = 5) </li>
+  <li>TID 9d8: </li>
+  <li>TID 9d8: GC description for 'MainApp': </li>
+</ul>
+<p>Hello World! </p>
+
+ 
+<h3><a name="JitCodeLogMainExampleLogLevel4"></a>JitCodeLog=Main Example: 
+LogLevel=4 </h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<p>Entry and exit logging for JIT-compiling in the prolog and epilog sections, 
+and in exception handlers</p>
+
+ 
+<ul class="none">
+  <li>set COMPlus_JitCodeLog=Main</li>
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogFacility=0x00000008</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_LogLevel=4</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs the try and finally tests.</p>
+
+ 
+<blockquote>
+<p>clix tests\bvt\short\CS_TryFinally.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>TID 98c: Executing program with command line 
+  'tests\bvt\short\CS_TryFinally.exe' </li>
+  <li>TID 98c: Fjitted 'CO_TryFinally::Main' at addr 0x2ca2d2c to 0x2ca3594 
+  header 0 </li>
+  <li>TID 98c: { entering CO_TryFinally::Main </li>
+  <li>1: Abort( ) </li>
+  <li>TID 9f0: In DefaultCatchHandler </li>
+  <li>1: finally 1 </li>
+  <li>1: finally 2 </li>
+  <li>1: finally 3 </li>
+  <li>1: finally 4 </li>
+  <li>1: finally 5 </li>
+  <li>1: finally 6 </li>
+  <li>1: finally 7 </li>
+  <li>1: finally 8 </li>
+  <li>2: Abort( ) </li>
+  <li>TID 984: In DefaultCatchHandler </li>
+  <li>2: finally 8 </li>
+  <li>2: finally 7 </li>
+  <li>2: finally 6 </li>
+  <li>2: finally 5 </li>
+  <li>2: finally 4 </li>
+  <li>2: finally 3 </li>
+  <li>2: finally 2 </li>
+  <li>2: finally 1 </li>
+  <li>3: Abort( ) </li>
+  <li>TID 51c: In DefaultCatchHandler </li>
+  <li>3: finally 1 </li>
+  <li>TID 98c: } leaving System.String::Main </li>
+  <li>TID 98c: Program exiting: return code = 0 </li>
+</ul>
+
+ 
+<h3><a name="JitCodeLogMainExampleLogLevel5"></a>JitCodeLog=Main Example: 
+LogLevel=5 </h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_JitCodeLog=Main</li>
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogFacility=0x00000008</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_LogLevel=5</li>
+</ul>
+
+ 
+<p>Garbage collection map information is printed describing the locals and the 
+arguments.&nbsp; </p>
+
+ 
+<p>Logging code fragments describing the state of the processor are inserted 
+after code for each intermediate language (IL) instruction.</p>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs the try and finally tests.</p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bvt\short\CS_TryFinally.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>TID 8b0: Executing program with command line 
+  'tests\bvt\short\CS_TryFinally.exe' </li>
+  <li>TID 8b0: ********* GC map info ******* </li>
+  <li>TID 8b0: Locals: (Length = 0x5, Frame size = 0x18) </li>
+  <li>TID 8b0: local 0: offset: -0x10 type: typeRef </li>
+  <li>TID 8b0: local 1: offset: -0x14 type: typeRef </li>
+  <li>TID 8b0: local 2: offset: -0x18 type: typeRef </li>
+  <li>TID 8b0: local 3: offset: -0x1c type: typeRef </li>
+  <li>TID 8b0: local 4: offset: -0x20 type: typeI4 </li>
+  <li>TID 8b0: Bitvectors printed low bit (low local), first </li>
+  <li>TID 8b0: LocalsGCRef bit vector len=4 bits: 1 1 1 1 </li>
+  <li>TID 8b0: interiorGC bitvector len=0 bits: </li>
+  <li>TID 8b0: Pinned LocalsGCRef bit vector: len=0 bits: </li>
+  <li>TID 8b0: Pinned interiorGC bit vector len =0 bits: </li>
+  <li>TID 8b0: Args: (Length = 0x1, Frame size = 0) </li>
+  <li>TID 8b0: offset: -0xfffffff8 type: typeRef </li>
+  <li>TID 8b0: Fjitted 'CO_TryFinally::Main' at addr 0x2ca2d2c to 0x2ca3594 
+  header 0 </li>
+  <li>TID 8b0: { entering CO_TryFinally::Main </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: 0: 0] EBP: 6ee9c IL: 0 newobj </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad075c: 0: 0] EBP: 6ee9c IL: 5 stloc.0 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: 0: 0] EBP: 6ee9c IL: 6 ldloc.0 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad075c: 0: 0] EBP: 6ee9c IL: 7 ldftn </li>
+  <li>TID 8b0: ESP:+ 6ee74[ 7b5153: ad075c: 0] EBP: 6ee9c IL: d newobj </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad076c: 0: 0] EBP: 6ee9c IL: 12 newobj </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0788: 0: 0] EBP: 6ee9c IL: 17 stloc.1 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: 0: 0] EBP: 6ee9c IL: 18 ldloc.0 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad075c: 0: 0] EBP: 6ee9c IL: 19 ldftn </li>
+  <li>TID 8b0: ESP:+ 6ee74[ 7b512b: ad075c: 0] EBP: 6ee9c IL: 1f newobj </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0bac: 0: 0] EBP: 6ee9c IL: 24 newobj </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0bc8: 0: 0] EBP: 6ee9c IL: 29 stloc.2 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: 0: ad0bc8] EBP: 6ee9c IL: 2a ldloc.0 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad075c: 0: 0] EBP: 6ee9c IL: 2b ldftn </li>
+  <li>TID 8b0: ESP:+ 6ee74[ 7b5103: ad075c: 0] EBP: 6ee9c IL: 31 newobj </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0c08: 0: 0] EBP: 6ee9c IL: 36 newobj </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0c24: 0: 0] EBP: 6ee9c IL: 3b stloc.3 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 3c ldloc.1 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0788: 0: ad0c24] EBP: 6ee9c IL: 3d callvirt </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 42 ldloc.2 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0bc8: 0: ad0c24] EBP: 6ee9c IL: 43 callvirt </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 48 ldloc.3 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0c24: 0: ad0c24] EBP: 6ee9c IL: 49 callvirt </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 4e ldc.i4 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ 7d0: 0: ad0c24] EBP: 6ee9c IL: 53 call </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 58 ldstr </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad06e4: 0: ad0c24] EBP: 6ee9c IL: 5d call </li>
+  <li>1: Abort( ) </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 62 ldloc.1 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0788: 0: ad0c24] EBP: 6ee9c IL: 63 callvirt </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 68 ldloc.1 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0788: 0: ad0c24] EBP: 6ee9c IL: 69 callvirt </li>
+  <li>TID 588: In DefaultCatchHandler </li>
+  <li>1: finally 1 </li>
+  <li>1: finally 2 </li>
+  <li>1: finally 3 </li>
+  <li>1: finally 4 </li>
+  <li>1: finally 5 </li>
+  <li>1: finally 6 </li>
+  <li>1: finally 7 </li>
+  <li>1: finally 8 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 6e ldstr </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad070c: 0: ad0c24] EBP: 6ee9c IL: 73 call </li>
+  <li>2: Abort( ) </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 78 ldloc.2 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0bc8: 0: ad0c24] EBP: 6ee9c IL: 79 callvirt </li>
+  <li>TID 9ec: In DefaultCatchHandler </li>
+  <li>2: finally 8 </li>
+  <li>2: finally 7 </li>
+  <li>2: finally 6 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 7e ldloc.2 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0bc8: 0: ad0c24] EBP: 6ee9c IL: 7f callvirt </li>
+  <li>2: finally 5 </li>
+  <li>2: finally 4 </li>
+  <li>2: finally 3 </li>
+  <li>2: finally 2 </li>
+  <li>2: finally 1 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 84 ldstr </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0734: 0: ad0c24] EBP: 6ee9c IL: 89 call </li>
+  <li>3: Abort( ) </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 8e ldloc.3 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0c24: 0: ad0c24] EBP: 6ee9c IL: 8f callvirt </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 94 ldloc.3 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ ad0c24: 0: ad0c24] EBP: 6ee9c IL: 95 callvirt </li>
+  <li>TID 9b0: In DefaultCatchHandler </li>
+  <li>3: finally 1 </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 9a ldc.i4.0 </li>
+  <li>TID 8b0: ESP:+ 6ee78[ 0: 0: ad0c24] EBP: 6ee9c IL: 9b stloc.s </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 9d br.s </li>
+  <li>TID 8b0: ESP: 6ee7c[ 0: ad0c24: ad0bc8] EBP: 6ee9c IL: 9f ldloc.s </li>
+  <li>TID 8b0: ESP:+ 6ee78[ 0: 0: ad0c24] EBP: 6ee9c IL: a1 ret </li>
+  <li>TID 8b0: } leaving ::Main </li>
+  <li>TID 8b0: Program exiting: return code = 0</li>
+</ul>
+
+ 
+<h3><a name="JitCodeLogMainExampleLogLevel6"></a>JitCodeLog=Main Example: 
+LogLevel=6</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_JitCodeLog=Main</li>
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogFacility=0x00000008</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_LogLevel=6</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs the try and finally tests.</p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bvt\short\CS_TryFinally.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<p>Too much output to list.&nbsp;
+With this log level setting the stack states encoded for garbage collection are output. </p>
+
+ 
+<h3><a name="GarbageCollectionExampleDetailLevel1"></a>Garbage Collection 
+Example: Detail Level=1</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_GCprnLvl=1 </li>
+  <li>set COMPlus_GCtraceStart=0 </li>
+  <li>set COMPlus_GCtraceEnd=3 </li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs StringBuilder and threadsafety tests. </p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bcl\ThreadSafety\Types Co8788StringBuilder.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>****Garbage Collection**** 1 </li>
+  <li>generation 0 condemned </li>
+  <li>****Garbage Collection**** 2 </li>
+</ul>
+
+ 
+<h3><a name="GarbageCollectionExampleDetailLevel2"></a>Garbage Collection 
+Example: Detail Level=2</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_GCprnLvl=2</li>
+  <li>set COMPlus_GCtraceStart=0</li>
+  <li>set COMPlus_GCtraceEnd=2</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs StringBuilder and threadsafety tests. </p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bcl\ThreadSafety\Types Co8788StringBuilder.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<ul class="none">
+  <li>****Garbage Collection**** 1 </li>
+  <li>Generation 1: [00A0002C 00ACF898[, gap size: 12 </li>
+  <li>Generation 0: [00ACF898 00B16888[, gap size: 12 </li>
+  <li>generation 0 condemned </li>
+  <li>---- Copy Phase condemning 0 ---- </li>
+  <li>---- Scavenge Phase ---- Condemned generation 0 </li>
+  <li>---- Scavenge Phase ---- Condemned generation 0 </li>
+  <li>---- Scavenge Phase ---- Condemned generation 0 </li>
+  <li>---- End of Copy phase ---- </li>
+  <li>Generation 1: [00A0002C 00ADDCD4[, gap size: 12 </li>
+  <li>Generation 0: [00ADDCD4 00ADDCE0[, gap size: 12 </li>
+</ul>
+
+ 
+<h3><a name="GarbageCollectionExampleDetailLevel3"></a>Garbage Collection 
+Example: Detail Level=3</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1</li>
+  <li>set COMPlus_LogToConsole=1</li>
+  <li>set COMPlus_LogToFile=0</li>
+  <li>set COMPlus_GCprnLvl=3</li>
+  <li>set COMPlus_GCtraceStart=0</li>
+  <li>set COMPlus_GCtraceEnd=2</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs StringBuilder and threadsafety tests. </p>
+
+ 
+<blockquote>
+
+ 
+<p>clix tests\bcl\ThreadSafety\Types Co8788StringBuilder.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<p>Too much output to list.&nbsp; Detailed per memory location log of operations 
+is performed during the first garbage collection.</p>
+
+ 
+<h3><a name="ManagedCodeLoggingSerializationExample"></a>Managed Code Logging - Serialization Example</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1 </li>
+  <li>set COMPlus_LogFacility=1 </li>
+  <li>set COMPlus_LogToConsole=1 </li>
+  <li>set COMPlus_LogToFile=0 </li>
+  <li>set COMPlus_LogLevel=7</li>
+  <li>set COMPlus_ManagedLogFacility=0x00000002</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs the simple serialization sample.</p>
+<blockquote>
+
+ 
+<p>clix 
+sscli\build\v1.x86fstchk.rotor\samples\howto\serialization\simpleserialize.exe</p>
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<blockquote>
+  <p>TID b60: Executing program with command line 'simpleserialize.exe '<br>
+  TID b6c: Finalizer thread starting...Fill MyList object with content </p>
+  <p>0<br>
+  1<br>
+  2<br>
+  3<br>
+  4<br>
+  5<br>
+  6<br>
+  7<br>
+  8<br>
+  9<br>
+  Serializing object graph to file objectgraph.bin<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 1 and hash code: 9 at pos: 16 Type: 
+  MyListIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 2 and hash code: -153933636 at pos: 
+  8 Type: ___AssemblyString___simpleserialize, Version=0.0.0.0, Culture=neutral, 
+  PublicKeyToken=nullIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 3 and hash code: 19 at pos: 17 
+  Type: System.Object[]IsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 4 and hash code: 0 at pos: 0 Type: 
+  MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 5 and hash code: 1 at pos: 4 Type: 
+  MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 6 and hash code: 2 at pos: 9 Type: 
+  MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 7 and hash code: 3 at pos: 12 Type: 
+  MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 8 and hash code: 4 at pos: 18 Type: 
+  MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 9 and hash code: 5 at pos: 1 Type: 
+  MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 10 and hash code: 6 at pos: 5 Type: 
+  MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 11 and hash code: 7 at pos: 28 
+  Type: MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 12 and hash code: 8 at pos: 33 
+  Type: MyListItemIsTransparentProxy: False<br>
+  [ObjectIDGenerator.GetID] Adding objectid: 13 and hash code: 9 at pos: 37 
+  Type: MyListItemIsTransparentProxy: False<br>
+  Finished </p>
+  <p>Deserializing object graph from file objectgraph.bin<br>
+  GetObject. objectID: 3<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  RecordFixup. ObjectToBeFixed: 1 Member: ArrayList+_items RequiredObject: 3<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 1 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 1<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 3 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 3<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyList Member:ArrayList+_size with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyList Member:ArrayList+_version with member 
+  type: System.Int32<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.CompleteObject]Non-ISerializableObject: 1<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 3<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 3<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 1<br>
+  [DoNewlyRegisteredObjectFixups]Exiting with no dependencies<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  GetObject. objectID: 4<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 4 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 4<br>
+  GetObject. objectID: 5<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 5 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 5<br>
+  GetObject. objectID: 6<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 6 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 6<br>
+  GetObject. objectID: 7<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 7 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 7<br>
+  GetObject. objectID: 8<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 8 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 8<br>
+  GetObject. objectID: 9<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 9 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 9<br>
+  GetObject. objectID: 10<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 10 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 10<br>
+  GetObject. objectID: 11<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 11 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 11<br>
+  GetObject. objectID: 12<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 12 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 12<br>
+  GetObject. objectID: 13<br>
+  GetObject. holder: null or IncompleteObjectReference<br>
+  [AddObjectHolder]Adding ObjectHolder with id: 13 Current Bins: 16<br>
+  [AddObjectHolder]Trying to put an object in bin 13<br>
+  [ObjectManager.CompleteObject]Non-ISerializableObject: 3<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 4<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 4<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 5<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 5<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 6<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 6<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 7<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 7<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 8<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 8<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 9<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 9<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 10<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 10<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 11<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 11<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 12<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 12<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 13<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 13<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 1<br>
+  [DoNewlyRegisteredObjectFixups]Doing fixup for object 1<br>
+  [DoNewlyRegisteredObjectFixups]ObjectValue MyList<br>
+  [ObjectManager.CompleteObject]Non-ISerializableObject: 1<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 3<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 3<br>
+  [ObjectManager.CompleteObject]Fixing up: 3<br>
+  [ObjectManager.CompleteObject]Fixing member: ArrayList+_items in object 1 with 
+  object 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 4<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 5<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 6<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 7<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 8<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 9<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 10<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 11<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 12<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [PopulateObjectMembers]Enter.<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Number with member type: 
+  System.Int32<br>
+  [PopulateObjectMembers] Type:MyListItem Member:Sqrt with member type: 
+  System.Double<br>
+  [PopulateObjectMembers]Leave.<br>
+  [ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for 
+  element: 13<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Object has 1 fixups registered<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: 3<br>
+  [DoNewlyRegisteredObjectFixups]Doing fixup for object 3<br>
+  [DoNewlyRegisteredObjectFixups]ObjectValue System.Object[]<br>
+  [ObjectManager.CompleteObject]Non-ISerializableObject: 3<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 4<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 4<br>
+  [ObjectManager.CompleteObject]Fixing up: 4<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 5<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 5<br>
+  [ObjectManager.CompleteObject]Fixing up: 5<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 6<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 6<br>
+  [ObjectManager.CompleteObject]Fixing up: 6<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 7<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 7<br>
+  [ObjectManager.CompleteObject]Fixing up: 7<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 8<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 8<br>
+  [ObjectManager.CompleteObject]Fixing up: 8<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 9<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 9<br>
+  [ObjectManager.CompleteObject]Fixing up: 9<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 10<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 10<br>
+  [ObjectManager.CompleteObject]Fixing up: 10<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 11<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 11<br>
+  [ObjectManager.CompleteObject]Fixing up: 11<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 12<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 12<br>
+  [ObjectManager.CompleteObject]Fixing up: 12<br>
+  [ObjectManager.CompleteObject]Getting fixup info for object: 13<br>
+  [ObjectManager.GetCompletionInfo]Getting fixup info for: 13<br>
+  [ObjectManager.CompleteObject]Fixing up: 13<br>
+  [ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.<br>
+  [ObjectManager.RegisterObject]Exiting.<br>
+  [ObjectManager.DoFixups]Entering<br>
+  [ObjectManager.DoFixups]All fixups completed. We don't need to walk the list.<br>
+  Finished </p>
+  <p>List item number 0, square root 0<br>
+  List item number 1, square root 1<br>
+  List item number 2, square root 1.4142135623731<br>
+  List item number 3, square root 1.73205080756888<br>
+  List item number 4, square root 2<br>
+  List item number 5, square root 2.23606797749979<br>
+  List item number 6, square root 2.44948974278318<br>
+  List item number 7, square root 2.64575131106459<br>
+  List item number 8, square root 2.82842712474619<br>
+  List item number 9, square root 3<br>
+  Program exiting: return code = 0<br>
+  TID b60: Signalling finalizer to quit...***** Calling Finalizers<br>
+  TID b60: Waiting for finalizer to quit...Finalizing object 00ad1d7c 
+  System.IO.StreamWriter[mscorlib.dll]<br>
+  TID b6c: Finalizing object 00ad0a38 System.IO.StreamWriter[mscorlib.dll]<br>
+  TID b6c: Finalizing object 00ad1424 System.Threading.Thread[mscorlib.dll]<br>
+  TID b6c: Finalizing object 00ad0a84 System.IO.StreamWriter[mscorlib.dll]<br>
+  TID b6c: Finalizing object 00b0a154 System.Threading.Thread[mscorlib.dll]<br>
+  TID b6c: Finalizer thread done.</p>
+</blockquote>
+
+ 
+<h3><a name="ManagedCodeLoggingResourcesExample"></a>Managed Code Logging - Resources Example</h3>
+
+ 
+<h4>Environment</h4>
+
+ 
+<ul class="none">
+  <li>set COMPlus_LogEnable=1 </li>
+  <li>set COMPlus_LogFacility=1 </li>
+  <li>set COMPlus_LogToConsole=1 </li>
+  <li>set COMPlus_LogToFile=0 </li>
+  <li>set COMPlus_LogLevel=7</li>
+  <li>set COMPlus_ManagedLogFacility=0x00000100</li>
+</ul>
+
+ 
+<h4>Application execution command.</h4>
+
+ 
+<p>This runs the managed resources sample.</p>
+
+ 
+<blockquote>
+
+ 
+<p>clix 
+rotor\build\v1.x86fstchk.rotor\samples\howto\resources\managedresources.exe</p>
+
+ 
+</blockquote>
+
+ 
+<h4>Log output that is sent to the console.</h4>
+
+ 
+<blockquote>
+
+ 
+<p>TID ba8: Executing program with command line 'managedresources.exe -u'<br>
+TID 628: Finalizer thread starting...1. New Zealand English<br>
+2. US English<br>
+3. German (Germany)<br>
+<br>
+RuntimeResourceSet .ctor(Stream)<br>
+ResourceReader .ctor(Stream, Hashtable). UnmanagedMemoryStream: True<br>
+ReadResources: Parsing ResMgr header v1.<br>
+ReadResources: Expecting 18 resources.<br>
+ReadResources: _nameOffset = 0x11c _dataOffset = 0x2f6<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for promptCulture hash: f54f0f6d<br>
+LoadObject type: String pos: 0x3be<br>
+Please select the culture you wish to view this example in ==&gt; 1<br>
+<br>
+<br>
+Current culture set to English (New Zealand)<br>
+<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for promptName hash: 3f76faa6<br>
+LoadObject type: String pos: 0x468<br>
+Please enter your name ==&gt; Fred<br>
+<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for promptAge hash: 9550e762<br>
+LoadObject type: String pos: 0x31f<br>
+Please enter your age ==&gt; 33<br>
+<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for promptDegrees hash: e8c39686<br>
+LoadObject type: String pos: 0x397<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for degree1 hash: 9cdb4140<br>
+LoadObject type: String pos: 0x33a<br>
+Please enter the current temperature, in Fahrenheit: 33<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for degree2 hash: 9cdb4143<br>
+LoadObject type: String pos: 0x34f<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for degree3 hash: 9cdb4142<br>
+LoadObject type: String pos: 0x34a<br>
+<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for promptDist hash: 3f6f842b<br>
+LoadObject type: String pos: 0x43d<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for dist1 hash: 9cac43e<br>
+LoadObject type: String pos: 0x3ff<br>
+Please tell us how far you travel to work (in Miles) ==&gt; 33<br>
+<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for promptEntries hash: 3e048973<br>
+LoadObject type: String pos: 0x415<br>
+You entered the following information:<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for outputName hash: 4922ed1d<br>
+LoadObject type: String pos: 0x484<br>
+Name: Fred<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for outputAge hash: 213f2379<br>
+LoadObject type: String pos: 0x40f<br>
+Age: 33<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for outputDegrees hash: 9d95fc5d<br>
+LoadObject type: String pos: 0x355<br>
+Temperature: 33<br>
+Going down fast path in RuntimeResourceSet::GetObject<br>
+FindPosForResource for outputDist hash: 49262390<br>
+LoadObject type: String pos: 0x48b<br>
+Distance To Work: 33<br>
+Program exiting: return code = 0<br>
+***** Calling Finalizers<br>
+TID ba8: Signalling finalizer to quit...TID ba8: Waiting for finalizer to quit..<br>
+.***** Calling Finalizers<br>
+TID 628: Finalizing object 00ad3470 System.IO.StreamWriter[mscorlib.dll]<br>
+TID 628: Finalizing object 00ad1620 System.Threading.Thread[mscorlib.dll]<br>
+TID 628: Finalizing object 00ad279c System.IO.StreamWriter[mscorlib.dll]<br>
+TID 628: Finalizing object 00ad2750 System.IO.StreamWriter[mscorlib.dll]<br>
+TID 628: Finalizing object 00ae6154 System.Threading.Thread[mscorlib.dll]<br>
+TID 628: Finalizer thread done.</p>
+
+ 
+</blockquote>
+<hr>
+
+ 
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i><br>
+&nbsp;</p>
+
+ 
+</body> 
+</html>

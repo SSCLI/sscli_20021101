@@ -1,0 +1,245 @@
+0 "The operation completed successfully.
+"
+2 "The system cannot find the file specified.
+"
+3 "The system cannot find the path specified.
+"
+4 "The system cannot open the file.
+"
+5 "Access is denied.
+"
+6 "The handle is invalid.
+"
+8 "Not enough storage is available to process this command.
+"
+11 "An attempt was made to load a program with an incorrect format.
+"
+12 "The access code is invalid.
+"
+13 "The data is invalid.
+"
+14 "Not enough storage is available to complete this operation.
+"
+15 "The system cannot find the drive specified.
+"
+18 "There are no more files.
+"
+19 "The media is write protected.
+"
+21 "The device is not ready.
+"
+24 "The program issued a command but the command length is incorrect.
+"
+29 "The system cannot write to the specified device.
+"
+30 "The system cannot read from the specified device.
+"
+32 "The process cannot access the file because it is being used by another process.
+"
+33 "The process cannot access the file because another process has locked a portion of the file.
+"
+36 "Too many files opened for sharing.
+"
+38 "Reached the end of the file.
+"
+39 "The disk is full.
+"
+50 "The request is not supported.
+"
+52 "A duplicate name exists on the network.
+"
+53 "The network path was not found.
+"
+55 "The specified network resource or device is no longer available.
+"
+67 "The network name cannot be found.
+"
+80 "The file exists.
+"
+82 "The directory or file cannot be created.
+"
+87 "The parameter is incorrect.
+"
+88 "A write fault occurred on the network.
+"
+108 "The disk is in use or locked by another process.
+"
+109 "The pipe has been ended.
+"
+110 "The system cannot open the device or file specified.
+"
+111 "The file name is too long.
+"
+112 "There is not enough space on the disk.
+"
+120 "This function is not supported on this system.
+"
+121 "The semaphore timeout period has expired.
+"
+122 "The data area passed to a system call is too small.
+"
+123 "The filename, directory name, or volume label syntax is incorrect.
+"
+126 "The specified module could not be found.
+"
+127 "The specified procedure could not be found.
+"
+131 "An attempt was made to move the file pointer before the beginning of the file.
+"
+132 "The file pointer cannot be set on the specified device or file.
+"
+145 "The directory is not empty.
+"
+156 "The recipient process has refused the signal.
+"
+158 "The segment is already unlocked.
+"
+161 "The specified path is invalid.
+"
+183 "Cannot create a file when that file already exists.
+"
+191 "Cannot run %1 in Win32 mode.
+"
+192 "The operating system cannot run %1.
+"
+193 "%1 is not a valid Win32 application.
+"
+203 "The system could not find the environment option that was entered.
+"
+206 "The filename or extension is too long.
+"
+234 "More data is available.
+"
+259 "No more data is available.
+"
+267 "The directory name is invalid.
+"
+288 "Attempt to release mutex not owned by caller.
+"
+299 "Only part of a ReadProcessMemory or WriteProcessMemory request was completed.
+"
+487 "Attempt to access invalid address.
+"
+534 "Arithmetic result exceeded 32 bits.
+"
+995 "The I/O operation has been aborted because of either a thread exit or an application request.
+"
+997 "Overlapped I/O operation is in progress.
+"
+998 "Invalid access to memory location.
+"
+1001 "Recursion too deep; the stack overflowed.
+"
+1004 "Invalid flags.
+"
+1005 "The volume does not contain a recognized file system.
+Please make sure that all required file system drivers are loaded and that the volume is not corrupted.
+"
+1006 "The volume for a file has been externally altered so that the opened file is no longer valid.
+"
+1067 "The process terminated unexpectedly.
+"
+1113 "No mapping for the Unicode character exists in the target multi-byte code page.
+"
+1114 "A dynamic link library (DLL) initialization routine failed.
+"
+1117 "The request could not be performed because of an I/O device error.
+"
+1127 "While accessing the hard disk, a disk operation failed even after retries.
+"
+1131 "A potential deadlock condition has been detected.
+"
+1168 "Element not found.
+"
+1223 "The operation was canceled by the user.
+"
+1359 "An internal error occurred.
+"
+1392 "The file or directory is corrupted and unreadable.
+"
+1393 "The disk structure is corrupted and unreadable.
+"
+1396 "Logon Failure: The target account name is incorrect.
+"
+1460 "This operation returned because the timeout period expired.
+"
+1812 "The specified image file did not contain a resource section.
+"
+1815 "The specified resource language ID cannot be found in the image file.
+"
+2013 "A required tag is not present.
+"
+11001 "No such host is known.
+"
+11002 "This is usually a temporary error during hostname resolution and means that the local server did not receive a response from an authoritative server.
+"
+11003 "A non-recoverable error occurred during a database lookup.
+"
+11004 "The requested name is valid and was found in the database, but it does not have the correct associated data being resolved for.
+"
+10004 "A blocking operation was interrupted by a call to WSACancelBlockingCall.
+"
+10009 "The file handle supplied is not valid.
+"
+10013 "An attempt was made to access a socket in a way forbidden by its access permissions.
+"
+10014 "The system detected an invalid pointer address in attempting to use a pointer argument in a call.
+"
+10022 "An invalid argument was supplied.
+"
+10024 "Too many open sockets.
+"
+10035 "A non-blocking socket operation could not be completed immediately.
+"
+10036 "A blocking operation is currently executing.
+"
+10037 "An operation was attempted on a non-blocking socket that already had an operation in progress.
+"
+10038 "An operation was attempted on something that is not a socket.
+"
+10040 "A message sent on a datagram socket was larger than the internal message buffer or some other network limit, or the buffer used to receive a datagram into was smaller than the datagram itself.
+"
+10041 "A protocol was specified in the socket function call that does not support the semantics of the socket type requested.
+"
+10042 "An unknown, invalid, or unsupported option or level was specified in a getsockopt or setsockopt call.
+"
+10043 "The requested protocol has not been configured into the system, or no implementation for it exists.
+"
+10044 "The support for the specified socket type does not exist in this address family.
+"
+10045 "The attempted operation is not supported for the type of object referenced.
+"
+10047 "An address incompatible with the requested protocol was used.
+"
+10048 "Only one usage of each socket address (protocol/network address/port) is normally permitted.
+"
+10049 "The requested address is not valid in its context.
+"
+10051 "A socket operation was attempted to an unreachable network.
+"
+10053 "An established connection was aborted by the software in your host machine.
+"
+10054 "An existing connection was forcibly closed by the remote host.
+"
+10055 "An operation on a socket could not be performed because the system lacked sufficient buffer space or because a queue was full.
+"
+10056 "A connect request was made on an already connected socket.
+"
+10057 "A request to send or receive data was disallowed because the socket is not connected and (when sending on a datagram socket using a sendto call) no address was supplied.
+"
+10058 "A request to send or receive data was disallowed because the socket had already been shut down in that direction with a previous shutdown call.
+"
+10060 "A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+"
+10061 "No connection could be made because the target machine actively refused it.
+"
+10064 "A socket operation failed because the destination host was down.
+"
+10065 "A socket operation was attempted to an unreachable host.
+"
+10091 "WSAStartup cannot function at this time because the underlying system it uses to provide network services is currently unavailable.
+"
+10092 "The sockets version requested is not supported.
+"
+10093 "Either the application has not called WSAStartup, or WSAStartup failed.
+"

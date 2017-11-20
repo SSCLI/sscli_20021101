@@ -1,0 +1,70 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+INCLUDES          = $(INCLUDES);.;..\inc;..\inc\$(O)
+
+MINORCOMP       =cor
+
+COR_C_FLAGS     = -DUNICODE -D_UNICODE
+!if "$(PLATFORM_UNIX)" != "1"
+COR_C_FLAGS     = $(COR_C_FLAGS) /TP
+!endif
+TARGETNAME      =$(DDKBUILDENV)\ilasm
+TARGETPATH      =$(TARGETCORBIN)
+TARGETTYPE      =PROGRAM
+UMTYPE          =console
+UMENTRY         =wmain
+
+
+CORTHUNKLIBS    =
+
+# Causes the appropriate checked/free version of msvcprt{d}.lib
+#   to be included in the link
+# The static versions of this library is libcpmtd.lib (checked)
+#   and libcpmt.lib (free)
+# USE_STL         = 1
+
+NTTARGETFILES = SetStack
+
+TARGETLIBS      = \
+!if "$(PLATFORM_UNIX)" != "1"
+    $(CORLIBS)\mscorpe.lib \
+    $(CORLIBS)\format.lib \
+    $(CORLIBS)\utilcode.lib \
+    $(CORLIBS)\mscoree.lib \
+    $(CORLIBS)\rotor_pal.lib \
+    $(CORLIBS)\rotor_palrt.lib \
+!endif
+
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt -lsscoree -lmscorpe -lmscorsn
+USE_CC_LIB = 1
+
+SOURCES=        \
+    assem.cpp \
+    writer.cpp \
+    method.cpp \
+    asmman.cpp \
+    main.cpp \
+    assembler.cpp \
+    mscorver.rc
+
+ROTOR_X86_SOURCES = \
+    parseasm.cpp
+
+PPC_SOURCES = \
+    parseasm.cpp
+
+SPARC_SOURCES = \
+    parseasm.cpp

@@ -1,0 +1,49 @@
+; ==++==
+; 
+;   
+;    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+;   
+;    The use and distribution terms for this software are contained in the file
+;    named license.txt, which can be found in the root of this distribution.
+;    By using this software in any fashion, you are agreeing to be bound by the
+;    terms of this license.
+;   
+;    You must not remove this notice, or any other, from this software.
+;   
+; 
+; ==--==
+
+
+; Forced base address for Windows exe's.
+usermode                                        0x00400000	0x00100000	; generic EXE (default link module name)
+
+
+; Symbols
+ildbsymbols                                     0x51820000	0x00070000      ; same base as diasymreader
+
+; Profiler
+dnprofiler                                      0x51890000      0x00010000
+
+; CSharp
+cscomp                                          0x53140000	0x000A0000
+ALink                                           0x56080000	0x00020000
+
+;module                                 	base    	length
+sos                                     	0x60270000	0x0004E000
+
+;module                                 	base    	length  	; headroom left
+fusion                                  	0x79030000	0x0004D000	; 0x00043000
+mscordbc                                	0x790C0000	0x00036000	; 0x0000A000
+mscordbi                                	0x79100000	0x0009E000	; 0x000A2000
+sscoree                                 	0x79240000	0x0048F000	; 0x00041000
+mscorejt                                	0x79710000	0x00064000      ; 0x0000C000
+rotor_pal                                       0x79780000	0x00040000      ; 0x00010000
+rotor_palrt                                     0x797D0000	0x00020000	; 0x00060000
+mscorpe                                 	0x79850000	0x0003E000	; 0x00002000
+mscorrc                                 	0x79890000	0x00035000	; 0x0003B000
+mscorsn                                 	0x79900000	0x00032000	; 0x0001E000
+system.runtime.serialization.formatters.soap	0x79950000	0x00028000	; 0x000B8000
+system.runtime.remoting                 	0x79A30000	0x0005E000	; 0x000F2000
+mscorlib                                	0x79B80000	0x001F8000
+;total address space used               	0x00D78000 (14,123,008.00 Bytes, 0x79000000-> 79D78000)
+

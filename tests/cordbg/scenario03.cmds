@@ -1,0 +1,72 @@
+run threads.exe -t5
+break 13
+as b 1 ..\threads.cs
+break ..\threads.cs:197
+dis
+break ThreadTest.Threads::Main:0
+remove
+show 5
+break 450
+break
+show 38
+break 176
+break 180
+break 203
+show 5
+w
+p
+cont
+cont
+cont3
+break 183
+n
+s
+w
+n
+s
+w
+p
+up
+w
+p
+up
+
+w
+s
+w
+d
+up 2
+show
+d 2
+show
+n
+n
+s
+show
+p
+w
+o
+w
+o
+w
+o
+show 100
+remove
+run threads.exe -t5
+break 248
+cont
+s
+o
+w
+p
+n 2
+n
+n
+run threads.exe -t5
+cont
+setip 234
+show 10
+n
+show
+kill
+exit

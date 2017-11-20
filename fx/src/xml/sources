@@ -1,0 +1,73 @@
+# ==++==
+# 
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+
+!include $(NTMAKEENV)\sources.csc
+
+TARGETNAME=System.Xml
+TARGETLIBNAME=$(TARGETNAME)
+TARGETPATH=$(O)
+TARGETTYPE=DYNLINK
+SOURCES=
+
+COMPLUSTYPE=DLL
+ASSEMBLY_KEY_TYPE=ECMA
+SIGN_ASSEMBLY=1
+INCLUDE_ASSEMBLY_ATTRIBUTES=
+
+
+
+SYNCHRONIZE_BLOCK=1
+ALLOW_PARTIALTRUSTCALLS=1
+
+#
+# We don't produce any browse info
+#
+NO_BROWSER_FILE=1
+
+
+# ------------------------------------------------------------------------------
+#                         .Net Framewok Classes Specific build information
+# ------------------------------------------------------------------------------
+
+SECURITY_LEVEL     = SYSTEM_COMPONENT
+
+
+COMPLUSIMPORTS = \
+	$(TARGETCOMPLUS)\private\lib\System.dll
+
+
+RESGEN_SOURCE=system.xml.txt
+RESGEN_CLASS=System.Xml.Res
+
+CSC_COMPILE_FLAGS  = $(CSC_COMPILE_FLAGS) /D:STRINGBUILDER 
+
+CSC_SOURCES = \
+        system\newxml\*.cs \
+        system\newxml\xpath\*.cs \
+        system\newxml\xslt\*.cs  \
+        system\newxml\schema\*.cs \
+        system\newxml\serialization\*.cs \
+	system\componentmodel\*.cs \
+        $(DNAROOT)\src\misc\hresults.cs \
+        $(DNAROOT)\src\misc\invariantcomparer.cs \
+        
+
+
+# In chk & fstchk builds we have debugger turned on now!
+!if "$(URTBLDENV)" == "chk" || "$(URTBLDENV)" == "fstchk"
+CSC_COMPILE_FLAGS  = $(CSC_COMPILE_FLAGS) /D:XSLTDEBUGGER
+!endif
+
+INCLUDES=$(INCLUDES);$(DNAROOT)\public\tools\inc\private\version;$(NTMAKEENV)

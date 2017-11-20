@@ -1,0 +1,18 @@
+#!/bin/sh
+# ==++==
+# 
+#   Copyright (c) Microsoft Corporation.  All rights reserved.
+# 
+# ==--==
+
+if test X"$1" = X"veron"
+then
+ACTION="-q -m -cg 1.1. Everything"
+fi
+
+if test X"$1" = X"veroff"
+then
+ACTION="-q -m -cg 1.1. FullTrust"
+fi
+
+clix ${TARGETCOMPLUS}/caspol.exe ${ACTION}

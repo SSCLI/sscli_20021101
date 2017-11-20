@@ -1,0 +1,131 @@
+run threads.exe
+show 38
+show 38
+break 203
+show 5
+w
+p
+s
+s
+show
+w
+p
+s
+n
+w
+show
+s 4
+show
+s
+s
+s
+show
+w
+p
+up
+w
+p
+up
+w
+s
+w
+d
+up 2
+show
+d 2
+show
+n
+n
+s
+show
+p
+w
+s
+s
+s
+show 10
+break 280
+cont
+show
+p
+s
+show
+s
+show
+s
+show
+s
+s
+s
+s
+s
+o
+w
+o
+w
+o
+show 100
+remove
+run threads.exe -t5
+show 100
+break 248
+cont
+show
+show 10
+s
+n 
+s
+s
+show
+s
+s
+s
+s
+p
+show
+w
+n
+s
+s
+s
+s
+s
+show
+s
+s
+show
+s
+s
+s
+s
+s
+show
+s
+s
+show
+s
+sh
+s
+w
+s
+w
+s
+w
+s
+s
+s
+w
+sh
+s
+run threads.exe -t5
+break 248
+cont
+s
+o
+w
+p
+n
+n
+n
+n
+exit

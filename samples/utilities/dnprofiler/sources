@@ -1,0 +1,70 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!ifdef PASS0ONLY
+!else
+!ifdef LINKONLY
+NTTARGETFILE1   = target
+!endif
+!endif
+
+!include $(NTMAKEENV)\sources.cor
+
+
+# don't default to linking against any .lib files
+USE_NOLIBS=1
+
+# undefine USE_MSVCRT defined in sources.cor
+!undef USE_MSVCRT
+
+# include hacks in makefile.inc to get it link with rotor_pal*.lib only
+NTTARGETFILES=
+
+
+TARGETLIBNAME=dnprofiler
+TARGETNAME=$(TARGETLIBNAME)
+TARGETPATH=obj
+TARGETTYPE=DYNLINK
+
+USE_MSVCRT=1
+
+!ifndef PLATFORM_UNIX
+MSC_WARNING_LEVEL = /W3 /WX
+COMPILER_WARNINGS=/W3 /WX
+!else
+MSC_WARNING_LEVEL=-Wall -Werror
+COMPILER_WARNINGS=-Wall -Werror
+!endif
+
+SUBSYSTEM_VERSION=4.00
+
+SOURCES=\
+	profilercallback.cpp \
+	comstuff.cpp
+
+DLLENTRY        =DllMain
+EXCEPTION_HANDLING = $(SEHONLY)
+
+INCLUDES=$(INCLUDES);..\include;$(CORBASE)\src\inc
+
+C_DEFINES=$(C_DEFINES) -D_SAMPLES_=1
+
+!if "$(PLATFORM_UNIX)" != "1"
+LINKLIBS=$(LINKLIBS)                   \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib     \
+        $(CORLIBS)\corguids.lib
+
+!endif
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt -lsscoree
+USE_CC_LIB=1

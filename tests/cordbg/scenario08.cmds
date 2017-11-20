@@ -1,0 +1,36 @@
+run asdo
+run threads.exe blah
+show 10
+dis
+s 0
+s
+dis
+s
+dis
+s
+dis
+show
+s 6
+show
+catch exception
+dis
+ss 0
+ss
+ss
+dis
+ss 2
+dis
+ss
+dis
+ss
+dis
+ns 0
+ns
+ns
+dis
+ns 4
+dis
+show
+0ut
+s
+exit

@@ -1,0 +1,77 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+#Build instructions for this directory
+
+!include $(NTMAKEENV)\sources.cor
+
+# Finish the libraries before starting this.
+SYNCHRONIZE_DRAIN=1
+
+USE_NOLIBS                              = 1
+NO_NTDLL                                = 1
+
+INCLUDES                =$(INCLUDES);.;..\inc;..\..\inc
+
+C_DEFINES               = $(C_DEFINES) -DUNICODE -D_UNICODE
+
+MINORCOMP               = cor
+
+PRECOMPILED_INCLUDE     = stdafx.h
+PRECOMPILED_CXX         = 1
+PRECOMPILED_SOURCEFILE  = stdafx.cpp
+
+
+TARGETPRIORPATH=$(CORBUILDENV)
+TARGETLIBNAME	=mscordbc
+TARGETNAME      =$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH	=$(TARGETCORBIN)
+TARGETTYPE	=DYNLINK
+UMTYPE		=windows
+COFFBASE	=mscordbc
+
+EXCEPTION_HANDLING                      = $(SEHONLY)
+
+
+DLLENTRY                                = DllMain
+
+!if "$(PLATFORM_UNIX)" != "1"
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib
+!else
+UNIX_DLL_LIBS= -lrotor_pal -lrotor_palrt -lsscoree
+USE_CC_LIB = 1
+!endif
+
+
+
+!IF "$(_TGTCPUTYPE)"=="IA64"
+LINKLIBS = \
+             $(CORLIBS)\utilcode.lib \
+             $(CORLIBS)\corguids.lib \
+             $(CORLIBS)\mscoree.lib
+!ELSE           
+LINKLIBS =   $(CORLIBS)\utilcode.lib \
+             $(CORLIBS)\corprof.lib \
+             $(CORLIBS)\corguids.lib \
+!if "$(PLATFORM_UNIX)" != "1"
+             $(CORLIBS)\mscoree.lib
+!endif
+!ENDIF
+
+SOURCES= \
+	mscordbc.cpp \
+	mscorver.rc
+
+SOURCELIBS = $(LINKLIBS)

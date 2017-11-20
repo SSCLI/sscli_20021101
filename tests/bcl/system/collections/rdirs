@@ -1,0 +1,14 @@
+stack
+specialized
+sortedlist
+readonlycollectionbase
+queue
+hashtable
+dictionaryentry
+dictionarybase
+comparer
+collectionbase
+caseinsensitivehashcodeprovider
+caseinsensitivecomparer
+bitarray
+arraylist

@@ -1,0 +1,167 @@
+dnl /*++
+dnl 
+dnl  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+dnl 
+dnl  The use and distribution terms for this software are contained in the file
+dnl  named license.txt, which can be found in the root of this distribution.
+dnl  By using this software in any fashion, you are agreeing to be bound by the
+dnl  terms of this license.
+dnl 
+dnl  You must not remove this notice, or any other, from this software.
+dnl 
+dnl
+dnl Module Name : configure.in
+dnl
+dnl process this file with autoconf to create a configure script
+dnl --*/
+
+AC_INIT(pal/rotor_pal.h)
+
+if test ! "$BUILD_ALT_DIR"
+then
+    echo "Environment not set. Run '. env.sh' before building Rotor."
+    exit
+fi
+
+dnl Some subdirectories have their own configure scripts.
+
+AC_CONFIG_SUBDIRS(pal/unix/)
+
+dnl configure options propagated from subdirectories go here.
+
+AC_ARG_ENABLE(debug,
+[  --disable-debug          compile out all debug-only code],
+[if test "$enableval" = "no"; then DEBUG_ENABLED="no"; fi])
+
+AC_ARG_ENABLE(dbgmsg,
+[  --disable-dbgmsg         compile out all debugging messages],
+[if test "$enableval" = "no"; then DEBUG_MSGS="no"; fi])
+
+dnl Local environment checks.
+
+AC_MSG_CHECKING(architecture)
+ARCH_DIR=`uname -p | sed -e s/powerpc/ppc/ -e s/i.86/i386/`
+AC_MSG_RESULT($ARCH_DIR)
+
+dnl Define output variable SET_MAKE to be empty because make sets MAKE.
+AC_PROG_MAKE_SET
+
+
+dnl Compiler characteristics
+
+dnl Define CC to be the C compiler (hopefully GCC)
+AC_PROG_CC
+
+dnl Define CPP to be the C preprocessor (typically gcc -E)
+AC_PROG_CPP
+
+dnl Define BIGENDIAN if the current system is big-endian.
+dnl The presence of this macro causes autoconf 2.13 to print a warning
+dnl about cross-compiling.  The warning is a non-issue and can't be
+dnl disabled without modifying autoconf.
+AC_C_BIGENDIAN
+if test "$ac_cv_c_bigendian" = yes; then
+    BIGENDIAN="-DBIGENDIAN"
+else
+    dnl For completeness
+    BIGENDIAN=""
+fi
+AC_SUBST(BIGENDIAN)
+
+dnl Figure out what our C runtime library is. At the same time, we can
+dnl set an assortment of other flags that are different on Mac OS X and
+dnl FreeBSD.
+
+PTHREAD_OPTIONS=
+
+dnl Default compiler flags. These only apply to the tools and the PAL
+dnl test suite.  The PAL's compiler flags are set in pal/unix/configure.in,
+dnl and the compiler flags for the CLR are set in various files in
+dnl rotorenv/bin.
+dnl We turn on debugging and optimizations, build position-independent code,
+dnl and enable all warnings.
+CFLAGS="-g -O2 -Wall -fPIC -DPIC"
+
+if test "$FEATURE_CASE_SENSITIVE_FS" = "1"; then
+    CFLAGS="$CFLAGS -DFEATURE_CASE_SENSITIVE_FILESYSTEM"
+fi
+
+dnl libc_r is the C runtime that we use on FreeBSD.
+AC_CHECK_LIB(c_r, printf, has_libc_r=yes, has_libc_r=no)
+if test $has_libc_r = yes; then
+    REQUIRED_C_LIBS="/usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtbeginS.o"
+    REQUIRED_C_LIBS="$REQUIRED_C_LIBS /usr/lib/crtendS.o /usr/lib/crtn.o"
+    GCC_LIB=/usr/lib/libgcc.a
+    SHARED_LIB=-shared
+    SHARED_LIB_EXTENSION=.so
+    LINKER_FLAGS=
+    PTHREAD_OPTIONS=-pthread
+else
+    dnl libSystem is Darwin's C runtime.
+    AC_CHECK_LIB(System, printf, has_libSystem=yes, has_libSystem=no)
+    if test $has_libSystem = yes; then
+        REQUIRED_C_LIBS=/usr/lib/crt1.o
+        GCC_LIB=/usr/lib/libcc_dynamic.a
+        AC_CHECK_FILE(/usr/lib/gcc/darwin/default/crtbegin.o, has_crtbegin=yes,
+                      has_crtbegin=no)
+        if test $has_crtbegin = yes; then
+            REQUIRED_C_LIBS="$REQUIRED_C_LIBS /usr/lib/gcc/darwin/default/crtbegin.o"
+            dnl Darwin systems that use crtbegin.o also require libstdc++.a for C++.
+            GCC_LIB="$GCC_LIB /usr/lib/libstdc++.a"
+        fi
+        SHARED_LIB=-dynamiclib
+        SHARED_LIB_EXTENSION=.dylib
+        LINKER_FLAGS=-dynamic
+        dnl Disable some instruction reordering to allow our SEH code to work.
+        CFLAGS="$CFLAGS -fno-schedule-insns"
+    else
+        dnl Solaris includes libsocket.
+        AC_CHECK_LIB(socket, connect, has_libsocket=yes, has_libsocket=no)
+        if test $has_libsocket = yes; then
+            REQUIRED_C_LIBS="$GCC_LIB_DIR/crt1.o $GCC_LIB_DIR/crti.o"
+            REQUIRED_C_LIBS="$REQUIRED_C_LIBS /usr/ccs/lib/values-Xa.o $GCC_LIB_DIR/crtbegin.o"
+            REQUIRED_C_LIBS="$REQUIRED_C_LIBS $GCC_LIB_DIR/crtend.o $GCC_LIB_DIR/crtn.o"
+            GCC_LIB="$GCC_LIB_DIR/libgcc.a $GCC_LIB_DIR/libstdc++.a /usr/lib/libc.so"
+            SHARED_LIB=-shared
+            SHARED_LIB_EXTENSION=.so
+            LINKER_FLAGS=
+            dnl Disable some instruction reordering to allow our SEH code to work.
+            CFLAGS="$CFLAGS -fno-schedule-insns"
+        else
+            dnl Assume that it's libc (untested).
+            REQUIRED_C_LIBS="/usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtn.o"
+            REQUIRED_C_LIBS="$REQUIRED_C_LIBS $GCC_LIB_DIR/crtbegin.o $GCC_LIB_DIR/crtend.o"
+            GCC_LIB="$GCC_LIB_DIR/libgcc.a /usr/local/lib/libstdc++.a"
+            if test "$GCC_EH_LIB"; then
+            	GCC_LIB="$GCC_LIB $GCC_EH_LIB"
+            fi
+            SHARED_LIB=-shared
+            SHARED_LIB_EXTENSION=.so
+            LINKER_FLAGS=
+            dnl Disable some instruction reordering to allow our SEH code to work.
+            CFLAGS="$CFLAGS -fno-schedule-insns"
+        fi
+    fi
+fi
+AC_SUBST(REQUIRED_C_LIBS)
+AC_SUBST(GCC_LIB)
+AC_SUBST(SHARED_LIB)
+AC_SUBST(SHARED_LIB_EXTENSION)
+AC_SUBST(LINKER_FLAGS)
+AC_SUBST(PTHREAD_OPTIONS)
+
+dnl Here are the files to generate
+
+AC_OUTPUT([
+makefile
+makefile.common
+tools/binplace/makefile
+tools/build/makefile
+tools/cppmunge/makefile
+tools/nmake/makefile
+tests/harness/test_harness/harness_comp_commands.h
+ ])
+
+echo
+echo "Configure finished. Run './buildall' to build Rotor."
+echo

@@ -1,0 +1,26 @@
+m appdomainLoads 0
+m classLoads 0
+m dumpmemoryInBYtes 0
+m enhanceddiag 0
+m hexdisplay 0
+m ilnatPrint 1
+m ISAll 0
+m ISClinit 0
+m isexceptf 0
+m isint 0
+m ispolicy 0
+m issec 0
+m JitOptimizations 0
+m loggingmessages 0
+m moduleloads 0
+m separateconsole 0
+m showargs 1
+m showmodules 1
+m showstaticsonprint 0
+m showsuperclassonprint 0
+m unmanagedtrace 0
+m usall 0
+m usepi 0
+m uspro 0
+pa .
+q

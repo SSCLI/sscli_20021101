@@ -1,0 +1,38 @@
+run variety.exe
+break 32
+cont
+funceval Variety.Variety::DoSomething
+p
+funceval Variety.Variety::DoSomething 3
+p
+funceval Variety.Variety::DoSomething 4
+p
+funceval Variety.Variety::DoSomething a
+p
+funceval Variety.Variety::DoSomething 6
+p
+funceval System.Math::Cos 1.8
+p
+funceval System.Math::Pow 2 15
+p
+newstr blah
+p
+newstr
+p
+newstr 0
+p
+newobj Variety.FooBase
+newobj Variety.FooDerived
+newobj blah
+newobj
+p
+break Variey.FooBase::Mondo
+funceval Variety.FooBase::Mondo fd fd o s i l h f d
+p
+show
+remove 2
+cont
+funceval Variety.FooDerived:: 0 17
+funceval Variety.FooDerived::ComputeMatrix fd 6
+p
+exit

@@ -1,0 +1,157 @@
+
+
+success tests/basictest.rc
+Comparing Output "success tests/basictest.satellite" and baseline "success tests/basictest.baseline"
+
+
+success tests/bigtest.rc
+Comparing Output "success tests/bigtest.satellite" and baseline "success tests/bigtest.baseline"
+
+
+success tests/otherresourcetest.rc
+UNKNOWN resource MYRES found on line  125 in 
+	success tests/otherresourcetest.rc, ignoring
+UNKNOWN resource 300 found on line  126 in 
+	success tests/otherresourcetest.rc, ignoring
+UNKNOWN resource MYRES2 found on line  127 in 
+	success tests/otherresourcetest.rc, ignoring
+Comparing Output "success tests/otherresourcetest.satellite" and baseline "success tests/otherresourcetest.baseline"
+
+
+success tests/preproctest.rc
+UNKNOWN resource MYRES found on line  125 in 
+	success tests/otherresourcetest.rc, ignoring
+UNKNOWN resource 300 found on line  126 in 
+	success tests/otherresourcetest.rc, ignoring
+UNKNOWN resource MYRES2 found on line  127 in 
+	success tests/otherresourcetest.rc, ignoring
+Comparing Output "success tests/preproctest.satellite" and baseline "success tests/preproctest.baseline"
+
+
+success tests/sorttest.rc
+Comparing Output "success tests/sorttest.satellite" and baseline "success tests/sorttest.baseline"
+
+
+success tests/whitespacetest.rc
+Comparing Output "success tests/whitespacetest.satellite" and baseline "success tests/whitespacetest.baseline"
+
+
+success tests/stringtableformattest.rc
+Comparing Output "success tests/stringtableformattest.satellite" and baseline "success tests/stringtableformattest.baseline"
+
+
+success tests/basictest.rc
+Comparing Output "success tests/basictest.satellite" and baseline "success tests/basictest.baseline"
+
+
+success tests/basictest.rc
+Comparing Output "success tests/basictest.satellite" and baseline "success tests/basictest.baseline"
+
+
+success tests/basictest.rc
+Comparing Output "success tests/basictest.satellite" and baseline "success tests/basictest.baseline"
+
+
+success tests/basictest.rc
+Comparing Output "success tests/basictest.satellite" and baseline "success tests/basictest.baseline"
+
+
+success tests/definetest.rc
+Comparing Output "success tests/definetest.satellite" and baseline "success tests/definetest.baseline"
+resourcecompiler: fatal error RC0001 : resourcecompiler: Cannot Open File: /r
+Unknown argument
+Usage: resourcecompiler [options] inputfile
+
+Options: 
+
+	/?  Displays a list of resource compiler command-line options.
+	/d  Defines a symbol for the preprocessor that you can test
+	    with the ifdef directive
+	/fo Rename output file
+	/h  Displays a list of command-line options
+	/i  Searches the specified directory before searching the
+	    directories specified by the INCLUDE enviornment variable
+	/c  specifies the codepage to be used for compilation
+	/n  Null terminates all strings in the string table
+	/r  Ignored. Provided for compatibility with existing
+	    makefiles
+	/l  Ignored. Provided for compatibility with existing
+	    makefiles
+	/z  Ignored. Provided for compatibility with existing
+	    makefiles
+	/u  Undefines a symbol for the preprocessor
+	/v  Displays messages that report on the progress of the
+	    compiler
+	/w  Warns if invalid codepage (default is error)
+	/x  Prevents RC from checking INCLUDE enviornment variable
+	    when searching for header files or resource files
+
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests/badcodepagepragma1test.rc: 
+resourcecompiler: #pragma code_page(elephant)
+resourcecompiler: Bad Format in code_page pragma
+
+
+fail tests/badcodepagepragma1test.rc
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests/badcodepagepragma2test.rc: 
+resourcecompiler: #pragma code_page(1)
+resourcecompiler: Invalid Code Page Value
+
+
+fail tests/badcodepagepragma2test.rc
+fail tests/badincludetest.rc:6: I DO NOT EXIST: No such file or directory
+resourcecompiler: fatal error RC0001 : resourcecompiler: Preprocessor Failed
+
+
+fail tests/badincludetest.rc
+fail tests/baduserdefinedtest.rc:15: unterminated string or character constant
+fail tests/baduserdefinedtest.rc:12: possible real start of unterminated constant
+resourcecompiler: fatal error RC0001 : resourcecompiler: Preprocessor Failed
+
+
+fail tests/baduserdefinedtest.rc
+resourcecompiler: fatal error RC0001 : resourcecompiler: Duplicate StringID for Values: VALUE, VALUE
+
+
+fail tests/doubletest.rc
+resourcecompiler: fatal error RC0001 : resourcecompiler: Cannot Open File: fail tests/noBEGINtest
+resourcecompiler: fatal error RC0001 : resourcecompiler: Cannot Open File: fail tests/noENDtest
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests/noidtest.rc: 
+resourcecompiler:  "987654321"
+
+resourcecompiler: STRINGTABLE in bad form or missing END
+
+
+fail tests/noidtest.rc
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests/novaluetest.rc: 
+resourcecompiler: StringID with no StringValue in STRINGTABLE
+
+
+fail tests/novaluetest.rc
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests/unexpectedendoffile1test.rc: 
+resourcecompiler: Unexpected end of file in Stringtable
+
+
+fail tests/unexpectedendoffile1test.rc
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests/unexpectedendoffile2test.rc: 
+resourcecompiler: Unexpected end of file in stringtable
+
+
+fail tests/unexpectedendoffile2test.rc
+resourcecompiler: fatal error RC0001 : on line 19 in fail tests/unexpectedendoffile3test.rc: 
+resourcecompiler: Unexpected end of file
+
+
+fail tests/unexpectedendoffile3test.rc
+resourcecompiler: fatal error RC0001 : on line 8 in fail tests/unknownescapevaluetest.rc: 
+resourcecompiler:  987654321 "VALUE\Q"
+
+resourcecompiler: Unknown escape sequence in String Value
+
+
+fail tests/unknownescapevaluetest.rc
+resourcecompiler: fatal error RC0001 : on line 6 in fail tests/unknownpragmatest.rc: 
+resourcecompiler: #pragma elephant
+resourcecompiler: unknown pragma
+
+
+fail tests/unknownpragmatest.rc

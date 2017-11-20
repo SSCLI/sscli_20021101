@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html> 
+<head>
+<title>DNProfiler Sample</title>
+<link rel="stylesheet" type="text/css" href="../../../docs/rotor.css">
+</head>
+
+<body>		
+
+
+<h1> DNProfiler Sample</h1>
+
+
+<h2>Sample Overview</h2>
+
+
+<p>The DNProfiler sample is derived from an &quot;Under The Hood&quot;
+<a href="http://msdn.microsoft.com/msdnmag/issues/01/12/Hood/Hood0112.asp">
+article</a> by Matt Pietrek on the Microsoft&reg; Developer Network&reg; (MSDN) (<a href="http://msdn.microsoft.com">msdn.microsoft.com</a>).&nbsp; The source code was modified to 
+support the Shared Source CLI (SSCLI) by removing the dependency on the registry 
+and adding a new environment variable.&nbsp; </p>
+
+ 
+<p>Information on the Microsoft&reg; .NET Framework profiling APIs is available in 
+the Profiling.doc file in the Microsoft&reg; .NET Framework SDK, in the Tool 
+Developers Guide\docs directory.&nbsp; Consult the MSDN article for more 
+information on the functionality provided by this sample and the profiling API.&nbsp; </p>
+
+ 
+<p>This sample differs from the code described by the MSDN article in the use of 
+COM and the registry. COM registration is replaced by an environment 
+variable, COR_PROFILER_DLL in profiler_on.bat, that contains the path to the 
+DNProfiler.dll on Microsoft Windows&reg;.</p>
+
+ 
+<p>The SSCLI version of the sample also does not support the DN_PROFILER_BREAK 
+option, which causes a break point when the profiler is initialized. To 
+obtain similar functionality, set a breakpoint in 
+CProfilerCallback::Initialize(IUnknown * pICorProfilerInfoUnk) in
+<a href="profilercallback.cpp">profilercallback.cpp</a>.</p>
+
+ 
+<p>To use this sample on UNIX system-based platforms, create a script that sets the same environment 
+variables found in profiling_on.bat. Set the COR_PROFILER_DLL environment 
+variable to contain the path to the libdnprofiler.so dynamic library file.</p>
+
+<h2>Sample Source and Build Output Locations</h2>
+
+
+<p>The sample source is found in sscli\samples\utilities\dnprofiler.&nbsp; </p>
+
+
+<p>The source files are:</p>
+
+
+<ul class="none">
+  <li><a href="comstuff.cpp">comstuff.cpp</a></li>
+  <li><a href="dnprofiler.def">dnprofiler.def</a></li>
+  <li><a href="profilercallback.cpp">profilercallback.cpp</a></li>
+  <li><a href="profilercallback.h">profilercallback.h</a></li>
+</ul>
+
+
+<p>The build output location is %TARGETCOMPLUS%\samples\utilities\dnprofiler.&nbsp; 
+The output file is a dynamic library named:</p>
+
+
+<ul>
+  <li>dnprofiler.dll on Microsoft&reg; Windows.</li>
+  <li>libdnprofiler.so on UNIX system-based platforms other than Mac&reg; OS X.</li>
+  <li>libdnprofiler.dylib on Mac OS X.</li>
+</ul>
+
+
+<h2>Building the Sample</h2>
+
+
+<p>All samples are built from the buildall script.&nbsp;  </p>
+
+
+<p>You can also build all the 
+samples by switching to the root of the sample directory, sscli\samples, and typing 
+<code>build -c</code>.</p>
+
+
+<p>You can build this specific sample  by switching to the sample directory and typing 
+<code>build -c</code>.</p>
+
+
+<h2>Running the Sample</h2>
+
+
+<p>These steps require that the Shared Source CLI (SSCLI) be already built and 
+functional.</p>
+
+
+<ol>
+  <li>Run  env.bat or source the env.csh or env.sh script files, depending on 
+  your platform.</li>
+  <li>Switch to the %TARGETCOMPLUS%\samples\utilities\dnprofiler directory.</li>
+  <li>Run the profiling_on.bat batch file to set up the required profiling 
+  environment variables.</li>
+  <li>Use the clix application launcher to run any managed application.</li>
+  <li>A profiler output file called DNProfiler.out will be created in the 
+  %TARGETCOMPLUS% directory. Open this file to read profiling 
+  information.</li>
+  <li>To modify the level of profiling information, edit the profiler_on.bat or 
+  profiler_on.sh file to change the DN_PROFILER_MASK environment variable to 
+  contain the various flag values in the commented region of the file. For 
+  example, to only log class log transitions from managed to unmanaged code:<blockquote>
+    <p>set DN_PROFILER_MASK=0x800</p>
+  </blockquote>
+  </li>
+  <li>To turn profiling off, use the profiling_off.bat.&nbsp; </li>
+</ol>
+
+
+<p>The profiler flag values are defined in sscli\palrt\idl\corprof.h.</p>
+
+
+<h3>Issues</h3>
+
+ 
+<ul>
+  <li>Do not attempt to build the SSCLI with the profiler environment variables 
+  set. This will result in build errors.</li>
+  <li>Remember to copy or rename the DNProfiler.out file before running another 
+  application, because the file will be overwritten.</li>
+  <li>Do not keep the DNProfiler.out file open when running an application 
+  because if the file cannot be opened with write access it will cause an 
+  exception in the SSCLI.</li>
+</ul>
+
+ 
+<hr>
+
+
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i></p>
+</body> 
+</html>

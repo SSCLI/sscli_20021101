@@ -1,0 +1,641 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html> 
+<head>
+<title>C# Compiler Incremental Compilation</title>
+<link rel="stylesheet" type="text/css" href="../rotor.css">
+<body>		
+
+<h1>C# Compiler Incremental Compilation</h1>
+
+ 
+<p>This topic is based on a Microsoft developer design document that describes 
+specific stages of  the implementation of the C# compiler.&nbsp; This topic is included 
+here as a potential guide to understanding portions of the C# source code. </p>
+
+<p>The following is an outline of the stages of <b>COMPILER::CompileAll()</b>.</p>
+<h3>Read Incremental Information</h3>
+<ul>
+  <li>Reads incremental file.</li>
+  <li>Checks file list and command line arguments.<br>
+  </li>
+</ul>
+<h3>Declare</h3>
+<ul>
+  <li><b>ParseTopLevel</b>.</li>
+  <li>Create NSDECLSYMs.</li>
+  <li>Create AGGSYMs.</li>
+  <li>Changed sources.</li>
+  <li>Sets access and kind (<b>isClass</b>, <b>isInterface</b>, <b>isEnum</b>, 
+  <b>isStruct</b>, <b>isDelegate</b>).</li>
+  <li>If type list changed, do full rebuild.</li>
+  <li>Unchanged sources and metadata.</li>
+  <li>Sets access and approximates kind (cannot set <b>isEnum</b>, <b>isStruct</b>, 
+  or <b>isDelegate</b> 
+  until base is resolved).</li>
+</ul>
+<p>All types in the compilation are known; however note the following:</p>
+<ul>
+  <li>The kind (class, struct, and so on) is not necessarily correct.</li>
+  <li>Types have no members or bases.</li>
+</ul>
+<p>Check for change in type list. A change to the following will cause a full 
+rebuild:</p>
+<ul>
+  <li>Number of types.</li>
+  <li>File a type was declared in.</li>
+  <li>Accessibility of a type.</li>
+  <li>Addition or removal of a type.<br>
+  </li>
+</ul>
+<h3>Resolve Inheritance</h3>
+<ul>
+  <li>Resolves namespace using clauses.</li>
+  <li>Sets <b>isResolvingBaseClasses</b>.</li>
+  <li>Binds to base class and implemented interfaces and resolve recursively.</li>
+  <li>Sets kind for types imported from metadata and declared in unchanged 
+  sources.</li>
+  <li>Sets <b>hasResolvedBaseClasses</b>.</li>
+  <li>If base has changed, sets full rebuild.</li>
+</ul>
+<p>All types have:</p>
+<ul>
+  <li>Base class and interface lists are set.</li>
+  <li>Kind (<b>isEnum</b> or <b>isStruct</b>) is set.</li>
+  <li>Resolved using clauses for namespaces.</li>
+</ul>
+<p>It is now legal to look up types in any context.</p>
+<ul>
+  <li>Check for changes in the inheritance hierarchy. </li>
+  <li>If any change is detected, stop resolving the inheritance hierarchy before 
+  the change is made and recover to a full rebuild.<br>
+  </li>
+</ul>
+<h3>Define</h3>
+<ul>
+  <li>Special classes (<b>Object</b>, <b>AttributeUsage</b>, marked as conditional or 
+  obsolete) have members defined.</li>
+  <li>Declares global (module and assembly) attributes.</li>
+  <li>Sets isDefined bit on AGGSYMs.</li>
+  <li>Defines aggregate members non-recursively:<ul>
+    <li>Does not define property accessors.</li>
+    <li>Does not check explicit interface implementations.</li>
+    <li>Uses 'name' attribute for indexers.</li>
+  </ul>
+  </li>
+  <li>Sets special compile time attributes:<ul>
+    <li>Obsolete attribute.</li>
+    <li>Attribute-usage attribute.</li>
+    <li>Conditional attribute.</li>
+  </ul>
+  </li>
+  <li>Evaluates compile time constants:<ul>
+    <li>Might cause other types to be defined on demand.</li>
+    <li>Might cause other constants to be evaluated on demand.</li>
+    <li>Causes files to be marked as changed if they are required to be in a 
+    defined state to evaluate a constant.</li>
+  </ul>
+  </li>
+</ul>
+<p>Changed files have all public members declared (except property accessors).&nbsp;
+<br>
+Public (non-private, to be precise) interface is compared against metadata.&nbsp;
+<br>
+If a type has changed, all dependant files are added to the changed list.&nbsp;
+<br>
+If the changed threshold is reached (50% of files have been read from source), 
+recover to a full rebuild. </p>
+<p>At this point, the final decision is made for either an incremental or a full 
+rebuild. </p>
+<p>For an incremental rebuild, read member definitions for all unchanged files 
+from metadata. </p>
+<h3>Prepare</h3>
+<ul>
+  <li>Prepare base classes and implemented interfaces.<ul>
+    <li>For metadata and unchanged sources reads members from metaimport.</li>
+  </ul>
+  </li>
+  <li>Set <b>isPrepared</b>.</li>
+  <li>Build abstract method list.</li>
+  <li>Build implemented interface list.</li>
+  <li>Set isOverride bit on imported methods.</li>
+  <li>For changed sources.<ul>
+    <li>Check definitions against inherited members (new and override).</li>
+    <li>Define property accessors.</li>
+    <li>Check explicit interface implementations.</li>
+    <li>Resolve layout for structs.</li>
+  </ul>
+  </li>
+</ul>
+<h3>Common Language Specification</h3>
+<p>Common language specification checking on all members performed.</p>
+<h3>Emit (EmitTokens and Compile)</h3>
+<ul>
+  <li>Initializes emitter iface.</li>
+  <li>Tokens for all members are emitted.</li>
+  <li>Assembly options emitted to alink.</li>
+  <li>Members compiled.</li>
+  <li>Attributes emitted.</li>
+  <li>Method bodies emitted.</li>
+  <li>Finish output file.</li>
+  <li>Do resources.</li>
+  <li>Finish assembly emit.</li>
+</ul>
+<h3>Write Incremental Information</h3>
+<p>Writes incremental information file.</p>
+<h3>Marking a Source Input File as Changed</h3>
+<p>Things that cause a file to be marked as changed:</p>
+<ul>
+  <li>The file time stamp has changed since the last rebuild.</li>
+  <li>A file dependancy had an interface change.</li>
+  <li>A changed file requires to evaluate one of its constants that is defined 
+  in the current file.</li>
+  <li>Backing out to a full rebuild.</li>
+</ul>
+<p>State a file can be in:</p>
+<ul>
+  <li>Undeclared.<ul>
+    <li>The file is fresh, we simply declare as normal.</li>
+  </ul>
+  </li>
+  <li>Declared.<ul>
+    <li>The text contents of the file are unchanged.</li>
+    <li>Declarations for the types in the file have been read in from old 
+    metadata.</li>
+    <li>The list of types (and their namespaces) contained in this file can not 
+    have changed.</li>
+    <li>Parse file.</li>
+    <li>Declare file:<ul>
+      <li>Creates new NSDECLSYMs for the file.</li>
+      <li>Matches the new parse trees to the existing AGGSYM declarations.</li>
+      <li>Re-parents the AGGGSYMs to the new NSDECLSYMs.</li>
+      <li>Leaves orphan NSDECLSYMs from the metadata import.</li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+  <li>Bases resolved.<ul>
+    <li>Same as declared except:<ul>
+      <li>The type list has not changed, so the base list for this type cannot 
+      have changed.</li>
+      <li>Never import the member definitions for a source file from metadata 
+      until you know you are never going to back out to a full rebuild.</li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h3>Backing Out to a Full Rebuild</h3>
+<p>To back out to a full rebuild, all remaining unchanged files are marked as 
+changed.&nbsp; This forces them to be brought up to the current stage.</p>
+<h3>Emitting Metadata and Incremental Update</h3>
+<ul>
+  <li>Stages of metadata:<ul>
+    <li>Has type list changed?<ul>
+      <li>New types.</li>
+      <li>Deleted types.</li>
+      <li>Accessibility.</li>
+      <li>Kind (enum, struct, class, delegate).</li>
+      <li>Base class.</li>
+      <li>Implemented interfaces.</li>
+    </ul>
+    </li>
+    <li>Has the interface type changed?<ul>
+      <li>For each public member token in metadata:<ul>
+        <li>Find matching symbol (except any property accessors, as they are not 
+        created yet).</li>
+        <li>Compare metadata and symbol.</li>
+      </ul>
+      </li>
+      <li>Count public members from metadata.</li>
+      <li>Count public members from symbols (add the uncreated property 
+      accessors to count).</li>
+      <li>Compare counts of public members.</li>
+    </ul>
+    </li>
+    <li>Match existing tokens to symbols.</li>
+    <li>Reemit tokens in changed files.<ul>
+      <li>Delete tokens that are nolonger present.</li>
+      <li>Add new tokens.</li>
+      <li>Update tokens that have not changed.<br>
+      </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h3>Types</h3>
+<h4>Interface Changed</h4>
+<ul>
+  <li>Check to see if type list has changed during ResolveBase.</li>
+  <li>Do not add or delete types.</li>
+  <li>Check custom attributes:<ul>
+    <li>Attribute-Usage.</li>
+    <li>Obsolete.</li>
+    <li>CLS-Compliant Attribute.</li>
+  </ul>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Delete related tokens:<ul>
+    <li>Custom Attributes.</li>
+    <li>Permissions <b>tdHasSecurity</b>.</li>
+    <li>Class Layout.</li>
+    <li>MethodImpls.</li>
+  </ul>
+  </li>
+  <li>Set flags with <b>SetTypeDefProps</b>.</li>
+  <li>Base, interfaces remain unchanged.</li>
+  <li>Emit Custom Attributes:<ul>
+    <li>User custom attributes.</li>
+    <li>Pseudo-custom attributes:<ul>
+      <li>StructLayout&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      tdLayoutMask</li>
+      <li>Guid</li>
+      <li>ComImport&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      tdImport</li>
+      <li>InterfaceType</li>
+      <li>ClassInterface</li>
+      <li>Serializable&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+      tdSerializable</li>
+    </ul>
+    </li>
+    <li>Compiler Generated:<ul>
+      <li>DefaultMember.</li>
+      <li>StructLayout on structs.</li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h3>Parameters</h3>
+<ul>
+  <li>Check by method for HasChanged.</li>
+  <li>Don't add or delete parameter tokens.</li>
+  <li>All parameter tokens must have the 'name' member set.</li>
+  <li>Return value tokens are optional - only emitted if they have custom 
+  attributes.<br>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Delete related tokens:<ul>
+  <li>Custom Attributes.</li>
+  <li>Field Marshal.</li>
+</ul>
+  </li>
+  <li>DefineParamProps - set flags and clear PCAs.</li>
+  <li>Emit Custom Attributes:<ul>
+  <li>User custom attributes.</li>
+  <li>Pseudo-custom attributes.<ul>
+  <li>In&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pdIn.</li>
+  <li>Out&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pdOut.</li>
+  <li>Optional&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pdOptional.</li>
+  <li>Marshal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pdHasFieldMarshal.</li>
+</ul>
+  </li>
+  <li>Compiler generated CAs.<ul>
+  <li>ParamArray</li>
+  <li>Out</li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+<h3>Methods</h3>
+<h4>Emit</h4>
+<ul>
+  <li>EmitMethodDef:<ul>
+    <li>Sets flags, signature, name, and parent.</li>
+    <li>Emits MethodImpls if required.</li>
+  </ul>
+  </li>
+  <li>EmitMethodInfo<ul>
+    <li>Sets MethodImpl flags.</li>
+  </ul>
+  </li>
+  <li>Emit Custom Attributes.</li>
+  <li>Emit Method RVA.</li>
+</ul>
+<h4>HasChanged</h4>
+<ul>
+  <li>Find existing symbol based on:<ul>
+    <li>Name</li>
+    <li>Return type</li>
+    <li>Parameter types</li>
+  </ul>
+  </li>
+  <li>Check match on:<ul>
+    <li>Accessibility</li>
+    <li>Paramarray</li>
+    <li>Varargs</li>
+    <li>Static</li>
+    <li>Virtual/override/abstract/new/sealed</li>
+    <li>Operator/implicit/explicit</li>
+    <li>Custom Attributes:<ul>
+      <li>Conditional</li>
+      <li>Obsolete</li>
+      <li>CLS </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Find existing symbol based on:<ul>
+    <li>Name</li>
+    <li>Return type</li>
+    <li>Parameter types</li>
+    <li>Is static</li>
+    <li>Is varargs</li>
+  </ul>
+  </li>
+  <li>Delete related tokens:<ul>
+    <li>Custom Attributes</li>
+    <li>PInvoke Map</li>
+    <li>Permissions</li>
+  </ul>
+  </li>
+  <li>Set flags with SetMethodProps<ul>
+    <li>Note: cannot reset the signature.</li>
+  </ul>
+  </li>
+  <li>Add MethodImpl tokens.</li>
+  <li>Emit Custom Attributes:</li>
+  <li>User custom attributes<ul>
+    <li>Pseudo-custom attributes<ul>
+      <li>DllImport&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mdPinvokeImpl</li>
+      <li>MethodImpl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; miPreserveSig, miInternalCall, miSynchronized, miNoInlining</li>
+      <li>PreserveSig&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; miPreserveSig</li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+  <li>Compiler-generated custom attributes.<br>
+  </li>
+</ul>
+<h3>Method Impls Structure</h3>
+<ul>
+  <li>Done during method emit.</li>
+  <li>Deleted as related tokens of the type.</li>
+  <li>Added again during method reemit.</li>
+</ul>
+<h3>Fields</h3>
+<h4>Emit</h4>
+<ul>
+  <li><b>EmitMembVarDef</b><ul>
+    <li>Name, flags, signature, parent, and constant value</li>
+  </ul>
+  </li>
+  <li>Emit custom attributes:<ul>
+    <li>User custom attributes</li>
+    <li>Pseudo-custom attributes:<ul>
+      <li>NonSerialized&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fdNotSerialized</li>
+      <li>Marshal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fdHasFieldMarshal</li>
+      <li>FieldOffset</li>
+    </ul>
+    </li>
+    <li>Compiler Generated custom attributes.<ul>
+      <li>Decimal Constant<br>
+      </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h4>HasChanged</h4>
+<ul>
+  <li>Find existing symbol based on:<ul>
+    <li>Name </li>
+    <li>Type</li>
+  </ul>
+  </li>
+  <li>Check match on:<ul>
+    <li>Accessibility</li>
+    <li>Static/const/readonly</li>
+    <li>Constant value</li>
+    <li>Volatile</li>
+    <li>Custom attributes:<ul>
+      <li>Obsolete</li>
+      <li>CLS-compliant</li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Find existing symbol based on:<ul>
+    <li>Name</li>
+    <li>Type</li>
+    <li>Static</li>
+    <li>Volatile</li>
+  </ul>
+  </li>
+  <li>Delete related tokens:<ul>
+    <li>Custom attributes.</li>
+  </ul>
+  </li>
+  <li>Set flags and constant value.</li>
+  <li>Emit custom attributes.<br>
+<br>
+  </li>
+</ul>
+<h3>Properties</h3>
+<h4>Emit</h4>
+<ul>
+  <li>Nothing emitted for explicit property implementations.<ul>
+    <li>Method impls structure only</li>
+  </ul>
+  </li>
+  <li>EmitPropertyDef:<ul>
+    <li>Parent, name, get, set, and signature.</li>
+  </ul>
+  </li>
+  <li>Emit custom attributes:<ul>
+    <li>User custom attributes .</li>
+  </ul>
+  </li>
+</ul>
+<h4>HasChanged</h4>
+<ul>
+  <li>Find existing symbol based on:<ul>
+    <li>Name</li>
+    <li>Argument types</li>
+  </ul>
+  </li>
+  <li>Check match on:<ul>
+    <li>Not checked - checked by accessors:<ul>
+      <li>Accessibility</li>
+      <li>Return type</li>
+      <li>Varargs</li>
+      <li>Param array</li>
+    </ul>
+    </li>
+    <li>Indexer name.</li>
+    <li>Accessor count.</li>
+    <li>Custom attributes:<ul>
+      <li>Obsolete</li>
+      <li>CLS</li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Find existing symbold based on:<ul>
+    <li>Name</li>
+    <li>Indexer name</li>
+    <li>Argument types</li>
+    <li>Return types</li>
+    <li>Is static</li>
+  </ul>
+  </li>
+  <li>Delete related tokens:<ul>
+    <li>Custom attributes.</li>
+  </ul>
+  </li>
+  <li>Reset:<ul>
+    <li>Flags</li>
+    <li>Get/set tokens</li>
+  </ul>
+  </li>
+  <li>Emit custom attributes.<br>
+<br>
+  </li>
+</ul>
+<h3>Events</h3>
+<h4>Emit</h4>
+<ul>
+  <li>Nothing emitted for explicit event implementations.</li>
+  <li>EmitEventDef:<ul>
+    <li>Parent, name, type, add, and remove</li>
+  </ul>
+  </li>
+  <li>Emit custom attributes:<ul>
+    <li>User custom attributes.</li>
+  </ul>
+  </li>
+</ul>
+<h4>HasChanged</h4>
+<ul>
+  <li>Find existing symbol based on:<ul>
+    <li>Name</li>
+  </ul>
+  </li>
+  <li>Check match on:<ul>
+    <li>Type</li>
+    <li>Access</li>
+    <li>Custom attributes:<ul>
+      <li>Obsolete</li>
+      <li>CLS </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Find existing symbol based on:<ul>
+    <li>Name</li>
+  </ul>
+  </li>
+  <li>Delete related tokens:<ul>
+    <li>Custom attributes.</li>
+  </ul>
+  </li>
+  <li>Reset:<ul>
+    <li>Flags</li>
+    <li>Type</li>
+    <li>Accessor tokens</li>
+  </ul>
+  </li>
+  <li>Emit custom attributes:<ul>
+    <li>User custom attributes<br>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h3>Assembly</h3>
+<h4>Emit</h4>
+<ul>
+  <li>Emit Custom attributes:<ul>
+    <li>User custom attributes.</li>
+    <li>Pseudo-custom attributes.</li>
+    <li>Compiler-generated custom attributes:<ul>
+      <li>Security Permission</li>
+      <li>Debuggable </li>
+    </ul>
+    </li>
+  </ul>
+  </li>
+</ul>
+<h4>HasChanged</h4>
+<ul>
+  <li>Check for match on CLS-compliant attribute:<ul>
+    <li>Force full build on change.</li>
+  </ul>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Delete related tokens:<ul>
+    <li>Custom Attributes</li>
+    <li>Security Permissions</li>
+  </ul>
+  </li>
+  <li>Emit custom attributes.</li>
+</ul>
+<h3>Module</h3>
+<h4><br>
+Emit</h4>
+<ul>
+  <li>Emit custom attributes:<ul>
+    <li>User custom attributes.</li>
+  </ul>
+  </li>
+  <li>Compiler-generated custom attributes:<ul>
+    <li>UnverifiableCode</li>
+  </ul>
+  </li>
+</ul>
+<h4>HasChanged</h4>
+<ul>
+  <li>Check for match on CLS-compliant attribute:<ul>
+    <li>Force full build on change. </li>
+  </ul>
+  </li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Delete related tokens:<ul>
+    <li>Custom attributes.</li>
+  </ul>
+  </li>
+  <li>Emit custom attributes.<br>
+<br>
+  </li>
+</ul>
+<h4>Private Implementation Details</h4>
+<h4>Emit</h4>
+<ul>
+  <li>Track tokens by input file.</li>
+</ul>
+<h4>Reemit</h4>
+<ul>
+  <li>Delete all tokens for all changed input files.<br>
+  </li>
+</ul>
+
+ 
+<hr>
+
+ 
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i><br>
+&nbsp;</p>
+
+ 
+</body> 
+</html>

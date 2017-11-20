@@ -1,0 +1,57 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+
+UMTYPE=console
+UMENTRY		=main
+
+
+INCLUDES		  = $(INCLUDES);.;..\inc;..\inc\$(O);..\tools\metainfo
+
+MINORCOMP       =cor
+
+TARGETNAME      =$(DDKBUILDENV)\ildasm
+TARGETPATH      =$(TARGETCORBIN)
+TARGETTYPE      =PROGRAM
+
+CORTHUNKLIBS	=
+
+TARGETLIBS      = \
+!if "$(PLATFORM_UNIX)" != "1"
+	$(CORLIBS)\mdcompiler.lib	\
+	$(CORLIBS)\mdruntime.lib	\
+	$(CORLIBS)\mdruntimerw.lib	\
+    $(CORLIBS)\mscoree.lib      \
+    $(CORLIBS)\rotor_pal.lib    \
+    $(CORLIBS)\rotor_palrt.lib  \
+!endif
+    $(CORLIBS)\utilcode.lib             \
+    $(CORLIBS)\format.lib               \
+
+UNIX_DLL_LIBS=-lrotor_pal -lrotor_palrt -lsscoree
+USE_CC_LIB = 1
+
+SOURCES=        \
+    dasm.rc \
+    dis.cpp \
+    dman.cpp \
+    dres.cpp \
+    ceeload.cpp \
+    formatType.cpp \
+    dasm_mi.cpp \
+    dasm_sz.cpp \
+    dasm.cpp	\
+    windasm.cpp 
+

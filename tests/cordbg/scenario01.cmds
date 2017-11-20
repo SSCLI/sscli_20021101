@@ -1,0 +1,130 @@
+su
+su 5
+ap
+ap 0
+ap 1
+ap 2
+ap 3
+as s d:\blah.txt
+as b 1
+a 0
+b
+b 1
+ca e
+ca u
+ca c
+ca m
+ca t
+ca
+cont
+du 0x123456
+du
+dis
+dis 10
+d
+d 5
+del
+del 5
+funceval
+help
+help ap
+help stop
+ig exception
+ig unhandled
+ig class
+ig module
+ig thread
+ig
+s
+s 5
+m
+newo
+newo CClass
+newstr
+newstr str
+ns
+n
+n 3
+out
+out 4
+pro
+path .
+path
+p
+p str
+x
+x mscorlib.dll
+Method1
+x mscorlib.dll
+Method1*
+ref
+ref d:\blah.txt
+re
+set
+set str 0
+setip
+setip 100
+sh
+sh 2
+ss
+ss 19
+t
+u
+u 9
+wt
+wr 03fa 17 0xae 21
+w
+w 5
+ss
+ss 17
+ns
+ns 14
+list
+list mod
+list cl
+list fu
+path .
+show 20
+stop FooBase.cls:11
+ssingle 2
+step 2
+threads
+up
+writememory 03fa 17 0xae 21
+where
+wt
+help
+associatesource as s d:\com99\src\foo.cpp
+attach 0
+break
+clear
+catch
+cont
+dump 0x123456
+dis 20
+down
+delete
+ignore
+kill
+mode
+nsingle
+next
+out
+print
+regdefault
+registers
+refreshsource
+run
+appdomainenum
+funceval
+go
+in
+list
+processenum
+resume
+remove
+set
+setip
+suspend
+x
+quit

@@ -1,0 +1,6 @@
+[ErrorsAllowed]
+1
+
+[IgnoreLineRx]
+^Error loading source file.*
+

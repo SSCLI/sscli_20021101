@@ -1,0 +1,88 @@
+run threads.exe -t5
+show 50
+break 184
+break 176
+break 203
+break 208
+break 214
+break
+app
+t
+w
+p
+cont
+t
+w
+p
+cont
+w
+p
+show 0
+show
+show 1
+show 500
+cont 2
+show 20
+w
+p
+cont
+w
+p
+show
+app
+ap 0
+ap 1
+ap 2
+break 221
+cont
+show
+w
+dis
+s 3
+p
+w
+dis
+up 3
+show 10
+w
+p
+dis
+up
+show 10
+p
+w
+dis
+down 2
+show
+p
+w 3
+w 0
+w 233
+dis
+down
+p
+w
+dis
+up 0
+down 0
+down
+w
+dis
+show
+o
+w
+dis
+cont
+show
+w
+dis
+dis 0
+dis 1000
+dis
+dis 10
+s
+t
+s
+t
+kill
+exit

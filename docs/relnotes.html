@@ -1,0 +1,552 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html> 
+<head>
+<title>Release Notes for Shared Source CLI, C#, and JScript</title>
+<link rel="stylesheet" type="text/css" href="rotor.css">
+
+</head>
+
+<body>
+
+<h1>Release Notes for Shared Source CLI, C#, and JScript</h1>
+<h2>Contents</h2>
+<ul>
+  <li><a href="#SSCLIAssemblyKeys">SSCLI Assembly Keys</a></li>
+  <li><a href="#MinimumVisualStudio.NETRequirements">Minimum Microsoft&reg; Visual 
+  Studio&reg; .NET Requirements</a></li>
+  <li><a href="#PerlonWindowsXP">Perl on Windows&reg; XP</a></li>
+  <li><a href="#RequiredSwapSizeUnderFreeBSD">Required Swap Size Under FreeBSD</a></li>
+  <li><a href="#ChangestoMakefileRequirements">Changes to Makefile Requirements</a></li>
+  <li><a href="#LimitationsofSecurityZonesinSharedSourceCLI">Limitations of 
+  Security Zones in SSCLI</a></li>
+  <li><a href="#ChangestoPer-UserConfigurationDirectoryLocation">Changes to 
+  Per-User Configuration Directory Location</a></li>
+  <li><a href="#RuntimeVersionValue">Runtime Version Value</a></li>
+  <li><a href="#PlatformRequirementsforPOSIXThreadsSupport">Platform 
+  Requirements for POSIX Threads Support</a></li>
+  <li><a href="#KnownIssues">Known Issues</a><ul>
+    <li><a href="#ProblemswithtarUtilityExpandingSSCLIArchiveonMacOSX">Problems 
+    with tar Utility Expanding SSCLI Archive on Mac&reg; OS X</a></li>
+    <li><a href="#CorDBGDebuggerandMulti-processorKernelsonFreeBSD">CorDBG 
+    Debugger and Multi-processor Kernels on FreeBSD 4.5</a></li>
+    <li><a href="#JITCompilationandCodePitching">JIT Compilation and Code 
+    Pitching</a></li>
+    <li><a href="#InstallPathCannotContainSpaces">Install Path Cannot Contain 
+    Spaces</a></li>
+    <li><a href="#WinzipandCR/LF">WinZip&reg; and CR/LF</a></li>
+    <li><a href="#Pathand.NETFramework">Path and the .NET Framework</a></li>
+    <li><a href="#FreeBSDKernelOptionsMightCauseProblemsWithBuild">FreeBSD 
+    Kernel Options Might Cause Problems with Build</a></li>
+    <li><a href="#TclandTkMustBeInstalledToRunPIGUISamples">Tcl and Tk Must Be 
+    Installed To Run PIGUI Samples</a></li>
+    <li>
+    <a href="#PIGUISampleApplicationsCompiledUnderWindowsWillNotRunUnderUNIXSystem-basedPlatforms">
+    PIGUI Sample Applications Compiled Under Windows Will Not Run Under UNIX 
+    System-based Platforms</a></li>
+    <li><a href="#ProblemsUsingSOSfromgdbDebuggeronUNIXSystem-basedPlatforms">
+    Problems Using SOS from gdb Debugger on UNIX System-based Platforms</a></li>
+    <li>
+    <a href="#VisualStudio.NETBeta2DoesNotWorkasSharedSourceCLIBuildEnvironment">
+    Visual Studio .NET Beta2 Does Not Work as SSCLI Build Environment</a></li>
+    <li>
+    <a href="#OperationNotPermittedError">Operation Not Permitted Error from 
+    ./configure on FreeBSD</a></li>
+  </ul>
+  </li>
+</ul>
+<h2><a name="SSCLIAssemblyKeys"></a>SSCLI Assembly Keys</h2>
+<p>The Shared Source CLI (SSCLI) runtime is not intended for use as a secure 
+environment, although its source code does provide a good example of how a 
+secure execution environment can be implemented. By default, strong name 
+verification is turned off for several important public keys. </p>
+<p>The implementation of the global assembly cache and strong name verification 
+system in the SSCLI is completely separate from the implementation used by the 
+commercial Microsoft&reg; .NET Framework, and because of this, there should be no 
+interaction between the two. Turning off strong name verification in the SSCLI 
+will not impact the .NET Framework on Microsoft&reg; Windows&reg; in any way. </p>
+<h3>What is Strong Name Verification?</h3>
+<p>Strong name verification is a mechanism that requires a developer or 
+publisher of an assembly to have access to both the public and private elements 
+of a cryptographic key pair at build time. The public key becomes part of the 
+assembly name and a cryptographic hash of the metadata of the assembly is 
+calculated using the private key and inserted into the assembly. At load time, 
+strong name verification uses the public key to derive the metadata checksum 
+that can be checked against the actual metadata thus proving that the producer 
+of the assembly had access to the private key. More information on this process 
+can be obtained from <a href="http://msdn.microsoft.com">msdn.microsoft.com</a>. The implementation of strong 
+name verification can be seen in the SSCLI source tree in 
+<a href="../clr/src/dlls/mscorsn/strongname.cpp">sscli\clr\src\dlls\mscorsn\strongname.cpp</a>. </p>
+<h3>The ECMA Special Key</h3>
+<p>There is an additional distinction among strong names. All assemblies 
+released in the .NET Framework that include classes specified in the ECMA-335 
+CLI standard are name with a special public key. This public key is 
+cryptographically invalid and is treated as a special case by both the SSCLI and 
+the .NET Framework strong name verification code. </p>
+<p>In Microsoft's commercial .NET Framework implementation, when an assembly 
+using this special public key is loaded, the strong name verification code  assumes that the assembly is signed using the private Microsoft key. If it is not 
+signed with the Microsoft key then the assembly will not load unless strong name 
+verification for the public key in that assembly is turned off. </p>
+<p>In the SSCLI, when an assembly contains the special public key designated by 
+ECMA, the strong name verification code  assumes that the assembly is signed 
+with the SSCLI private key, which can be found in 
+sscli\clr\bin\bin\finalpublickey.snk. If it is not signed with the SSCLI private key, 
+the assembly will not load unless strong name verification for the public key of 
+that assembly is turned off. By default, the build process delay-signs all 
+assemblies.</p>
+<p>Note that the SSCLI private key is not in any sense a &quot;private&quot; key because 
+it is published in the source distribution. Anyone can use it to sign any 
+assembly and it signifies nothing with respect to security and ownership of the 
+resulting binary. </p>
+<h3>Source-code Distribution Implies Delayed Signing</h3>
+<p>Because the SSCLI distribution is a source distribution with a build process 
+and because the private key used to sign the .NET Framework implementation of 
+system assemblies can be used only for signing binary files published by 
+Microsoft,  assemblies built during the SSCLI build process on your computer 
+are  delay-signed. </p>
+<p>Delay signing (also called &quot;partial signing&quot;) means that the public key is 
+stored in the assembly metadata but the assembly file is not signed using the 
+private key. In order for a delay-signed assembly to load, strong name 
+verification must be turned off. This is done using the Strong Name tool during 
+the SSCLI build process (see <a href="tools/sn.html">sn.html</a>). The default 
+configuration for the SSCLI build environment is that verification is turned off 
+for both the ECMA public key and the Microsoft public key. </p>
+<p>All assemblies that can be found in both the SSCLI and in Microsoft's 
+commercial .NET Framework use identical public keys: some contain the ECMA key 
+and some contain the Microsoft public key. Note that no assembly built with 
+the SSCLI key can be trusted with respect to origin, including assemblies built 
+during the SSCLI build process. (Of course, you have control of the SSCLI source code 
+on your computer, so you understand the level of trust to impart to your own build output.) </p>
+<p>When an assembly B references an assembly A, compilers  store the full 
+assembly identity, including the public key, in the assembly reference in 
+assembly B. When either the SSCLI or the commercial .NET Framework load assembly 
+B and attempt to resolve the types that reside in assembly A, the 
+assembly-loading infrastructure will only look for assemblies with the same 
+public key as assembly A. Note that no information with respect to the 
+cryptographic signature of assembly A is stored in assembly B - only the public 
+key (usually a size-reduced hash of the public key). Cryptographic verification 
+occurs when an assembly is loaded into the CLI execution environment. Thus, 
+assemblies built against delay-signed assemblies are no different than 
+assemblies built against fully signed assemblies, only the public key is 
+transferred to the new assembly. </p>
+<p>The SSCLI&nbsp; implementation is designed to facilitate sharing code and 
+experimentation. Code built against one SSCLI installation should run against 
+another SSCLI installation. It should also run against other ECMA 335-compliant 
+CLI implementations, assuming only classes in the ECMA standard are used. No 
+assumptions should be made, however, about the security of the SSCLI 
+installation or of assembly code signed with the SSCLI key pair. </p>
+<h3>Strong Names and SSCLI Tools</h3>
+<p>Some tools in the SSCLI are managed applications that must be run inside the 
+SSCLI execution environment. This means they must be executed using the
+<a href="tools/clix.html">clix</a> application launching utility.&nbsp; Managed 
+applications are assemblies and in the SSCLI these assemblies are delay signed.&nbsp; 
+Failure to use the clix launcher to execute an SSCLI managed tool on Windows 
+will cause the tool to be executed under the .NET Framework.&nbsp; This will 
+cause an error dialog box that states that the utility might have been tampered 
+with or was partially signed.&nbsp; This error is correct: the SSCLI utilities 
+are partially signed and will not execute under the .NET Framework.</p>
+<p>For example, if you forget to run <code>clix caspol</code> on Windows and instead just 
+run <code>caspol</code> you could see the resulting error dialog box content:</p>
+<blockquote>
+  <pre>caspol.exe - Strong name validation failed.<br>
+Strong name validation failed for assembly 
+'C:\sscli\build\v1.x86fstchk.rotor\caspol.exe'. The file may have been 
+tampered with or it was partially signed but not fully signed with the correct 
+private key.&nbsp;</pre>
+</blockquote>
+<p>If you see a similar error, make sure to use the clix launcher when 
+executing that tool.</p>
+<h3>Changing the Default Key Value Using the Keyconfig Tool</h3>
+<p>You can use the sample tool, keyconfig, to change the key used by the SSCLI 
+when it builds.&nbsp; See
+<a href="../samples/utilities/keyconfig/keyconfig.html">keyconfig.html</a> for 
+more information on using this tool.</p>
+<p>When you use this tool, you will be providing a custom assembly key pair or 
+just a custom assembly public key. If you provide the key pair, then all SSCLI 
+assemblies will be signed with this full key pair. This can be convenient if you 
+wish to attempt to load the assembly under the .NET Framework for debugging. For 
+example, jsc.exe will be fully signed so it will load under the .NET Framework 
+with no errors.</p>
+<p>What will happen when you use the keyconfig tool is the new custom key values 
+you provide will be used as a replacement for all keys for building assemblies. </p>
+<p>Assemblies such as mscorlib.dll and System.dll will be built with the ECMA 
+public key (see description above) but will be signed with the private key that 
+you provided. This will continue to work because the SSCLI assembly verification 
+code will now treat the new custom public key as a special case when loading 
+these assemblies. </p>
+<p>However, assemblies that do not normally have the ECMA public key (for 
+example, Microsoft.JScript.dll) will now be built with a new public key and 
+signed with a new private key. Any code that you develop that references these 
+assemblies will not run under the .NET Framework because the public key stored 
+in the assembly reference will not match any installed assemblies.</p>
+<p>If you choose the <b>delaysign</b> option with the keyconfig tool, then all&nbsp; 
+SSCLI assemblies will be built as delay-signed. The assemblies that would 
+normally be signed with the ECMA public key will continue to be signed with that 
+public key and other assemblies contain the new custom public key.</p>
+<h2><a name="MinimumVisualStudio.NETRequirements"></a>Minimum Visual Studio .NET 
+Requirements</h2>
+<p>To build the SSCLI implementation on Microsoft&reg; Windows&reg; XP requires Visual 
+Studio .NET, as stated in the <a href="../readfirst.html">readfirst.html</a>.&nbsp;
+</p>
+<p>The minimum installation of Visual Studio .NET required to support the SSCLI 
+is to install Visual C++&reg; .NET.&nbsp; Within the options for installing Visual 
+C++ .NET, the C runtime libraries must be selected because the runtime header 
+files are required by the SSCLI build process.</p>
+<h2><a name="PerlonWindowsXP"></a>Perl on Windows&reg; XP</h2>
+<p>A Perl distribution must be installed on Windows XP in order to build the 
+SSCLI source tree.&nbsp; You can go to <a href="http://www.activestate.com">
+www.activestate.com</a> and install the free download of Perl (preferably 
+version 5.6.1, builds 630 and later).&nbsp; </p>
+<p>The Perl installation must correctly modify your environment variables so 
+that Perl is in your path.&nbsp; The env.bat file will search your path and will 
+set the PERLLIB environment variable assuming there is a LIB directory that is a 
+peer of the location where perl.exe is installed. </p>
+<p>You must install Perl with administrator-level privileges.&nbsp; If you 
+install the ActiveState Perl distribution while you are logged in with only 
+user-level privileges, the installer will not be able to modify your environment 
+variables and the SSCLI build process will not work correctly.</p>
+<h2><a name="RequiredSwapSizeUnderFreeBSD"></a>Required Swap Size Under FreeBSD</h2>
+<p>The SSCLI requires 256MB of memory to build without slowing down 
+considerably.&nbsp; Users building the SSCLI on FreeBSD on systems with 128MB of 
+memory report that they must increase the available swap space to twice the 
+default size (default is 2x memory) or at least 512MB.&nbsp; The build will 
+proceed very slowly under this configuration but it will usually complete.</p>
+<h2><a name="ChangestoMakefileRequirements"></a>Changes to Makefile Requirements</h2>
+<p>The first source release of the SSCLI used makefiles that required the use of 
+BSD make on FreeBSD 4.5.&nbsp; These makefiles were incompatible with other 
+variants of the make utility.&nbsp; The makefiles in the current release have 
+been modified to remove the dependency on BSD make.</p>
+<h2><a name="LimitationsofSecurityZonesinSharedSourceCLI"></a>Limitations of 
+Security Zones in SSCLI</h2>
+<p>Due to portability modifications to the security implementation, support for 
+mapping URLs to security zones is limited in the SSCLI security implementation. 
+All file URLs will map to the zone of the local computer (LocalMachine) and all 
+other URLs will map to the Internet zone. Ensure that you understand 
+this limitation if you run code that relies on security zones generated from 
+URLs.</p>
+<h2><a name="ChangestoPer-UserConfigurationDirectoryLocation"></a>Changes to 
+Per-User Configuration Directory Location</h2>
+<p>In the first source release of the SSCLI, the directory where 
+user-configuration information was stored was %userprofile%\rotor on Microsoft&reg; 
+Windows&reg; or ~/.rotor on UNIX system-based platforms.&nbsp; This caused problems 
+when trying to run checked, free, or fastchecked suites simultaneously because 
+they all shared the same user configuration location.&nbsp; Modifications have 
+been made to allow more complete side-by-side isolation of SSCLI builds.</p>
+<p>The new user configuration directory name is created by generating a unique 
+name based on a hash of the path to the platform adaptation layer (PAL) library 
+(rotor_pal.dll on Windows, librotor_pal.so on FreeBSD, and librotor_pal.dylib on 
+Mac&reg; OS X).&nbsp; The new user configuration directory location is: 
+%userprofile%\rotor\&lt;hash&gt;\ on Windows or ~/.rotor&lt;hash&gt; on UNIX system-based 
+platforms, where &lt;hash&gt; is a 40-character hash of the path to the PAL dynamic 
+library.</p>
+<p>For example, if your user name on Windows is jsmith then the per-user 
+configuration settings directory would be something like:</p>
+<blockquote>
+  <p>C:\Documents and 
+  Settings\jsmith\rotor\clejgcjcdhmbcjpgllccjfagplehoohojacjmnho</p>
+</blockquote>
+<p>Note: Named shared memory objects also use this naming convention which 
+should prevent contention for named objects during execution of code in other 
+running instances of the SSCLI.&nbsp; </p>
+<p>To review the implementation of this naming convention, search for the 
+MangleObjectNameW() function and the associated global<br>
+variable <i>NameManglerW</i> in the source code in the PAL subdirectories.</p>
+<h2><a name="RuntimeVersionValue"></a>Runtime Version Value</h2>
+<p>All assemblies created by using either the SSCLI or .NET Framework compilers 
+contain a entry in the metadata root (see ECMA-335 specification, Partition II, 
+section 23.2.1) that specifies which version of the .NET Framework should be 
+loaded to run the assembly.&nbsp;This is a different version value than the assembly 
+version and is utilized by the .NET Framework on Windows but it ignored by the 
+SSCLI. The .NET Framework relies on the Windows loader to first load an 
+executable assembly and because there can be multiple, side-by-side versions of 
+the .NET Framework installed, the runtime version value is needed to indicate 
+which version of the .NET Framework should be given the assembly to load and 
+execute.&nbsp; Although the runtime version value is included in all assemblies, 
+it is only normally relevant to executable assemblies.</p>
+<p>The SSCLI does not utilize platform loaders to run assemblies, instead it 
+relies on the clix launcher application. The clix launcher loads SSCLI core 
+files based on the directory from which it was loaded so the SSCLI has no need 
+to use the runtime version value and the value is ignored.</p>
+<p>When an assembly is built using the .NET Framework compilers, the default 
+behavior is to store the current version of the .NET Framework as the runtime 
+version value.&nbsp; For example, with version 1.0 of the .NET Framework the 
+runtime version value would be &quot;v1.0.3705&quot;.&nbsp; This allows the .NET Framework 
+pre-loader to find and load the version v1.0.3705 core implementation files.</p>
+<p>If you intend to develop assemblies using the SSCLI and run them on the .NET 
+Frameworks you might need to modify the runtime version value in order for them 
+to load.&nbsp; By default the compilers in the SSCLI will generate assemblies 
+with the value of &quot;v1.0.0&quot;.&nbsp; This value does allow executable assemblies to 
+load in version 1.0 of the .NET Framework and was chosen because it represents a 
+generic version number that still works with version 1.0. However, future 
+versions of the .NET Framework might not recognize this version value. Instead 
+the value that should be used by an assembly that does not have a strict version 
+requirement is the string: &quot;Standard CLI 2002&quot;.&nbsp; This value, however, will 
+not work with version 1.0 of the .NET Framework.</p>
+<p>To summarize, the following are a set of runtime version values and the 
+version of the .NET Framework on Windows into which the executable assembly 
+containing the value will be loaded:</p>
+<table border="1" width="90%">
+  <tr>
+    <th width="23%">Version value</th>
+    <th width="77%">Loaded version of .NET Framework</th>
+  </tr>
+  <tr>
+    <td width="23%">1.0.0</td>
+    <td width="77%">Version 1.0 of the .NET Framework.</td>
+  </tr>
+  <tr>
+    <td width="23%">v1.0.3705</td>
+    <td width="77%">Version 1.0 of the .NET Framework.</td>
+  </tr>
+  <tr>
+    <td width="23%">v1.n.nnnn</td>
+    <td width="77%">Version 1.n.nnnn of the .NET Framework, where n is any 
+    digit.</td>
+  </tr>
+  <tr>
+    <td width="23%">Standard CLI 2002</td>
+    <td width="77%">Future ECMA version 1.0 compliant versions of the .NET 
+    Framework.</td>
+  </tr>
+</table>
+<p>To change the runtime version value that will be built into assemblies 
+created by SSCLI compilers, open the
+<a href="../clr/src/DLLS/mscoree/mscoree.cpp">
+sscli\clr\src\dlls\mscoree\mscoree.cpp</a> file.&nbsp; Search for the string:&nbsp; 
+ROTOR_VERSION_NUMBER.&nbsp; You will see the following code:</p>
+<blockquote>
+  <pre>#ifndef ROTOR_VERSION_NUMBER
+// By using (L&quot;v1.0.0&quot;), this should allow the us to run on the desktop version as well
+#define ROTOR_VERSION_NUMBER (L&quot;v1.0.0&quot;)
+#endif</pre>
+</blockquote>
+<p>Changing the value of the #define ROTOR_VERSION_NUMBER will change the 
+runtime version value in assemblies that are subsequently built with SSCLI 
+compilers. You will need to rebuild the SSCLI after changing this value in order 
+to have the change applied.</p>
+<p>See the <a href="../samples/utilities/getcliversion/getcliversion.html">
+GetCliVersion sample</a> for more information on how to inspect and modify the 
+runtime version value in an existing assembly.</p>
+<h2><a name="PlatformRequirementsforPOSIXThreadsSupport"></a>Platform 
+Requirements for POSIX Threads Support</h2>
+<p>The SSCLI requires specific functionality in the POSIX threads (Pthreads) 
+implementation on any platform to which it might be ported.&nbsp; Specifically, 
+exception handling in the SSCLI is dependent on several extra parameters sent to 
+SA_SIGINFO signal handlers which provide details about the signal and the 
+context in which it occurred. </p>
+<p>An example of a UNIX system-based platform which does not currently provide 
+this required functionality is OpenBSD 3.1.&nbsp; It would be very difficult to 
+port the SSCLI to such a platform and maintain exception handling functionality.&nbsp; 
+Future versions of OpenBSD might provide this functionality and would then 
+be available as a porting target for the SSCLI.</p>
+<h2><a name="KnownIssues"></a>Known Issues</h2>
+<h3><a name="ProblemswithtarUtilityExpandingSSCLIArchiveonMacOSX"></a>Problems 
+with tar Utility Expanding SSCLI Archive on Mac OS X</h3>
+<p>Due to problems with the default implementation of the tar archive utility on 
+Mac OS X, the gnutar archive utility should instead be used to extract the SSCLI 
+distribution archive.&nbsp; You can also use version 7.0 of the Stuffit&#8482; 
+Expander  
+application to expand the SSCLI archive on Mac OS X.&nbsp; You must use version 
+7.0 or newer because older versions do not have full long file name support and 
+some files in the archive have names with more than thirty-one characters.</p>
+<p>Finding a file named @LongLink in the directory where you expanded the SSCLI 
+archive is one indication that you used the tar utility and file name truncation 
+occurred. The extracted distribution might not build or run correctly due to 
+file name truncation.&nbsp; The exact behavior varies depending on the length of 
+the path into which the archive was extracted.</p>
+<p>There are no known issues using the default tar utility to extract the 
+archive on other UNIX system-based platforms.</p>
+<h3><a name="CorDBGDebuggerandMulti-processorKernelsonFreeBSD"></a>CorDBG 
+Debugger and Multi-processor Kernels on FreeBSD 4.5</h3>
+<p>The Managed Code Debugger (cordbg) might not work correctly on FreeBSD 
+installations that use a multi-processor kernel. This problem has been 
+reproduced using FreeBSD 4.5. </p>
+<p>This problem is fixed on FreeBSD 4.7.</p>
+<p>There are no known problems building or running the SSCLI and CorDBG on 
+Windows or Mac OS X multi-processor systems.</p>
+<h3><a name="JITCompilationandCodePitching"></a>JIT Compilation and Code 
+Pitching</h3>
+<p>Several known problems  might occur when the just-in-time (JIT) 
+compiler implementation pitches code as it attempts to minimize the code heap 
+size.</p>
+<h4>Incorrect Stack Trace in Managed Code</h4>
+<p>In some cases, when an exception is thrown the code for methods on the stack 
+has been pitched.&nbsp; This  causes the original starting address in 
+StartOfTheMethod to be lost. For safety in this release of the SSCLI 
+implementation, the offset is set to 0 to avoid pointing into unallocated 
+memory.&nbsp; This means that the stack trace will always show the first line of 
+the function for functions that have been pitched.</p>
+<h4>Running Out of Code Heap Space</h4>
+<p>When the SSCLI runs out of code heap space, several different errors can 
+occur:</p>
+<ul>
+  <li>Fatal stack overflow.</li>
+  <li>Unhandled out-of-memory exception.</li>
+</ul>
+<h4>Code Pitching Options</h4>
+<p>There are a variety of options that modify the behavior of code pitching 
+which 
+can be set using environment variables. Two useful options are:</p>
+<ul>
+  <li>COMPlusCodePitchEnable<ul>
+    <li>This option will affect all builds and can be used to turn off code 
+    pitching. The default for code pitching is that it is turned on so by 
+    clearing the environment variable you can restore the code pitching 
+    functionality.</li>
+    <li>Example:<blockquote>
+      <pre>set COMPlusCodePitchEnable=false</pre>
+    </blockquote>
+    </li>
+  </ul>
+  </li>
+  <li>COMPlusMaxCodeCacheSize<ul>
+    <li>This option only affects the fastchecked or checked builds. It allows 
+    you to set the size of the code cache.<blockquote>
+      <pre>set ComPlusMaxCodeCacheSize=10000</pre>
+    </blockquote>
+    </li>
+  </ul>
+  </li>
+</ul>
+<p>See the information in <a href="../clr/src/vm/eeconfig.cpp">eeconfig.cpp</a> 
+for more information about further code pitching options and other 
+implementation details. See <a href="techinfo/logging.html">logging.html</a> for 
+general information about the SSCLI logging infrastructure.</p>
+<h3><a name="InstallPathCannotContainSpaces"></a>Install Path Cannot Contain 
+Spaces</h3>
+<p>The SSCLI implementation cannot be installed to a location with spaces in the 
+path name.&nbsp; Please extract the .tgz file into a directory location with no 
+spaces in the name.</p>
+<h3><a name="WinzipandCR/LF"></a>WinZip&reg; and CR/LF</h3>
+<p>If you use the WinZip utility (<a href="http://www.winzip.com">http://www.winzip.com</a>) 
+to extract the SSCLI archive on Windows you must turn off the smart CR/LF 
+conversion option. Some files in the SSCLI archive might not extract correctly if 
+this option is turned on. To turn off the option in WinZip go to the <b>Options</b> 
+item on the <b>Configuration</b> menu. On the <b>Miscellaneous</b> tab make sure the item 
+labeled &quot;TAR file smart CR/LF conversion&quot; is not selected.</p>
+<h3><a name="Pathand.NETFramework"></a>Path and the .NET Framework</h3>
+<p>When you run one of the SSCLI implementations of a tool or utility on 
+Windows you must make sure that the SSCLI build output directory is in your path 
+before the .NET Framework or Visual Studio bin directories or errors will occur. For example, if you change into the .NET Framework directory which contains 
+files like mscorwks.dll and mscorlib.dll, and then attempt to run the SSCLI 
+version of metainfo.exe you will see an error like the following: </p>
+<blockquote>
+  <pre>metainfo.exe - Entry Point Not Found
+The procedure entry point SetFusionShutdownCallback could not be located in the dynamic link library fusion.dll.
+
+</pre>
+</blockquote>
+<h3><a name="FreeBSDKernelOptionsMightCauseProblemsWithBuild"></a>FreeBSD Kernel 
+Options Might Cause Problems with Build</h3>
+<p>It has been reported that compiling the FreeBSD kernel with some modified 
+configuration options might cause the SSCLI build process to fail.&nbsp; The 
+symptom of the problem in the reported case was that the C# compiler would core 
+dump when building the FX tree.&nbsp;Here is a snippet from the builddf.log 
+file:</p>
+<blockquote>
+  <pre>/out:/usr/local/src/sscli/build/v1.x86fstchk.rotor/private/lib/System.dll 
+@objdf/rotor_x86/csc.rsp.lib
+Fatal error 'Can't create gc thread' at line ? in file
+/usr/src/lib/libc_r/uthread/uthread_create.c
+</pre>
+</blockquote>
+<p>The problem was solved by removing the following settings from the kernel 
+configuration file and then recompiling the kernel:</p>
+<blockquote>
+  <pre># To use more memory per process
+options MAXDSIZ=&quot;(2048*1024*1024)&quot;
+options MAXSSIZ=&quot;(256*1024*1024)&quot;
+options DFLDSIZ=&quot;(1024*1024*1024)&quot;
+</pre>
+</blockquote>
+<h3><a name="TclandTkMustBeInstalledToRunPIGUISamples"></a>Tcl and Tk Must Be 
+Installed to Run PIGUI Samples</h3>
+<p>All the samples under the sscli\samples\pigui directory require Tcl and Tk to 
+be installed on the system&nbsp;in order to execute. On Windows, one option is 
+to install the ActiveTcl 8.4.0 distribution from
+<a href="http://www.ActiveState.com">www.ActiveState.com</a>.&nbsp; Versions of 
+Tcl and Tk older than 8.4.0 might not work correctly with the SSCLI Tk sample 
+applications. On FreeBSD 4.5 and Mac OS X, the Tcl and Tk 8.4.0 packages will have to 
+be downloaded and installed.</p>
+<h3>
+<a name="PIGUISampleApplicationsCompiledUnderWindowsWillNotRunUnderUNIXSystem-basedPlatforms">
+</a>PIGUI Sample Applications Compiled Under Windows Will Not Run Under UNIX 
+System-based Platforms</h3>
+<p>Platform-independent UI (PIGUI) samples built under one platform will not run 
+on other platforms. For example, PIGUI samples built on Windows will not run on 
+FreeBSD or Mac OS X. Also, these samples built on Mac OS X will not run on 
+Windows or FreeBSD.</p>
+<p>The samples rely on platform invoke wrappers in
+<a href="../samples/pigui/tk/tclnative.cs">sscli\samples\pigui\tk\tknative.cs</a> 
+which use a constant value that contains either  tk84.dll on Windows, libtk84.so on FreeBSD, 
+and libtk84.dylib on Mac OS X under an #ifdef switch. Built sample applications will have the name of the Tk support DLL built into 
+them but the file name changes across platforms.</p>
+<h3><a name="ProblemsUsingSOSfromgdbDebuggeronUNIXSystem-basedPlatforms"></a>
+Problems Using SOS from gdb Debugger on UNIX System-based Platforms</h3>
+<p>The version of the gdb debugger that installs by default on FreeBSD 4.5 has 
+problems using the SOS debugger extension.&nbsp; You can obtain more information 
+on using gdb and SOS in <a href="debugging/sos.html">sos.html</a><i>. </i></p>
+<p>Problem reports indicate that the version of gdb that ships with FreeBSD 4.5 
+might crash and core dump when used with the SOS debugger extension library. However, later versions of gdb do not seem to have this problem.</p>
+<h4>SOS Implementation Details</h4>
+<p>SOS is implemented as a dynamically loaded library, sos.dll on Windows,  libsos.so on FreeBSD, 
+and libsos.dylib on Mac OS X. It can be loaded from the Windows SDK platform 
+debuggers NTSD or WinDBG on Windows, or from gdb on UNIX system-based platforms. 
+However the manner in which it is loaded differs between the Windows debuggers 
+and gdb.</p>
+<p>On Windows under NTSD or WinDBG, the SOS dll is loaded into the debugger 
+process and it communicates across-process to obtain data from the process being 
+debugged. Under gdb, extension libraries are loaded into the process being 
+debugged and function calls into SOS are made to the external process from the 
+debugger. The SSCLI supports this loading procedure by means of a 
+function in the core runtime library libsscoree.so (libsscoree.dylib on Mac OS 
+X), which uses the PAL and the 
+LoadLibrary() API to load the SOS library into the CLI process being debugged.
+</p>
+<h3><a name="VisualStudio.NETBeta2DoesNotWorkasSharedSourceCLIBuildEnvironment">
+</a>Visual Studio .NET Beta2 Does Not Work as SSCLI Build Environment</h3>
+<p>The SSCLI implementation requires the released version of the Visual Studio 
+.NET development system as the build environment.&nbsp; The build process does 
+not work with the Visual Studio .NET version 7.0 beta2 release.</p>
+<p>Symptoms of the problem are log file errors like the following:</p>
+<blockquote>
+  <pre>Studio.NET\Vc7\PlatformSDK\Include\WinNT.h(4323) : error C2220: warning treated as error - 
+        no object file generated C:\Program Files\Microsoft Visual
+Studio.NET\Vc7\PlatformSDK\Include\WinNT.h(4323) : warning C4005: 'THREAD_BASE_PRIORITY_MIN' : macro redefinition
+        ..\rotor_pal.h(1776) : see previous definition of 'THREAD_BASE_PRIORITY_MIN' C:\Program Files\Microsoft Visual
+Studio.NET\Vc7\PlatformSDK\Include\WinNT.h(4324) : warning C4005: 'THREAD_BASE_PRIORITY_IDLE' : macro redefinition
+        ..\rotor_pal.h(1777) : see previous definition of 'THREAD_BASE_PRIORITY_IDLE' C:\Program Files\Microsoft Visual
+Studio.NET\Vc7\PlatformSDK\Include\WinBase.h(3797) : warning C4005: 'TLS_OUT_OF_INDEXES' : macro redefinition
+        ..\rotor_pal.h(1802) : see previous definition of 'TLS_OUT_OF_INDEXES' 
+        NMAKE : fatal error U1077: 'cl' : return code '0x2' Stop.
+</pre>
+</blockquote>
+<p>These particular errors are caused by changes to the macro definitions 
+between the beta and release versions of Visual Studio .NET.&nbsp; Since the 
+SSCLI was developed using the released version, these macro definitions do not 
+match.</p>
+<h3><a name="OperationNotPermittedError"></a>Operation Not Permitted Error from 
+./configure on FreeBSD</h3>
+<p>If your user account on FreeBSD is not a member of group wheel, you may see a 
+sequence of errors during an SSCLI build that look like:</p>
+<blockquote>
+<pre>config.status: creating makefile
+mv: makefile: set owner/group (was: 1000/0): Operation not permitted
+config.status: creating makefile.common
+mv: makefile.common: set owner/group (was: 1000/0): Operation not permitted</pre>
+</blockquote>
+<p>These errors specifically occur if you run ./configure in the SSCLI 
+directory.</p>
+<p>These errors are not significant and do not indicate a build problem. The 
+errors are due to the way the <b>mv</b> command works with permissions on 
+FreeBSD.&nbsp; The <b>mv</b> command is attempting to preserve user and group 
+information when it moves the file but because the file has a group of wheel but 
+the user does not, the <b>mv</b> command cannot preserve this information. The 
+file is successfully copied and  simply ends up as a member of the user's group 
+so the error messages can be ignored.</p>
+<hr>
+<p><i>Copyright (c) 2002 Microsoft Corporation. All rights reserved.</i><br>
+&nbsp;</p>
+
+</body>
+
+</html>

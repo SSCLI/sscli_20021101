@@ -1,0 +1,49 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+# Need to compile mscorwks/svr before we build the shim.
+SYNCHRONIZE_DRAIN=1
+SYNCHRONIZE_BLOCK=1
+
+NO_CRT                                  = 1
+!include $(NTMAKEENV)\sources.cor
+USE_NOLIBS                              = 1
+NO_NTDLL                                = 1
+
+INCLUDES                                = $(INCLUDES);.;..\inc;..\..\inc;..\..\xmlparser;..\..\md\inc
+
+
+# There is no shim DLL for FEATURE_PAL - shim is compiled as shim.lib for FEATURE_PAL
+
+TARGETPRIORPATH                 =$(CORBUILDENV)
+TARGETLIBNAME                   =shim
+TARGETNAME                      =$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH                      =$(TARGETCORBIN)
+TARGETTYPE                      =LIBRARY
+
+
+COR_C_FLAGS                             = -DUNICODE -D_UNICODE
+
+EXCEPTION_HANDLING                      = $(SEHONLY)
+PRECOMPILED_INCLUDE                     = stdafx.h
+PRECOMPILED_CXX                         = 1
+PRECOMPILED_SOURCEFILE                  = stdafx.cpp
+
+CDEFINES                                = $(CDEFINES) $(COR_C_FLAGS)
+
+
+SOURCES =  \
+                shim.cpp \
+                xmlreader.cpp \
+                xmlstream.cpp 
+

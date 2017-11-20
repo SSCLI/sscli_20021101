@@ -1,0 +1,47 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+INCLUDES		  =$(INCLUDES);..\..\clr\src\inc;
+
+TARGETNAME=binplace
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+
+# binplace binplaces itself
+BINPLACE_NAME=$(TARGETPATH)\$(TARGET_DIRECTORY)\$(TARGETNAME)
+
+USE_MSVCRT=1
+
+MSC_WARNING_LEVEL = /W3 /WX
+
+SUBSYSTEM_VERSION=4.00
+
+SOURCES=binplace.c 
+
+
+UMTYPE=console
+
+# include hacks in makefile.inc to get it link with rotor_pal*.lib only
+NTTARGETFILES=
+
+# On Win32, the CRT does not expand wildcards in the argv[] list by
+# default.  To get wildcard expansion, apps should link against
+# setargv.obj which comes with the SDK.  However, this doesn't work
+# for the PAL.  So instead, the PAL has alternate entrypoints which
+# expand wildcards
+UMENTRYABS=mainCRTStartupWildcard
+
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\$(DYNLIB_PREFIX)rotor_pal.$(DYNLIB_SUFFIX)

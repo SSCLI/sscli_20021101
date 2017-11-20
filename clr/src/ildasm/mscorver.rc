@@ -1,0 +1,71 @@
+// ==++==
+// 
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+// 
+// ==--==
+//Microsoft Developer Studio generated resource script.
+//
+#include "CorError.h"
+
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include <winresrc.h>
+#include "mscorver.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+// Bitmaps
+IDB_CLASS               BITMAP  "class.bmp"
+IDB_EVENT               BITMAP  "event.bmp"
+IDB_FIELD               BITMAP  "field.bmp"
+IDB_METHOD              BITMAP  "method.bmp"
+IDB_PROP                BITMAP  "prop.bmp"
+IDB_STATICFIELD         BITMAP  "staticfield.bmp"
+IDB_STATICMETHOD        BITMAP  "staticmethod.bmp"
+
+#endif    // English (U.S.) resources
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+

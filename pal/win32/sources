@@ -1,0 +1,70 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+USE_MSVCRT=1
+
+TARGETTYPE=DYNLINK
+
+TARGETNAME=$(CORBUILDENV)rotor_pal
+TARGETPATH=$(TARGETCORBIN)
+
+COFFBASE=rotor_pal
+USE_RC_FROM_TOOLS=1
+
+!ifdef PASS0ONLY
+NTTARGETFILE0 = prepbuild
+!endif
+
+DLLENTRY=DllMain
+
+MSC_WARNING_LEVEL = /W3 /WX
+
+# Overwrite default - don't want to use PAL RT
+INCLUDES=..;.
+
+# Add Win32 SDK to the path
+INCLUDES=$(INCLUDES);$(MSVCDIR)\PlatformSDK\include;$(MSVCDIR)\Include
+
+C_DEFINES=$(C_DEFINES) /DPAL_IMPLEMENTATION=1
+
+WIN32_WINNT_VERSION=0x0500
+
+NO_NTDLL=1
+
+EXCEPTION_HANDLING  = $(SEHONLY)
+
+SOURCES=exception.c \
+        rotor_pal.rc \
+        VerifyThread.c \
+        win32pal.c
+
+DLLLIBOBJECTS=$(O)\msvcrt.obj \
+        $(O)\crtstartup.obj \
+        $(O)\wcrtstartup.obj
+
+DLLDEF=$(O)\rotor_pal.def
+LINKLIBS=$(LIBC_LIB) \
+         $(SDK_LIB_PATH)\kernel32.lib \
+         $(SDK_LIB_PATH)\ole32.lib \
+         $(SDK_LIB_PATH)\ws2_32.lib \
+         $(SDK_LIB_PATH)\user32.lib
+
+UMTYPE=windows
+
+MESSAGE_COMPILER = mc.exe
+
+
+
+

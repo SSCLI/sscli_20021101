@@ -1,0 +1,117 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+!ifndef PLATFORM_UNIX
+COMPILER_WARNINGS       =/WX
+MSC_WARNING_LEVEL	=/W4
+!else
+USE_NOLIBS=1
+COMPILER_WARNINGS   =$(COMPILER_WARNINGS) -Wno-ctor-dtor-privacy
+!endif
+
+INCLUDES        =$(INCLUDES);..\..\inc;..\..\debug\inc;
+INCLUDES    =.\inc;$(INCLUDES)
+
+!ifndef PLATFORM_UNIX
+NO_NTDLL=1
+INCLUDES    =$(INCLUDES);$(MSVCDIR)\PlatformSDK\include;$(MSVCDIR)\include;$(CORBASE)\..\rotorenv\include
+!endif
+
+MINORCOMP   =sos
+
+COFFBASE    =$(MINORCOMP)
+TARGETLIBNAME=sos
+TARGETPRIORPATH=$(CORBUILDENV)
+TARGETNAME  =$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH  =$(TARGETCORBIN)
+TARGETTYPE  =DYNLINK
+UMTYPE      =windows
+
+DLLDEF=$O\$(MINORCOMP).def
+TARGETLIBS=
+
+USE_NOLIB=1
+
+!ifndef PLATFORM_UNIX
+
+!if "$(_TGTCPUTYPE)"=="x86"
+!if "$(DDKBUILDENV)"!="checked"
+!undef DEBUG_CRTS
+CRT_LIB_PATH=$(MSVCDIR)\lib\
+!endif
+!endif
+
+WIN32DLL_LIBS = 
+TARGETLIBS= \
+    $(SDK_LIB_PATH)\kernel32.lib\
+    $(SDK_LIB_PATH)\user32.lib\
+    $(SDK_LIB_PATH)\ole32.lib\
+
+!if "$(_TGTCPUTYPE)"=="IA64"
+TARGETLIBS=$(TARGETLIBS) \
+    $(SDK_LIB_PATH)\dbghelp.lib \
+    $(SDK_LIB_PATH)\dbgeng.lib  \
+    $(SDK_LIB_PATH)\msvcrt.lib 
+!else
+TARGETLIBS=$(TARGETLIBS) \
+    $(MSVCDIR)\PlatformSDK\lib\dbghelp.lib \
+    $(MSVCDIR)\PlatformSDK\lib\dbgeng.lib
+!endif
+
+!endif // !PLATFORM_UNIX
+
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt
+USE_CC_LIB = 1
+
+!if "$(PLATFORM_UNIX)"!="1"
+!if "$(FREEBUILD)"!="1"
+COR_C_FLAGS =$(COR_C_FLAGS) -DDEBUG
+!else
+COR_C_FLAGS =$(COR_C_FLAGS) -DFAST=1 -Ox
+MSC_OPTIMIZATION =
+!endif
+!endif
+
+COR_C_FLAGS =$(COR_C_FLAGS) -DSTRIKE -DSON_OF_STRIKE
+
+EXCEPTION_HANDLING      = $(SEHONLY)
+
+SOURCES         =       \
+        gdbwrap.cpp \
+        tst-siginfo.cpp \
+        tst-stackwalk.cpp \
+        tst-frames.cpp \
+        dllsext.cpp \
+        eestructs.cpp   \
+        util.cpp    \
+        symbol.cpp  \
+        disasm.cpp  \
+        strike.cpp  \
+        mscorver.rc \
+        exts.cpp	\
+        gcroot.cpp	\
+        eeheap.cpp  \
+        metadata.cpp  \
+        get-table-info.cpp \
+        process-info.cpp
+
+
+ROTOR_X86_SOURCES = \
+        disasmX86.cpp \
+        utilX86.cpp
+
+PPC_SOURCES = \
+        disasmppc.cpp \
+        utilppc.cpp

@@ -1,0 +1,515 @@
+; ==++==
+; 
+;   
+;    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+;   
+;    The use and distribution terms for this software are contained in the file
+;    named license.txt, which can be found in the root of this distribution.
+;    By using this software in any fashion, you are agreeing to be bound by the
+;    terms of this license.
+;   
+;    You must not remove this notice, or any other, from this software.
+;   
+; 
+; ==--==
+;
+; rotor_pal.src - the .def file for rotor_pal.dll, after it has been
+;                 preprocessed.
+
+LIBRARY         rotor_pal
+EXPORTS
+
+#if DBG
+ #define PALEXPORT(x) x = PAL_##x
+ #define PALEXPORTCRT(x) x = PAL_##x
+ #define PALEXPORTOLE(x) x = PAL_##x
+ #define PALEXPORTUSER(x) x = PAL_##x
+ #define PALEXPORTSOCKET(x) x = PAL_##x
+ #define NOTLOGGED(x) x = KERNEL32.##x
+#if _MSC_VER == 1310
+; Changes neccessary to build and run against VS7.1.
+; In order to run against the 7.0 runtime modify this
+; against MSVCR70D
+ #define NOTLOGGEDCRT(x) x = MSVCR71D.##x
+#else
+ #define NOTLOGGEDCRT(x) x = MSVCR70D.##x
+#endif
+#else
+ #define PALEXPORT(x) x = KERNEL32.##x
+ #define PALEXPORTOLE(x) x = OLE32.##x
+ #define PALEXPORTUSER(x) x = USER32.##x
+ #define PALEXPORTSOCKET(x) x = WS2_32.##x
+ #define NOTLOGGED(x) x = KERNEL32.##x 
+#if _MSC_VER == 1310
+; Changes neccessary to build and run against VS7.1.
+; In order to run against the 7.0 runtime modify this
+; against MSVCR70
+ #define NOTLOGGEDCRT(x) x = MSVCR71.##x
+ #define PALEXPORTCRT(x) x = MSVCR71.##x
+#else
+ #define NOTLOGGEDCRT(x) x = MSVCR70.##x
+ #define PALEXPORTCRT(x) x = MSVCR70.##x
+#endif
+#endif
+
+PAL_Initialize
+PAL_Terminate
+PAL_InitializeDebug
+PAL_GetUserConfigurationDirectoryW
+PAL_GetPALDirectoryW
+PAL_Random
+PAL_get_stdout
+PAL_get_stdin
+PAL_get_stderr
+PAL_RegisterLibraryW
+PAL_UnregisterLibraryW
+PAL_errno
+PAL_LocalHandleToRemote
+PAL_RemoteHandleToLocal
+
+PALEXPORTCRT(__getmainargs)
+PALEXPORTCRT(__wgetmainargs)
+
+SetUnhandledExceptionFilter=PAL_SetUnhandledExceptionFilter
+PAL_GetBottommostRegistration
+PAL_SetBottommostRegistration
+PAL_GetBottommostRegistrationPtr
+PAL_TryHelper
+PAL_EndTryHelper
+PAL_LocalFrame
+NOTLOGGEDCRT(_setjmp3)
+
+// Not logged for perf reasons
+NOTLOGGED(InterlockedIncrement)
+NOTLOGGED(InterlockedDecrement)
+NOTLOGGED(InterlockedExchange)
+#if _WIN32
+InterlockedExchangePointer = InterlockedExchange
+InterlockedCompareExchangePointer = InterlockedCompareExchange
+#else
+NOTLOGGED(InterlockedExchangePointer)
+NOTLOGGED(InterlockedCompareExchangePointer)
+#endif
+NOTLOGGED(InterlockedCompareExchange)
+NOTLOGGED(TlsGetValue)
+NOTLOGGED(TlsSetValue)
+NOTLOGGED(QueryPerformanceCounter)
+NOTLOGGED(QueryPerformanceFrequency)
+
+PALEXPORTUSER(CharNextA)
+PALEXPORTUSER(CharNextExA)
+PALEXPORTUSER(wsprintfA)
+PALEXPORTUSER(wsprintfW)
+MessageBoxW = PAL_MessageBoxW  // always intercept this API, even in retail
+PALEXPORT(SetConsoleCtrlHandler)
+PALEXPORT(GenerateConsoleCtrlEvent)
+PALEXPORT(AreFileApisANSI)
+PALEXPORT(CreateFileA)
+PALEXPORT(CreateFileW)
+PALEXPORT(LockFile)
+PALEXPORT(UnlockFile)
+PALEXPORT(SearchPathA)
+PALEXPORT(SearchPathW)
+PALEXPORT(CreatePipe)
+PALEXPORT(CopyFileA)
+PALEXPORT(CopyFileW)
+PALEXPORT(DeleteFileA)
+PALEXPORT(DeleteFileW)
+PALEXPORT(MoveFileW)
+PALEXPORT(MoveFileExW)
+PALEXPORT(CreateDirectoryA)
+PALEXPORT(CreateDirectoryW)
+PALEXPORT(RemoveDirectoryW)
+PALEXPORT(FindFirstFileA)
+PALEXPORT(FindFirstFileW)
+PALEXPORT(FindNextFileA)
+PALEXPORT(FindNextFileW)
+PALEXPORT(FindClose)
+PALEXPORT(GetFileAttributesA)
+PALEXPORT(GetFileAttributesW)
+PALEXPORT(GetFileAttributesExW)
+PALEXPORT(SetFileAttributesA)
+PALEXPORT(SetFileAttributesW)
+PALEXPORT(WriteFile)
+PALEXPORT(ReadFile)
+PALEXPORT(GetStdHandle)
+PALEXPORT(SetEndOfFile)
+PALEXPORT(SetFilePointer)
+PALEXPORT(GetFileSize)
+PALEXPORT(CompareFileTime)
+PALEXPORT(SetFileTime)
+PALEXPORT(GetFileTime)
+PALEXPORT(FileTimeToLocalFileTime)
+PALEXPORT(LocalFileTimeToFileTime)
+PALEXPORT(GetSystemTimeAsFileTime)
+PALEXPORT(GetSystemTime)
+PALEXPORT(FileTimeToDosDateTime)
+PALEXPORT(DosDateTimeToFileTime)
+PALEXPORT(FlushFileBuffers)
+PALEXPORT(GetFileType)
+PALEXPORT(GetConsoleCP)
+PALEXPORT(GetConsoleOutputCP)
+PALEXPORT(GetFullPathNameA)
+PALEXPORT(GetFullPathNameW)
+PALEXPORT(GetLongPathNameW)
+PALEXPORT(GetTempFileNameA)
+PALEXPORT(GetTempFileNameW)
+PALEXPORT(GetTempPathA)
+PALEXPORT(GetTempPathW)
+PALEXPORT(GetCurrentDirectoryA)
+PALEXPORT(GetCurrentDirectoryW)
+PALEXPORT(SetCurrentDirectoryA)
+PALEXPORT(SetCurrentDirectoryW)
+PALEXPORT(CreateSemaphoreA)
+PALEXPORT(CreateSemaphoreW)
+PALEXPORT(ReleaseSemaphore)
+CreateEventA = PAL_CreateEventA // always use the PAL wrapper, for object name mangling
+CreateEventW = PAL_CreateEventW // always use the PAL wrapper, for object name mangling
+PALEXPORT(SetEvent)
+PALEXPORT(ResetEvent)
+OpenEventW = PAL_OpenEventW // always use the PAL wrapper, for object name mangling
+CreateMutexW = PAL_CreateMutexW // always use the PAL wrapper, for object name mangling
+PALEXPORT(ReleaseMutex)
+PALEXPORT(GetCurrentProcessId)
+PALEXPORT(GetCurrentProcess)
+PALEXPORT(GetCurrentThreadId)
+PALEXPORT(GetCurrentThread)
+CreateProcessW=PAL_CreateProcessW
+CreateProcessA=PAL_CreateProcessA
+PALEXPORT(ExitProcess)
+PALEXPORT(TerminateProcess)
+PALEXPORT(GetExitCodeProcess)
+PALEXPORT(GetProcessTimes)
+PALEXPORT(WaitForSingleObject)
+PALEXPORT(WaitForMultipleObjects)
+PALEXPORT(WaitForMultipleObjectsEx)
+PALEXPORT(DuplicateHandle)
+PALEXPORT(Sleep)
+PALEXPORT(SleepEx)
+PALEXPORT(SwitchToThread)
+CreateThread=PAL_CreateThread // always use the PAL wrapper to get the PAL thread setup
+PALEXPORT(ExitThread)
+PALEXPORT(SuspendThread)
+PALEXPORT(ResumeThread)
+PALEXPORT(QueueUserAPC)
+GetThreadContext=PAL_GetThreadContext // always use the PAL wrapper, to get the inproc hack
+SetThreadContext=PAL_SetThreadContext
+PALEXPORT(GetThreadPriority)
+PALEXPORT(SetThreadPriority)
+PALEXPORT(TlsAlloc)
+PALEXPORT(TlsFree)
+PALEXPORT(EnterCriticalSection)
+PALEXPORT(LeaveCriticalSection)
+PALEXPORT(InitializeCriticalSection)
+PALEXPORT(DeleteCriticalSection)
+PALEXPORT(TryEnterCriticalSection)
+PALEXPORT(SetErrorMode)
+CreateFileMappingA = PAL_CreateFileMappingA  // always use the PAL wrapper, for object name mangling
+CreateFileMappingW = PAL_CreateFileMappingW // always use the PAL wrapper, for object name mangling
+OpenFileMappingA = PAL_OpenFileMappingA // always use the PAL wrapper, for object name mangling
+OpenFileMappingW = PAL_OpenFileMappingW // always use the PAL wrapper, for object name mangling
+PALEXPORT(MapViewOfFile)
+PALEXPORT(UnmapViewOfFile)
+PALEXPORT(LoadLibraryA)
+PALEXPORT(LoadLibraryW)
+PALEXPORT(GetProcAddress)
+PALEXPORT(FreeLibrary)
+PALEXPORT(FreeLibraryAndExitThread)
+PALEXPORT(DisableThreadLibraryCalls)
+PALEXPORT(GetModuleFileNameA)
+PALEXPORT(GetModuleFileNameW)
+PALEXPORT(VirtualAlloc)
+PALEXPORT(VirtualFree)
+PALEXPORT(VirtualProtect)
+PALEXPORT(VirtualQuery)
+PALEXPORT(ReadProcessMemory)
+PALEXPORT(WriteProcessMemory)
+PALEXPORT(RtlMoveMemory)
+PALEXPORT(GetProcessHeap)
+PALEXPORT(HeapAlloc)
+PALEXPORT(HeapReAlloc)
+PALEXPORT(HeapFree)
+PALEXPORT(LocalAlloc)
+PALEXPORT(LocalFree)
+PALEXPORT(FlushInstructionCache)
+PALEXPORT(GetStringTypeExW)
+PALEXPORT(CompareStringW)
+PALEXPORT(GetACP)
+PALEXPORT(GetCPInfo)
+PALEXPORT(IsDBCSLeadByteEx)
+PALEXPORT(IsValidCodePage)
+PALEXPORT(MultiByteToWideChar)
+PALEXPORT(WideCharToMultiByte)
+PALEXPORT(GetSystemDefaultLangID)
+PALEXPORT(GetUserDefaultLangID)
+PALEXPORT(SetThreadLocale)
+PALEXPORT(GetThreadLocale)
+PALEXPORT(GetLocaleInfoW)
+PALEXPORT(GetUserDefaultLCID)
+PALEXPORT(GetTimeZoneInformation)
+PALEXPORT(IsValidLocale)
+PALEXPORT(GetCalendarInfoW)
+PALEXPORT(GetDateFormatW)
+PALEXPORT(OutputDebugStringA)
+PALEXPORT(OutputDebugStringW)
+PALEXPORT(DebugBreak)
+PALEXPORT(OpenProcess)
+PALEXPORT(GetEnvironmentVariableA)
+PALEXPORT(GetEnvironmentVariableW)
+PALEXPORT(SetEnvironmentVariableA)
+PALEXPORT(SetEnvironmentVariableW)
+PALEXPORT(GetEnvironmentStringsW)
+PALEXPORT(FreeEnvironmentStringsW)
+PALEXPORT(CloseHandle)
+PALEXPORT(RaiseException)
+PALEXPORT(GetTickCount)
+PALEXPORT(IsBadReadPtr)
+PALEXPORT(IsBadWritePtr)
+PALEXPORT(IsBadCodePtr)
+PALEXPORT(FormatMessageW)
+PALEXPORT(GetLastError)
+PALEXPORT(SetLastError)
+PALEXPORT(GetCommandLineW)
+PALEXPORT(GetVersionExA)
+PALEXPORT(GetVersionExW)
+PALEXPORT(GetSystemInfo)
+PALEXPORT(GetDiskFreeSpaceW)
+PALEXPORTCRT(malloc)
+PALEXPORTCRT(free)
+PALEXPORTCRT(realloc)
+PALEXPORTCRT(exit)
+PALEXPORTCRT(atexit)
+PALEXPORTCRT(qsort)
+PALEXPORTCRT(bsearch)
+PALEXPORTCRT(_splitpath)
+PALEXPORTCRT(_wsplitpath)
+PALEXPORTCRT(_makepath)
+PALEXPORTCRT(_wmakepath)
+PALEXPORTCRT(_fullpath)
+PALEXPORTCRT(_swab)
+PALEXPORTCRT(time)
+PALEXPORTCRT(localtime)
+PALEXPORTCRT(mktime)
+PALEXPORTCRT(_open_osfhandle)
+PALEXPORTCRT(fclose)
+PALEXPORTCRT(fwrite)
+PALEXPORTCRT(fread)
+PALEXPORTCRT(fputs)
+PALEXPORTCRT(_getw)
+PALEXPORTCRT(_putw)
+PALEXPORTCRT(fseek)
+PALEXPORTCRT(ftell)
+PALEXPORTCRT(feof)
+PALEXPORTCRT(ferror)
+PALEXPORTCRT(fopen)
+PALEXPORTCRT(_fdopen)
+PALEXPORTCRT(_close)
+PALEXPORTCRT(_wfopen)
+NOTLOGGEDCRT(memchr)
+NOTLOGGEDCRT(strcmp)
+NOTLOGGEDCRT(strncmp)
+NOTLOGGEDCRT(_strnicmp)
+NOTLOGGEDCRT(strcat)
+NOTLOGGEDCRT(strncat)
+NOTLOGGEDCRT(strcpy)
+NOTLOGGEDCRT(strncpy)
+NOTLOGGEDCRT(strchr)
+NOTLOGGEDCRT(strrchr)
+NOTLOGGEDCRT(strpbrk)
+NOTLOGGEDCRT(atoi)
+NOTLOGGEDCRT(atol)
+NOTLOGGEDCRT(tolower)
+NOTLOGGEDCRT(toupper)
+NOTLOGGEDCRT(wcsncat)
+NOTLOGGEDCRT(wcsncpy)
+NOTLOGGEDCRT(_itow)
+NOTLOGGEDCRT(_i64tow)
+NOTLOGGEDCRT(_ui64tow)
+NOTLOGGEDCRT(_wtoi)
+NOTLOGGEDCRT(towlower)
+NOTLOGGEDCRT(towupper)
+PALEXPORTCRT(fflush)
+NOTLOGGED(lstrcatW)
+NOTLOGGED(lstrcpyW)
+NOTLOGGED(lstrlenA)
+NOTLOGGED(lstrlenW)
+NOTLOGGED(lstrcpynW)
+NOTLOGGEDCRT(memcpy)
+NOTLOGGEDCRT(memcmp)
+NOTLOGGEDCRT(memset)
+NOTLOGGEDCRT(memmove)
+NOTLOGGEDCRT(strlen)
+NOTLOGGEDCRT(sprintf)
+NOTLOGGEDCRT(vsprintf)
+NOTLOGGEDCRT(_snprintf)
+NOTLOGGEDCRT(_vsnprintf)
+NOTLOGGEDCRT(sscanf)
+NOTLOGGEDCRT(_stricmp)
+NOTLOGGEDCRT(strstr)
+NOTLOGGEDCRT(strtok)
+NOTLOGGEDCRT(strspn)
+NOTLOGGEDCRT(strcspn)
+NOTLOGGEDCRT(strtoul)
+NOTLOGGEDCRT(atof)
+NOTLOGGEDCRT(_gcvt)
+NOTLOGGEDCRT(_ecvt)
+NOTLOGGEDCRT(strtod)
+NOTLOGGEDCRT(wcstod)
+NOTLOGGEDCRT(_strlwr)
+NOTLOGGEDCRT(_mbslen)
+NOTLOGGEDCRT(_mbsinc)
+NOTLOGGEDCRT(_mbsninc)
+NOTLOGGEDCRT(_mbsdec)
+NOTLOGGEDCRT(wcstol)
+NOTLOGGEDCRT(wcstoul)
+NOTLOGGEDCRT(wcscat)
+NOTLOGGEDCRT(wcscpy)
+NOTLOGGEDCRT(wcslen)
+NOTLOGGEDCRT(wcscmp)
+NOTLOGGEDCRT(wcsncmp)
+NOTLOGGEDCRT(_wcsicmp)
+NOTLOGGEDCRT(_wcsnicmp)
+NOTLOGGEDCRT(wcschr)
+NOTLOGGEDCRT(wcsrchr)
+NOTLOGGEDCRT(swprintf)
+NOTLOGGEDCRT(vswprintf)
+NOTLOGGEDCRT(_snwprintf)
+NOTLOGGEDCRT(_vsnwprintf)
+NOTLOGGEDCRT(swscanf)
+NOTLOGGEDCRT(iswupper)
+NOTLOGGEDCRT(iswspace)
+NOTLOGGEDCRT(iswprint)
+NOTLOGGEDCRT(isupper)
+NOTLOGGEDCRT(islower)
+NOTLOGGEDCRT(wcspbrk)
+NOTLOGGEDCRT(wcsstr)
+NOTLOGGEDCRT(wcstok)
+NOTLOGGEDCRT(_wcslwr)
+NOTLOGGEDCRT(isspace)
+NOTLOGGEDCRT(isprint)
+NOTLOGGEDCRT(isalpha)
+NOTLOGGEDCRT(isalnum)
+NOTLOGGEDCRT(__iscsym)
+NOTLOGGEDCRT(isdigit)
+NOTLOGGEDCRT(iswdigit)
+NOTLOGGEDCRT(iswxdigit)
+NOTLOGGEDCRT(isxdigit)
+NOTLOGGEDCRT(fprintf)
+NOTLOGGEDCRT(fwprintf)
+NOTLOGGEDCRT(vfprintf)
+NOTLOGGEDCRT(printf)
+NOTLOGGEDCRT(vprintf)
+NOTLOGGEDCRT(_rotl)
+NOTLOGGEDCRT(_rotr)
+NOTLOGGEDCRT(abs)
+NOTLOGGEDCRT(labs)
+NOTLOGGEDCRT(sqrt)
+NOTLOGGEDCRT(log)
+NOTLOGGEDCRT(log10)
+NOTLOGGEDCRT(exp)
+NOTLOGGEDCRT(pow)
+NOTLOGGEDCRT(acos)
+NOTLOGGEDCRT(asin)
+NOTLOGGEDCRT(atan)
+NOTLOGGEDCRT(atan2)
+NOTLOGGEDCRT(cos)
+NOTLOGGEDCRT(sin)
+NOTLOGGEDCRT(tan)
+NOTLOGGEDCRT(cosh)
+NOTLOGGEDCRT(sinh)
+NOTLOGGEDCRT(tanh)
+NOTLOGGEDCRT(fmod)
+NOTLOGGEDCRT(_CIsqrt)
+NOTLOGGEDCRT(_CIlog)
+NOTLOGGEDCRT(_CIlog10)
+NOTLOGGEDCRT(_CIexp)
+NOTLOGGEDCRT(_CIpow)
+NOTLOGGEDCRT(_CIacos)
+NOTLOGGEDCRT(_CIasin)
+NOTLOGGEDCRT(_CIatan)
+NOTLOGGEDCRT(_CIatan2)
+NOTLOGGEDCRT(_CIcos)
+NOTLOGGEDCRT(_CIsin)
+NOTLOGGEDCRT(_CItan)
+NOTLOGGEDCRT(_CIcosh)
+NOTLOGGEDCRT(_CIsinh)
+NOTLOGGEDCRT(_CItanh)
+NOTLOGGEDCRT(_CIfmod)
+NOTLOGGEDCRT(floor)
+NOTLOGGEDCRT(ceil)
+NOTLOGGEDCRT(fabs)
+NOTLOGGEDCRT(modf)
+NOTLOGGEDCRT(_finite)
+NOTLOGGEDCRT(_isnan)
+NOTLOGGEDCRT(_ftol)
+PALEXPORTCRT(getenv)
+PALEXPORTCRT(_putenv)
+NOTLOGGEDCRT(getc)
+NOTLOGGEDCRT(ungetc)
+PALEXPORTCRT(fgets)
+NOTLOGGEDCRT(srand)
+NOTLOGGEDCRT(rand)
+NOTLOGGEDCRT(ctime)
+_ftol2
+_allshl
+_allshr
+_allmul
+_alldiv
+_allrem
+_alldvrm
+_aullshr
+_aulldiv
+_aullrem
+_aulldvrm
+
+// Note: These functions are linked statically in the real msvc runtime
+_chkstk
+_alloca_probe
+
+_RTC_InitBase
+_RTC_Shutdown
+_RTC_CheckEsp
+_RTC_CheckStackVars
+
+// PAL binaries should be compiled with SEH_ONLY
+// so these should not be necessary
+// ??_L@YGXPAXIHP6EX0@Z1@Z // void __stdcall `eh vector constructor iterator'
+// ??_M@YGXPAXIHP6EX0@Z@Z // void __stdcall `eh vector destructor iterator'
+
+??2@YAPAXI@Z // void * __cdecl operator new(unsigned int)
+??3@YAXPAX@Z // void __cdecl operator delete(void *)
+
+NOTLOGGEDCRT(_purecall)
+
+
+PALEXPORTSOCKET(gethostbyname)
+PALEXPORTSOCKET(gethostbyaddr)
+PALEXPORTSOCKET(gethostname)
+PALEXPORTSOCKET(inet_addr)
+PALEXPORTSOCKET(getpeername)
+PALEXPORTSOCKET(getsockopt)
+PALEXPORTSOCKET(setsockopt)
+PALEXPORTSOCKET(connect)
+PALEXPORTSOCKET(send)
+PALEXPORTSOCKET(recv)
+PALEXPORTSOCKET(closesocket)
+PALEXPORTSOCKET(accept)
+PALEXPORTSOCKET(listen)
+PALEXPORTSOCKET(bind)
+PALEXPORTSOCKET(shutdown)
+PALEXPORTSOCKET(sendto)
+PALEXPORTSOCKET(recvfrom)
+PALEXPORTSOCKET(getsockname)
+PALEXPORTSOCKET(select)
+PALEXPORTSOCKET(socket)
+PALEXPORTSOCKET(WSAStartup)
+PALEXPORTSOCKET(WSACleanup)
+PALEXPORTSOCKET(WSASend)
+PALEXPORTSOCKET(WSASendTo)
+PALEXPORTSOCKET(WSARecv)
+PALEXPORTSOCKET(WSARecvFrom)
+PALEXPORTSOCKET(WSAEventSelect)
+PALEXPORTSOCKET(WSASocketA)
+PALEXPORTSOCKET(WSAIoctl)
+PALEXPORTSOCKET(WSAEnumNetworkEvents)
+PALEXPORTSOCKET(ioctlsocket)

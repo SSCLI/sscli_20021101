@@ -1,0 +1,115 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.cor
+
+MINORCOMP       =cor
+
+TARGETPRIORPATH =$(CORBUILDENV)
+TARGETLIBNAME   =mscorejt
+TARGETNAME      =$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETPATH      =$(TARGETCORBIN)
+TARGETTYPE      =DYNLINK
+UMTYPE          =windows
+COFFBASE        =mscorejt
+CORFLIBS        =
+
+CORTHUNKLIBS    =
+
+NTTARGETFILES   =
+
+###############################################################################
+# Compiler options
+###############################################################################
+PRECOMPILED_INCLUDE    =jitpch.h
+PRECOMPILED_CXX        =1
+
+!if "$(FREEBUILD)"!="1" && "$(FEATURE_PAL)"!="1"
+DELAYLOADLIST   = msdis130.dll
+!ENDIF
+
+!if "$(DELAYLOAD)" != ""
+DELAYLOAD               =$(DELAYLOAD);$(DELAYLOADLIST)
+!else
+DELAYLOAD               =$(DELAYLOADLIST)
+!endif
+
+INCLUDES        = $(INCLUDES);..\inc;..\inc\$(O)
+
+!if "$(FREEBUILD)"=="1"
+COR_C_FLAGS     = $(COR_C_FLAGS) -DFAST=1
+!if "$(PLATFORM_UNIX)" != "1"
+COR_C_FLAGS     = $(COR_C_FLAGS) -Oxs
+!endif
+MSC_OPTIMIZATION =
+!else
+!endif
+
+ 
+
+###############################################################################
+# The build system normally sucks in a couple of standard libs which
+# we don't want. So force it to only pick up the libs which the JIT needs.
+###############################################################################
+!if "$(PLATFORM_UNIX)" != "1"
+LINKER_FLAGS    =$(LINKER_FLAGS) -nodefaultlib
+!endif
+
+!if "$(PLATFORM_UNIX)" != "1"
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+UNIX_DLL_LIBS= -lrotor_pal -lrotor_palrt -lsscoree
+USE_CC_LIB = 1
+
+USE_NOLIBS      =1
+NO_NTDLL        =0
+!undef USE_STL
+
+###############################################################################
+# Other libs we need to link to
+###############################################################################
+
+!if "$(FREEBUILD)"!="1"
+
+TARGETLIBS=$(TARGETLIBS)                        \
+                $(CORLIBS)\utilcode.lib
+
+
+!endif
+
+CONDITIONAL_INCLUDES = $(CONDITIONAL_INCLUDES) \
+        new strstream
+
+###############################################################################
+# Source files
+###############################################################################
+
+SOURCES=            \
+    Fjit.cpp            \
+    Fjitcompiler.cpp    \
+    FjitEncode.cpp \
+    fjitverifier.cpp \
+    fjit.rc
+
+# For the Free build, we have a different entry point
+DLLENTRY        =DllMain
+
+i386_SOURCES=i386\x86fjitasm.asm 
+
+ROTOR_X86_SOURCES=rotor_x86\x86fjitasm.asm
+
+PPC_SOURCES=ppc\ppcfjitasm.s
+
+SPARC_SOURCES=sparc\sparcfjitasm.s

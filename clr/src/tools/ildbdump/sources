@@ -1,0 +1,53 @@
+# ==++==
+# 
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+
+!include $(NTMAKEENV)\sources.cor
+
+TARGETNAME=ildbdump
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+
+USER_DEFINES=$(DEFINES) /D "_UNICODE" /D "UNICODE" 
+USE_MSVCRT=1
+
+EXCEPTION_HANDLING = $(SEHONLY)
+
+MSC_WARNING_LEVEL = /W3 /WX
+
+SUBSYSTEM_VERSION=4.00
+
+SOURCES=ildbdump.cpp
+
+INCLUDES      =$(INCLUDES);$(CORBASE)\src\inc;
+INCLUDES      =$(INCLUDES);$(ROTOR_DIR)\pal;$(ROTOR_DIR)\palrt\inc;$(CORBASE)\src\tools\ildbsymbols;
+
+!if "$(FEATURE_PAL)"=="1" && "$(PLATFORM_UNIX)"!="1"
+TARGETLIBS = $(TARGETLIBS) \
+        $(CORLIBS)\rotor_pal.lib \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt
+USE_CC_LIB = 1
+
+UMTYPE=console
+UMENTRY		=main
+
+COR_C_FLAGS=-DUNICODE -D_UNICODE
+
+LINKER_FLAGS=$(LINKER_FLAGS) /LARGEADDRESSAWARE
+
+LINKLIBS = \
+                $(CORLIBS)\utilcode.lib

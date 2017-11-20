@@ -1,0 +1,54 @@
+# ==++==
+#
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+#
+# ==--==
+# ============================================================================
+# File: makefile
+# makefile for build
+# ============================================================================
+
+# Common part
+TOP_SRC_DIR = @top_srcdir@
+include $(TOP_SRC_DIR)/makefile.common
+
+# Local changes
+TARGET_NAME = $(TARGETCOMPLUS)/build
+
+SOURCES=build.c \
+        builddb.c \
+        buildexe.c \
+        buildinc.c \
+        buildmak.c \
+        buildscn.c \
+        buildsrc.c \
+        buildutl.c
+
+# Objects
+CPP_OBJS = $(SOURCES:.cpp=.o)
+OBJS = $(CPP_OBJS:.c=.o)
+
+#################
+# Targets
+
+all: makefile $(TARGET_NAME)
+
+$(TARGET_NAME) : makefile $(OBJS)
+	ld -o $@ $(LDFLAGS) $(LINKER_FLAGS) $(REQUIRED_CRUNTIME) -l$(PAL_LIB) $(OBJS) $(GCC_LIB)
+
+makefile : makefile.in
+	@echo $? is newer than $@. Please rerun $(TOP_SRC_DIR)/configure.
+	@exit 1
+
+clean:
+	rm -f *.o
+	rm -f $(TARGET_NAME)

@@ -1,0 +1,30 @@
+// ==++==
+//
+//   
+//    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+//   
+//    The use and distribution terms for this software are contained in the file
+//    named license.txt, which can be found in the root of this distribution.
+//    By using this software in any fashion, you are agreeing to be bound by the
+//    terms of this license.
+//   
+//    You must not remove this notice, or any other, from this software.
+//   
+//
+// ==--==
+STRINGTABLE
+BEGIN
+ 987654321 "VALUE"
+END
+
+18 MYRES2
+I DON"T BELONG HERE
+{
+   "Here is an ANSI string\0",    // explicitly null-terminated 
+   L"Here is a Unicode string\0", // explicitly null-terminated 
+   1024,                          // integer, stored as WORD 
+   7L,                            // integer, stored as DWORD 
+   0x029a,                        // hex integer 
+   0o733,                         // octal integer 
+} 
+

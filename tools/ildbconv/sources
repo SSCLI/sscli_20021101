@@ -1,0 +1,44 @@
+# ==++==
+# 
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+# 
+# ==--==
+
+!include $(NTMAKEENV)\sources.cor
+
+TARGETNAME=ildbconv
+TARGETPATH=obj
+TARGETTYPE=PROGRAM
+
+INCLUDES=$(INCLUDES);$(MSVCDIR)\PlatformSDK\include;$(MSVCDIR)\Include;
+
+USER_DEFINES=$(DEFINES) /D "_UNICODE" /D "UNICODE" 
+USE_MSVCRT=1
+
+MSC_WARNING_LEVEL = /W3 /WX
+
+SUBSYSTEM_VERSION=4.00
+
+SOURCES=ildbconv.cpp
+
+INCLUDES      =$(INCLUDES);$(CORBASE)\src\inc;
+
+UMTYPE=console
+
+LINKLIBS=$(LIBC_LIB) \
+         $(SDK_LIB_PATH)\kernel32.lib \
+         $(SDK_LIB_PATH)\ole32.lib \
+         $(SDK_LIB_PATH)\ws2_32.lib \
+         $(SDK_LIB_PATH)\user32.lib \
+         $(SDK_LIB_PATH)\oleaut32.lib \
+         $(CORLIBS)\corguids.lib \
+

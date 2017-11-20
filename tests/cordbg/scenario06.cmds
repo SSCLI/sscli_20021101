@@ -1,0 +1,86 @@
+mode
+m appdomainloads 1
+m classloads 1
+m enhanceddiag 1
+m hexdisplay 1
+m ilnatprint 1
+m loggingmessages 1
+m moduleloads 1
+m showargs 1
+m showmodules 1
+m dumpmemoryinbytes 1
+m showsuperclassonprint 1
+m showstaticsonprint 1
+m AppDSelect 0
+m ILNatPrint 0
+m ISAll 0
+m ISclinit 0
+m ISExceptF 0
+m ISInt 0
+m ISPolicy 0
+m ISSec 0
+m JitOptimizations 0
+m SeparateConsole 0
+m UnmanagedTrace 0
+m USAll 0
+m USEpi 1
+m USPro 1
+run threads.exe -t5
+mode
+show
+dis
+show
+break 176
+cont
+p
+remove 1
+break 203
+cont
+p
+dis
+step
+show
+dump 0x8e5620
+break 235
+cont
+s
+where
+kill
+m appdomainloads 0
+m classloads 0
+m enhanceddiag 0
+m hexdisplay 0
+m ilnatprint 0
+m loggingmessages 0
+m moduleloads 0
+m showargs 0
+m showmodules 0
+m dumpmemoryinbytes 0
+m showsuperclassonprint 0
+m showstaticsonprint 0
+m usepi 0
+m uspro 0
+run threads.exe -t5
+mode
+dis
+show
+break 176
+cont
+p
+remove 4
+cont
+s
+p
+dis
+show
+dump 0x8e5620
+cont
+s
+where
+kill
+mode
+m ilnatprint 1
+m showargs 1
+m showmodules 1
+mode
+exit

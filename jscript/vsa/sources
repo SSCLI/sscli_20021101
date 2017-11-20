@@ -1,0 +1,74 @@
+# ==++==
+#
+#   
+#    Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+#   
+#    The use and distribution terms for this software are contained in the file
+#    named license.txt, which can be found in the root of this distribution.
+#    By using this software in any fashion, you are agreeing to be bound by the
+#    terms of this license.
+#   
+#    You must not remove this notice, or any other, from this software.
+#   
+#
+# ==--==
+#
+# Build instructions for this directory
+#
+
+SYNCHRONIZE_DRAIN=1
+SYNCHRONIZE_BLOCK=1
+
+!CMDSWITCHES -I
+
+!ifdef PASS0ONLY
+!else
+!ifdef LINKONLY
+NTTARGETFILE1   = csc_target
+!else
+NTTARGETFILE0   = prep_target
+!endif
+!endif
+
+!include $(NTMAKEENV)\sources.cor
+
+TARGETNAME      = Microsoft.Vsa
+TARGETLIBNAME   = $(TARGETNAME) 
+TARGETPATH      = $(TARGETCORLIB)\$(TARGET_DIRECTORY)\$(DDKBUILDENV)
+TARGETTYPE      = DYNLINK
+NO_BROWSER_FILE = 1
+SOURCES         =
+
+ASSEMBLY_KEY_TYPE=MICROSOFT
+SIGN_ASSEMBLY=1
+
+CSC_SOURCE_DIR = $(ROTOR_DIR)\jscript\vsa
+CSC_CLASS_DIR   = $(CSC_SOURCE_DIR)\$(_OBJ_DIR)\$(TARGET_DIRECTORY)
+
+# Include a version stamp for Windows Explorer's version tab.
+WIN32_RESOURCE_FILE = microsoft.vsa.rc
+
+
+#List required assembly references here
+COMPLUSIMPORTS = \
+	$(TARGETPATH)\mscorlib.dll \
+	$(TARGETCOMPLUS)\System.dll
+
+CSC_COMPILE_FLAGS = $(CSC_COMPILE_FLAGS) /nowarn:169 /nostdlib
+
+# In retail, ignore warnings about unused variables.
+!if "$(DDKBUILDENV)" != "checked" && "$(DDKBUILDENV)" != "fastchecked"
+CSC_COMPILE_FLAGS = $(CSC_COMPILE_FLAGS) /nowarn:649
+!endif
+
+CSC_COMPILE_FLAGS = $(CSC_EXTRA_PREPROCESS_FLAGS) $(CSC_COMPILE_FLAGS)
+
+!if "$(_TGTOS)" == "NT64"
+CSC_COMPILE_FLAGS = $(CSC_COMPILE_FLAGS) /d:WIN64
+!else
+CSC_COMPILE_FLAGS = $(CSC_COMPILE_FLAGS) /d:WIN32
+!endif
+
+CSC_SOURCES  =    \
+    vsa7.cs \
+    $(O)\buildversioninfo.cs

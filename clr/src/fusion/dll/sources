@@ -1,0 +1,62 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(CORBASE)\src\fusion\fusion.inc
+
+SOURCES_USED=$(SOURCES_USED) $(CORBASE)\src\fusion\fusion.inc
+
+TARGETPATH=$(TARGETCORBIN)
+TARGETLIBNAME=fusion
+TARGETPRIORPATH=$(CORBUILDENV)
+TARGETNAME=$(TARGETPRIORPATH)$(TARGETLIBNAME)
+TARGETTYPE=DYNLINK
+UMTYPE=windows
+COFFBASE=fusion
+DLLENTRY=DllMain
+DLLDEF=$(O)\fusion.def
+
+# Make sure the component libs are built before this.
+SYNCHRONIZE_DRAIN=1
+!if "$(PLATFORM_UNIX)" != "1"
+LINKER_FLAGS = $(LINKER_FLAGS) -OPT:REF -OPT:ICF
+!endif
+
+DLLENTRY=       DllMain
+
+NTTARGETFILES = localgac
+
+USE_MAPSYM=1
+
+LINKLIBS=\
+    $(FUSION_URT_LIB_PATH)\urtasmc.lib  \
+    $(FUSION_URT_LIB_PATH)\urtbind.lib  \
+    $(FUSION_URT_LIB_PATH)\urtdl.lib    \
+    $(FUSION_URT_LIB_PATH)\urtmparse.lib \
+    $(FUSION_URT_LIB_PATH)\urtutils.lib  \
+
+LINKLIBS= $(CORLIBS)\utilcode.lib       \
+    $(LINKLIBS)
+
+
+!if "$(PLATFORM_UNIX)" != "1"
+WIN32DLL_LIBS=                         \
+        $(CORLIBS)\rotor_pal.lib       \
+        $(CORLIBS)\rotor_palrt.lib
+!endif
+UNIX_DLL_LIBS = -lrotor_pal -lrotor_palrt
+USE_CC_LIB = 1
+
+SOURCES=\
+    guids.c \
+    dllmain.cpp \
+    fusion.rc

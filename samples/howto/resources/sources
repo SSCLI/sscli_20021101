@@ -1,0 +1,33 @@
+#
+# 
+#  Copyright (c) 2002 Microsoft Corporation.  All rights reserved.
+# 
+#  The use and distribution terms for this software are contained in the file
+#  named license.txt, which can be found in the root of this distribution.
+#  By using this software in any fashion, you are agreeing to be bound by the
+#  terms of this license.
+# 
+#  You must not remove this notice, or any other, from this software.
+# 
+#
+
+!include $(NTMAKEENV)\sources.csc
+
+
+TARGETNAME      = managedresources
+TARGETPATH      = $(TARGETCORLIB)\$(TARGET_DIRECTORY)\$(DDKBUILDENV)
+TARGETTYPE      = PROGRAM
+SOURCES         =
+NO_BROWSER_FILE = 1
+
+SYNCHRONIZE_DRAIN=1
+
+CSC_TARGET_TYPE  = PROGRAM
+
+RESGEN_SOURCE      = strings.txt
+
+COMPLUSIMPORTS = \
+    $(TARGETCOMPLUS)\System.dll \
+
+CSC_SOURCES = \
+        managedresources.cs
