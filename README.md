@@ -24,7 +24,7 @@ The links in this section correspond to files available for this download. Downl
 
 The Common Language Infrastructure (CLI) is the ECMA standard that describes the core of the .NET Framework world. The Shared Source CLI is a compressed archive of the source code to a working implementation of the ECMA CLI and the ECMA C# language specification.
 
-This implementation builds and runs on Windows XP, the FreeBSD operating system, and Mac OS X 10.2. It is released under a shared source initiative. Please see the accompanying license.
+This implementation builds and runs on Windows XP, the FreeBSD operating system, and Mac OS X 10.2. It is released under a shared source initiative. Please see the accompanying [license](https://github.com/SSCLI/sscli_20021101/blob/master/license.txt).
 
 The Shared Source CLI goes beyond the printed specification of the ECMA standards, providing a working implementation for CLI developers to explore and understand. It will be of interest to academics and researchers wishing to teach and explore modern programming language concepts, and to .NET developers interested in how the technology works. 
 
